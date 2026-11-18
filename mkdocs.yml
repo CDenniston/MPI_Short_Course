@@ -1,7 +1,7 @@
 site_name: Using MPI for Scientific Computing - Short Course
 site_url: https://CDenniston.github.io/MPI_Short_Course
 theme: material
-    - content.code.copy
+
 nav:
   - Home: index.md
   - Introduction: Ch1-Intro/Ch1-Intro_1.md
