@@ -1,0 +1,1770 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://CDenniston.github.io/MPI_Short_Course/Ch4-MeshSolutions/Ch4-MeshSolutions/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.0">
+    
+    
+      
+        <title>Chapter 4: Mesh-based Solutions — Poisson Equation - Using MPI for Scientific Computing - Short Course</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.9f615399.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-4-mesh-based-solutions-poisson-equation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Using MPI for Scientific Computing - Short Course" class="md-header__button md-logo" aria-label="Using MPI for Scientific Computing - Short Course" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Using MPI for Scientific Computing - Short Course
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 4: Mesh-based Solutions — Poisson Equation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Using MPI for Scientific Computing - Short Course" class="md-nav__button md-logo" aria-label="Using MPI for Scientific Computing - Short Course" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Using MPI for Scientific Computing - Short Course
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#finite-difference-schemes-for-the-poisson-equation" class="md-nav__link">
+    Finite Difference Schemes for the Poisson Equation
+  </a>
+  
+    <nav class="md-nav" aria-label="Finite Difference Schemes for the Poisson Equation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#discretisation" class="md-nav__link">
+    Discretisation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure-of-the-matrix-system" class="md-nav__link">
+    Structure of the Matrix System
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#direct-solution-with-lapack-cholesky-factorisation" class="md-nav__link">
+    Direct Solution with LAPACK: Cholesky Factorisation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-code-poissonlapackcpp" class="md-nav__link">
+    C++ Code: PoissonLAPACK.cpp
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jacobi-method" class="md-nav__link">
+    Jacobi Method
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gauss-seidel-method" class="md-nav__link">
+    Gauss-Seidel Method
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#successive-over-relaxation-sor" class="md-nav__link">
+    Successive Over-Relaxation (SOR)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-jacobi-method" class="md-nav__link">
+    Parallel Jacobi Method
+  </a>
+  
+    <nav class="md-nav" aria-label="Parallel Jacobi Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1d-decomposition" class="md-nav__link">
+    1D Decomposition
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flowchart" class="md-nav__link">
+    Flowchart
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-code-poissonjacobi1dmpic" class="md-nav__link">
+    C Code: PoissonJacobi1DMPI.c
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    Results
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2d-decomposition" class="md-nav__link">
+    2D Decomposition
+  </a>
+  
+    <nav class="md-nav" aria-label="2D Decomposition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mpi-cartesian-topology-functions" class="md-nav__link">
+    MPI Cartesian Topology Functions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-column-data-in-2d" class="md-nav__link">
+    Sending Column Data in 2D
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-code-poissonjacobi2dmpic" class="md-nav__link">
+    C Code: PoissonJacobi2DMPI.c
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-writing-to-a-single-global-file" class="md-nav__link">
+    Output: Writing to a Single Global File
+  </a>
+  
+    <nav class="md-nav" aria-label="Output: Writing to a Single Global File">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mpi_type_create_subarray" class="md-nav__link">
+    MPI_Type_create_subarray
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpiio-overview" class="md-nav__link">
+    MPIIO Overview
+  </a>
+  
+    <nav class="md-nav" aria-label="MPIIO Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-mpiio-functions" class="md-nav__link">
+    Key MPIIO Functions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#final-output-routine" class="md-nav__link">
+    Final Output Routine
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conjugate-gradient-method" class="md-nav__link">
+    Conjugate Gradient Method
+  </a>
+  
+    <nav class="md-nav" aria-label="Conjugate Gradient Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-background" class="md-nav__link">
+    Mathematical Background
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#line-search" class="md-nav__link">
+    Line Search
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choosing-the-search-direction" class="md-nav__link">
+    Choosing the Search Direction
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conjugate-gradient-algorithm" class="md-nav__link">
+    Conjugate Gradient Algorithm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-many-iterations-are-needed" class="md-nav__link">
+    How Many Iterations Are Needed?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-code-cgc" class="md-nav__link">
+    C Code: CG.c
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallelisation-of-the-cg-method" class="md-nav__link">
+    Parallelisation of the CG Method
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="chapter-4-mesh-based-solutions-poisson-equation">Chapter 4: Mesh-based Solutions — Poisson Equation</h1>
+<p>Many scientific problems can be formulated numerically on a regular lattice, or mesh.  These problems are regular targets for reduced runtimes using parallel programming techniques.  The methodology to parallize these algorithms is largely similar.  To illustrate this methodology we will focus on a specific example, namely solving Poisson's equation on a mesh using a finite difference scheme.</p>
+<h2 id="finite-difference-schemes-for-the-poisson-equation">Finite Difference Schemes for the Poisson Equation</h2>
+<p>We want to solve the <strong>2D Poisson equation</strong> on a rectangular domain with Dirichlet boundary conditions:
+$$
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = f, \qquad \text{B.C.: } u = \text{const on boundary}
+$$
+where $f(x,y)$ is a given function and the problem is to determine $u(x,y)$.</p>
+<h3 id="discretisation">Discretisation</h3>
+<p>Introduce a uniform mesh with spacing $h$ in both directions:</p>
+<p><img alt="2D Mesh" src="../mesh.svg" /></p>
+<p>Use the standard <strong>second-order centered finite difference approximation</strong> to derivatives:
+$$
+\frac{\partial^2 u}{\partial x^2}=\frac{\delta_x^2 u}{h^2} + \mathcal{O}(h^2)= \frac{u(x_{\ell+1}, y_m) - 2u(x_\ell, y_m) + u(x_{\ell-1}, y_m)}{h^2} + \mathcal{O}(h^2)
+$$
+As the boundary condition provides the solution on boundary, we work on interior mesh points only and label $u(x_\ell, y_m) \equiv v_{\ell,m}$. This gives the discrete equation:
+$$
+\delta_x^2 u + \delta_y^2 u = h^2 f
+$$
+Assuming $h_x = h_y = h$, the equations we need to solve are: 
+$$
+v_{\ell+1,m} + v_{\ell-1,m} + v_{\ell,m+1} + v_{\ell,m-1} - 4v_{\ell,m} = h^2 f_{\ell,m}
+$$
+This is often referred to as a <strong>5-point stencil</strong>:
+<img alt="5-point stencil" src="../stencil5pt.svg" /></p>
+<p>The corresponding matrix $A$ is a banded matrix equation $Av = F$ with bandwidth $2L-1$ (or $2M-1$).</p>
+<h3 id="structure-of-the-matrix-system">Structure of the Matrix System</h3>
+<p>The solution vector $v$ and right-hand side $F$ are assembled by ordering the interior grid points, say row by row (i.e. row-major ordering):
+$$
+v = \begin{pmatrix} v_{1,1} \ v_{1,2} \ \vdots \ v_{1,M-2} \ v_{1,M-1} \ v_{2,1} \ v_{2,2} \ v_{2,3} \ \vdots \ v_{2,M-1} \ v_{3,1} \ \vdots \ v_{L-1,M-1} \end{pmatrix}, \qquad
+F = \begin{pmatrix} h^2 f_{1,1} - v_{0,1} - v_{1,0} \ h^2 f_{1,2} - v_{0,2} \ \vdots \h^2 f_{1,M-2}-v_{0,M-2}\ h^2 f_{1,M-1}-v_{0,M-1}-v_{1,M}\ h^2 f_{2,1} - v_{2,0} \ h^2 f_{2,2} \ h^2 f_{2,3} \ \vdots \ h^2 f_{2,M-1} -v_{2,M} \ h^2 f_{3,1} - v_{3,0} \ \vdots \ h^2 f_{L-1,M-1} -v_{L-1,M}-v_{L,M-1}\end{pmatrix}
+$$
+Note that while most entries in $F$ are of the form $h^2 f_{\ell,m}$, any sites adjacent to the boundary pick up values of $-v_{\ell\pm 1,m\pm 1}$ that are known (assuming Dirichlet B.C.s) as these are moved to the right-hand side of the equation (i.e. into $F$).  Correspondingly, the bands in $A$ closest to the diagonal that would couple interior points to boundary points have zero entries.</p>
+<p>The matrix $A$ is <strong>block tridiagonal</strong>:
+$$
+A = \left(\begin{array}{cccccc|cccccc|cccccc}
+-4 &amp; 1 &amp; 0 &amp; \dots &amp; \dots &amp; 0 &amp;                   1  &amp; 0 &amp; \dots &amp; &amp; \dots &amp; 0     &amp; 0 &amp; \dots &amp; &amp; &amp; &amp;\
+1 &amp; -4 &amp; 1 &amp; \ddots &amp; &amp; \vdots &amp;                   0  &amp; 1 &amp; 0 &amp; &amp; &amp; \vdots &amp; \vdots &amp; &amp; &amp; &amp; &amp;\
+0 &amp; 1 &amp; -4 &amp; 1 &amp; \ddots &amp; \vdots &amp;             \vdots &amp; 0 &amp; 1  &amp; 0 &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp;\
+\vdots &amp; \ddots  &amp; \ddots &amp; \ddots &amp; \ddots &amp; 0 &amp;    &amp; &amp; \ddots &amp; \ddots &amp; \ddots &amp; \vdots   &amp; &amp; &amp; &amp; &amp; &amp;\
+\vdots &amp;   &amp;  \ddots      &amp; 1 &amp; -4 &amp; 1 &amp;            \vdots &amp; &amp; &amp; 0 &amp; 1 &amp; 0\
+0 &amp; \dots  &amp;   \dots     &amp;  0 &amp; 1  &amp; -4 &amp;           {\red 0}  &amp; \dots &amp; &amp; \dots &amp; 0 &amp; 1\\hline
+1  &amp; 0 &amp; \dots &amp; &amp; \dots &amp; {\red 0} &amp;                  -4 &amp; 1 &amp; 0 &amp; &amp; &amp;                  &amp; \ddots &amp; &amp; &amp; &amp; &amp;\
+0  &amp; 1 &amp; 0 &amp; &amp; &amp; \vdots &amp;                       1 &amp; \ddots &amp; \ddots &amp; &amp; &amp;\ 
+\vdots &amp; 0 &amp; 1  &amp; 0 &amp; &amp; &amp;                       0 &amp; \ddots &amp; \ddots &amp; \ddots &amp; &amp; \
+&amp; &amp; \ddots &amp; \ddots &amp; \ddots &amp; \vdots &amp;    \
+\vdots &amp; &amp; &amp; 0 &amp; 1 &amp; 0\
+0 &amp; \dots &amp; &amp; \dots &amp; 0 &amp; 1\\hline
+0 &amp; \dots &amp; &amp; &amp; &amp; &amp; \ddots &amp; &amp; &amp; &amp; &amp; &amp; \ddots\
+\vdots &amp; \
+\
+\
+\
+\
+\end{array}\right)
+$$
+where the $1$s on off-diagonals connect same-row neighbours, and the $1$s at distance $L-1$ connect vertically adjacent rows. The red ${\red 0}$ entries in the block corners that interupt the 1s just off the main diagonal are where boundary terms were moved to the RHS (i.e. into $F$).</p>
+<h3 id="direct-solution-with-lapack-cholesky-factorisation">Direct Solution with LAPACK: Cholesky Factorisation</h3>
+<p>The matrix $A$ is <strong>negative definite</strong>. In order to use LAPACK routines (which have specialised routines for positive definite matrices), we instead solve:
+$$
+(-A)\, v = (-F)
+$$
+since $-A$ will be <strong>positive definite</strong>. Positive definite matrices are symmetric, so we only need to store the upper triangular part. We can factor $-A$ using <strong>Cholesky factorisation</strong>:
+$$
+-A = U^T U = L L^T
+$$
+where $U$, $L$ are upper/lower triangular matrices.  The factorisation can then be used to solve the system of equations. This is a special form of LU factorisation for positive definite matrices.</p>
+<p><strong>Note:</strong> Most of the work is in the factorisation. Once the factorisation is done you can solve for multiple right-hand sides without much extra effort — just change $F$ and use the same factorisation each time (we can call <code>dpbtrs</code> each time for this).</p>
+<p>The relevant LAPACK routines are:</p>
+<ul>
+<li><code>dpbtrf</code> — <code>d</code> for <strong>double</strong>, <code>p</code> for <strong>positive definite</strong>, <code>b</code> for <strong>band</strong>, and <code>trf</code> for <strong>factorize</strong> the band matrix;</li>
+<li><code>dpbtrs</code> — <code>d</code> for <strong>double</strong>, <code>p</code> for <strong>positive definite</strong>, <code>b</code> for <strong>band</strong>, and <code>trs</code> for <strong>solve</strong> using the (previously obtained) factorisation</li>
+</ul>
+<p>The matrix $-A$ is stored in <strong>band form</strong> and only requires the upper triangular region. It looks like:</p>
+<pre><code> x  x -1 -1 - - ...      (upper corner marked with x x is ignored, just fill with -1s to fill the band)
+ 0  0 - -
+ 0  0 - -
+ :
+ 0  0 - - -1  0 -1 -1 - - ...
+ 4  4 - - - - 4  4  4 - - -
+</code></pre>
+<p>where the last row is the main diagonal (all 4s from the $-4$'s in $A$), and the upper rows are the off-diagonal bands.</p>
+<h3 id="c-code-poissonlapackcpp">C++ Code: PoissonLAPACK.cpp</h3>
+<p>For this code we assume $L=M=N$ and for $f$ we place two "charges" of opposite sign equally spaced from the centre of the box.</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &quot;boost/multi_array.hpp&quot;
+
+// Program to compute solution to -laplacian u = -F
+// compile with:
+// g++ PoissonLAPACK.cpp -lblas -llapack
+
+// LAPACK library declarations
+extern &quot;C&quot; {
+  // general band factorize routine
+  extern int dpbtrf_(char *, int*, int*, double *, int*, int*);
+  // general band solve using factorization routine
+  extern int dpbtrs_(char*, int*, int*, int*, double*, int*, double*, int*, int*);
+}
+
+void AbInit(int N, boost::multi_array&lt;double,2&gt; &amp;Ab)
+{
+  // Coefficient Matrix: initialize (band format and switching row/column to put in
+  // FORTRAN column major ordering in order to use LAPACK routines)
+  for (int i=0; i &lt; N*N; i++) {
+    for (int j=0; j&lt; N+1; j++) {
+      Ab[j][i]=0.0;   // most entries are zero so set as default
+      if (j == 0)
+        Ab[j][i] = -1.0;
+      if (j == N-1 &amp;&amp; (i%N))  // Only 0 when i is divisible by N,
+        Ab[j][i] = -1.0;      // exactly where we need the 0s
+      if (j == N)
+        Ab[j][i] =  4.0;      // main diagonal
+    }
+  }
+}
+
+void RHSInitialize(int N, std::vector&lt;double&gt; &amp;F, double bcx, double bcy)
+{
+  // RHS: fill in boundary condition values
+  for (int i = 0; i &lt; N; i++) {
+    F[i]       += bcx;  //bottom boundary
+    F[N*N-i-1] += bcx;  //top boundary
+    F[i*N]     += bcy;  //left boundary
+    F[i*N+N-1] += bcy;  //right boundary
+  }
+
+  // RHS: fill in actual right-hand side, some &quot;charges&quot;, actually h^2*charge
+  F[N/4*N+N/2]   += 0.5;
+  F[3*N/4*N+N/2] += -0.5;
+}
+
+int main (void)
+{
+  // Coefficient Matrix: declare
+  const int N=100;
+  int M = N+1;
+  int ABcols = N*N;
+  // Only Ab, the banded coefficient matrix, in Fortran form
+  boost::multi_array&lt;double,2&gt; Ab(boost::extents[M][ABcols],
+                                   boost::fortran_storage_order());
+
+  AbInit(N,Ab);  // Initialize coefficient matrix
+
+  // Coefficient Matrix: factorize
+  char uplo = 'U';
+  int KD = N;
+  int info;
+  dpbtrf_(&amp;uplo, &amp;ABcols, &amp;KD, &amp;Ab[0][0], &amp;M, &amp;info);
+  if (info) {
+    std::cout &lt;&lt; &quot;Ab failed to factorize, info = &quot; &lt;&lt; info &lt;&lt; &quot;\n&quot;;
+    exit(1);
+  }
+
+  // RHS: declare
+  const double bcx = 0.0, bcy = 0.0; // boundary conditions same on both sides
+  std::vector&lt;double&gt; F(N*N,0.0);
+
+  RHSInitialize(N, F, bcx, bcy); // set up boundary conditions and right hand side
+
+  // Solve system
+  int Bcols=1;
+  dpbtrs_(&amp;uplo,&amp;ABcols,&amp;KD, &amp;Bcols, &amp;Ab[0][0],&amp;M,&amp;F[0],&amp;ABcols,&amp;info);
+  if (info) {
+    std::cout &lt;&lt; &quot;System solve failed, info = &quot; &lt;&lt; info &lt;&lt; &quot;\n&quot;;
+    exit(1);
+  }
+
+  // Output solution (ordered in C-style, as discussed in previous chapter)
+  for (int i=0; i &lt; N; i++) {
+    std::cout &lt;&lt; F[i*N];
+    for (int j=1; j &lt; N; j++) {
+      std::cout &lt;&lt; &quot; &quot; &lt;&lt; F[i*N+j];
+    }
+    std::cout &lt;&lt; &quot;\n&quot;;
+  }
+
+  return 0;
+}
+</code></pre>
+<p>The resulting solution, plotted with Mathematica, looks like:</p>
+<p><img alt="DirectSolution" src="../DirectSolution.png" /></p>
+<p><strong>Note:</strong> If we wanted to move charges around and recompute the potential, we would re-use the factorisation. Only change $F$ and call <code>dpbtrs</code> each time you change $F$.</p>
+<p>As you will see in the homework, this direct solution becomes increasingly impractical as the system size gets larger and larger. We need to consider something else.</p>
+<hr />
+<h2 id="jacobi-method">Jacobi Method</h2>
+<p>Rather than a direct solution, we can try to solve the (large) system of equations iteratively.  One way to do this is to solve the 5-point stencil equation for $v_{\ell,m}$ and iterate:
+$$
+v_{\ell,m}^{k+1} = \frac{1}{4}\bigl(v_{\ell+1,m}^k + v_{\ell-1,m}^k + v_{\ell,m+1}^k + v_{\ell,m-1}^k\bigr)
+$$
+for the case were $f=0$.  This is called the Jacobi method and is equivalent to solving $\partial_t u = \nabla^2 u$ using forward-time central-space with $\Delta t = \frac{1}{4}h^2$ and then iterating to steady state.  Note that this is <em>not</em> generally the method you would want to use to solve this problem, but it is easy to understand and implement.  As such, we can focus on the details of how to parallize a code to solve the problem using this method without getting bogged down on details of the method itself.  The parallization technique used is, however, very generalizable to a wide range of problems that can be solved on a regular mesh (or lattice). </p>
+<p>We stop the interations when $|v_{\ell,m}^{k+1} - v_{\ell,m}^k| &lt; \text{tol}$ for <strong>all</strong> sites (referred to as $L_\infty$ or infinity norm for the change in the solution matrix/vector).  We use the $L_\infty$ rather than something like the root mean square error, or $L_2$ norm of the change as the solution converges from the boundaries inward (the boundary values are fixed by the B.C.s).  As such, if you were to start your initial guess with a constant on the domain that is different from the boundary values, in the first sweep over the lattice only the sites adjacent from the boundary will change.  In fact, for an $N\times N$ system it will take $N/2$ iterations for a change near the boundary to propogate all the way to the centre.  As such, convergence is not that fast for this method (which is why if you are really interested in solving this problem you should actually parallize a more sophisticated method such as conjugate gradient which we will discuss towards the end of the chapter).  There are a few simple improvements one can make the the basic Jacobi method that do improve the convergence.</p>
+<hr />
+<h2 id="gauss-seidel-method">Gauss-Seidel Method</h2>
+<p>If we go through the mesh in <strong>lexicographic order</strong> (left-to-right, bottom-to-top), then when we come to update $v_{\ell,m}$ in the Jacobi method, we will have already updated $v_{\ell-1,m}$ and $v_{\ell,m-1}$. If we use an <strong>immediate replacement</strong> (i.e. use the updated values as soon as they are available), convergence tends to be faster (by about a factor of 2) and we don't need to keep "old" and "new" values:
+$$
+v_{\ell,m}^{k+1} = \frac{1}{4}\bigl(v_{\ell+1,m}^k + v_{\ell-1,m}^{k+1} + v_{\ell,m+1}^k + v_{\ell,m-1}^{k+1}\bigr)
+$$
+This can also be parallized, but usually with rows near processor boundaries still using a Jacobi update (this will be clearer later).</p>
+<hr />
+<h2 id="successive-over-relaxation-sor">Successive Over-Relaxation (SOR)</h2>
+<p>Another way to speed things up is to take a "bigger" step towards the solution:
+$$
+v_{\ell,m}^{k+1} = v_{\ell,m}^k + w\left[\frac{1}{4}\bigl(v_{\ell+1,m}^k + v_{\ell-1,m}^{k+1} + v_{\ell,m+1}^k + v_{\ell,m-1}^{k+1}\bigr) - v_{\ell,m}^k\right]
+$$
+<strong>Note:</strong> $w = 1 \Rightarrow$ SOR = Gauss-Seidel. Generally we will take $w &gt; 1$ to converge faster.</p>
+<p><strong>How do we pick $w$ for fastest convergence?</strong></p>
+<ul>
+<li>Typically $1 \leq w \leq 2$ works, so pick something in this range</li>
+<li>It is known that the optimal value (in the sense of fastest convergence) for $w$ for Laplace-like problems generally follows a relation: 
+$$
+w^<em> \approx \frac{2}{1 + Ch}
+$$
+where $C$ is a constant.  To determine $C$ we can use a search algorithm for a small system (large $h$), to find a value of $w\in(1,2)$ for the small system that optimises the convergence (i.e. converges to set error bound in the smallest number of steps.)  Then use the formula and the $h$ to determine the corresponding $C$.  You then use that value for $C$ to determine a value of $w^</em>$ for the larger system (with smaller $h$).</li>
+</ul>
+<p><strong>NB:</strong> It is better to <strong>overestimate</strong> $w$ than to underestimate.
+<strong>NB:</strong> Taking $w$ too large can cause problems in a parallel implementation where "boundary" processors are forced to use Gauss-Seidel.</p>
+<p>We could even divide the system into small blocks and solve the small blocks exactly. As the boundary values will be from the previous iteration, we will still need to iterate to convergence. In general, we will end up using some Jacobi/Gauss-Seidel hybrid scheme.</p>
+<p>While the Jacobi scheme is not a great algorithm, it is very simple and illustrates how we can parallelise a mesh-based problem.</p>
+<hr />
+<h2 id="parallel-jacobi-method">Parallel Jacobi Method</h2>
+<h3 id="1d-decomposition">1D Decomposition</h3>
+<p>Divide the computational mesh along the $y$-direction. Each processor handles a horizontal band of rows.</p>
+<p><img alt="1D mesh partition" src="../mesh-1d-partition.svg" /></p>
+<p>The "boundary" rows that need to be communicated between neighbouring processors are called <strong>ghost rows</strong> (or halo rows). These rows are stored locally by each processor but contain data belonging to its neighbour.  Note that the processors are assigned from bottom to top (0 at the bottom, highest number at top) as we are viewing this as a physical system in a normal right-handed coordinate system where the origin $(0,0)$ is at the lower left, NOT as a mathematical structure like a matrix or computer screen where ${0,0}$ would be the upper left.</p>
+<h3 id="flowchart">Flowchart</h3>
+<p>To implement the algorithm, we will use a SIMD model so the code on each processor will be the same. </p>
+<p><img alt="Parallel Jacobi flowchart" src="../jacobi-flowchart.svg" /> </p>
+<p>Key points in the parallel implementation:</p>
+<ul>
+<li>Use <strong>non-blocking</strong> <code>MPI_Isend</code>/<code>MPI_Irecv</code> to send ghost rows at the top/bottom of each processor's part of the mesh</li>
+<li>While waiting for the ghost rows to arrive, <strong>fill in the interior</strong> of the mesh (sites that do not require the boundary/ghost data)</li>
+<li>Then <strong>wait</strong> for the top edge to arrive and fill the row just below it; similarly wait for the bottom edge and fill the row just above it</li>
+<li>Use <code>MPI_Allreduce</code> with <code>MPI_MAX</code> to find the global maximum error across all processors</li>
+</ul>
+<h3 id="c-code-poissonjacobi1dmpic">C Code: PoissonJacobi1DMPI.c</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+#include &quot;mpi.h&quot;
+
+// Solve Poisson's equations using the Jacobi method, with MPI parallelization
+// dividing the grid into a 1D array of processors
+// Compile with mpicc PoissonJacobi1DMPI.c -lm
+
+#define N   100
+#define Tol  0.000001
+
+// MPI Stuff
+struct mpi_vars {
+  int NProcs;
+  int MyID;
+};
+
+struct mpi_vars mpi_start(int argc, char** argv)
+{
+  struct mpi_vars this_mpi;
+  MPI_Init(&amp;argc, &amp;argv);
+  MPI_Comm_size(MPI_COMM_WORLD, &amp;this_mpi.NProcs);
+  MPI_Comm_rank(MPI_COMM_WORLD, &amp;this_mpi.MyID);
+  return this_mpi;
+}
+
+// breakup array size N in 1D into parts for each processor
+int compute_my_size(struct mpi_vars the_mpi)
+{
+  int remainder = (N - 1) % the_mpi.NProcs;
+  int size = (N - 1 - remainder)/the_mpi.NProcs;
+  if(the_mpi.MyID &lt; remainder)   // extra rows added for MyID &lt; remainder
+    size = size + 2;
+  else
+    size = size + 1;
+  return size;
+}
+
+// allocate 2D array as one contiguous block (required for MPI derived data types)
+double **matrix(int m, int n)
+{
+    /* Note that you must allocate the array as one block in order to use */
+    /* MPI derived data types on them.  Note also that calloc initializes */
+    /* all entries to zero. */
+    double ** ptr = (double **)calloc(m, sizeof(double *));
+    ptr[0]=(double *)calloc(m*n, sizeof(double));
+    for(int i = 1; i &lt; m ;i++)
+        ptr[i]=ptr[i-1]+n;
+    return (ptr);
+}
+
+void initialize(double **old, double **new, int size, struct mpi_vars the_mpi)
+{
+  /* Assume interior is already initialized, just need to set boundaries */
+  /* B.Cs set to a constant, 1 here */
+  for(int i = 0; i &lt; size + 1; i++) {
+      new[i][0] = old[i][0] = 1;  // left edge
+      new[i][N] = old[i][N] = 1;  // right edge
+  }
+  if(the_mpi.MyID == 0)
+    for(int j = 1; j &lt; N; j++)
+      new[0][j] = old[0][j] = 1;  // bottom edge
+  if(the_mpi.MyID == the_mpi.NProcs - 1)
+    for(int j = 1; j &lt; N; j++)
+      new[size][j] = old[size][j] = 1;  // top edge
+}
+
+
+double iteration(double **old, double **new, int start, int finish)
+{
+  /* Jacobi iteration */
+  /* start, finish: range of rows to do Jacobi iteration on */
+  double maxerr = 0;
+  for(int i = start; i &lt; finish; i++) {
+    for(int j = 1; j &lt; N; j++) {
+      new[i][j] = 0.25*(old[i+1][j] + old[i-1][j] +
+                         old[i][j+1] + old[i][j-1]);
+      maxerr = fmax(maxerr, fabs(new[i][j] - old[i][j]));
+    }
+  }
+  return (maxerr);
+}
+
+void output(double **new, int size, struct mpi_vars the_mpi)
+{
+  /* Output result */
+  /* Each processor will output their piece of the grid to a separate file */
+  char str[20];
+  FILE *fp;
+  sprintf(str,&quot;Solution%d.Txt&quot;,the_mpi.MyID);
+  fp = fopen(str,&quot;w&quot;);
+  if(the_mpi.MyID == 0) {
+    // processor 0's lower boundary is not a ghost so needs to be output
+    for(int j = 0; j &lt; N + 1; j++)
+      fprintf(fp,&quot;%6.4f &quot;,new[0][j]);
+    fprintf(fp,&quot;\n&quot;);
+  }
+  // output the &quot;owned&quot; sites but NOT the &quot;ghost&quot; sites 
+  for(int i = 1; i &lt; size; i++) {
+    for(int j = 0; j &lt; N + 1; j++)
+      fprintf(fp,&quot;%6.4f &quot;,new[i][j]);
+    fprintf(fp,&quot;\n&quot;);
+  }
+  if(the_mpi.MyID == the_mpi.NProcs - 1){
+    // top processor's upper boundary is not a ghost so needs to be output
+    for(int j = 0; j &lt; N + 1; j++)
+      fprintf(fp,&quot;%6.4f &quot;,new[size][j]);
+    fprintf(fp,&quot;\n&quot;);
+  }
+  fclose(fp);
+}
+
+int main(int argc, char** argv)
+{
+  struct mpi_vars the_mpi = mpi_start(argc, argv);
+
+  MPI_Status status;
+  MPI_Request req_send10, req_send20, req_recv10, req_recv20;
+
+  /* breakup compute grid among processors and initialize*/
+  int size = compute_my_size(the_mpi);
+  double **new = matrix(size+1, N+1);
+  double **old = matrix(size+1, N+1);
+  initialize(old, new, size, the_mpi);
+  double **tmp; //used for swapping old and new arrays
+
+  /* do one iteration and work out global error */
+  double maxerrG;
+  double maxerr = iteration(old, new, 1, size);
+  MPI_Allreduce(&amp;maxerr, &amp;maxerrG, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
+  /* Main loop */
+  while(maxerrG &gt; Tol) {
+    tmp = new;
+    new = old;
+    old = tmp;
+
+    /* send/receive at top of compute block (immediate send/recv, don't wait for response) */
+    req_send10 = req_recv20 = MPI_REQUEST_NULL;
+    if(the_mpi.MyID &lt; the_mpi.NProcs - 1) {
+      MPI_Isend(&amp;old[size-1][1], N-1, MPI_DOUBLE, the_mpi.MyID+1, 10, MPI_COMM_WORLD, &amp;req_send10);
+      MPI_Irecv(&amp;old[size][1],   N-1, MPI_DOUBLE, the_mpi.MyID+1, 20, MPI_COMM_WORLD, &amp;req_recv20);
+    }
+    /* send/receive at bottom of compute block */
+    req_send20 = req_recv10 = MPI_REQUEST_NULL;
+    if(the_mpi.MyID &gt; 0) {
+      MPI_Isend(&amp;old[1][1], N-1, MPI_DOUBLE, the_mpi.MyID-1, 20, MPI_COMM_WORLD, &amp;req_send20);
+      MPI_Irecv(&amp;old[0][1], N-1, MPI_DOUBLE, the_mpi.MyID-1, 10, MPI_COMM_WORLD, &amp;req_recv10);
+    }
+
+    /* update interior of compute block excluding boundaries adjacent sites which */
+    /* are done later after we have recv boundary */
+    maxerr = iteration(old, new, 2, size-1);
+
+    /* fill in compute block boundaries adjacent sites as available */
+    /* top edge ghost */
+    if(the_mpi.MyID &lt; the_mpi.NProcs - 1)
+      MPI_Wait(&amp;req_recv20, &amp;status);
+    maxerr = fmax(maxerr, iteration(old, new, size-1, size));
+
+    /* bottom edge ghost */
+    if(the_mpi.MyID &gt; 0)
+      MPI_Wait(&amp;req_recv10, &amp;status);
+    maxerr = fmax(maxerr, iteration(old, new, 1, 2));
+
+    /* find global error */
+    MPI_Allreduce(&amp;maxerr, &amp;maxerrG, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+  }
+
+  /* Output result */
+  output(new, size, the_mpi);
+
+  free(old[0]); free(old);
+  free(new[0]); free(new);
+  MPI_Finalize();
+  return 0;
+}
+</code></pre>
+<h3 id="results">Results</h3>
+<p>The solution (using Mathematica's plotting functions) looks like:</p>
+<p><img alt="1D Grid Solution" src="../Solution_1DGrid.png" />
+Note that the exact solution here is $u=1$ everywhere.  From the plots we see that
+- The solution converges progressively from the boundary inward
+- The error $\approx 0.001$ is considerably larger than the change in one iteration (our stopping criteria was a change in one iteration to less than/equal to  <code>Tol = 0.000001</code> ).</p>
+<p>Note: If we had solved with a direct method (LAPACK), the solution would be exact to machine precision in one step — but that is not practical for large systems.</p>
+<hr />
+<h2 id="2d-decomposition">2D Decomposition</h2>
+<p>For a 2D decomposition, we divide the mesh in <strong>both</strong> the $x$- and $y$-directions, giving a grid of processor subdomains:</p>
+<p><img alt="2D mesh partition" src="../mesh-2d-partition.svg" /></p>
+<p>With a $3 \times 3$ grid of processors, we get 9 overlapping subdomains (each with ghost/halo boundaries on all four sides).</p>
+<p>Two key problems arise:</p>
+<p><strong>P1:</strong> We need to create a mapping from the list of processors to the topology of the system.
+<strong>P2:</strong> If the computer architecture or network has some natural topology matching our problem, we may want to take advantage of it.</p>
+<p>How do we do this?</p>
+<h3 id="mpi-cartesian-topology-functions">MPI Cartesian Topology Functions</h3>
+<p>MPI provides built-in functions for Cartesian decomposition:</p>
+<p><strong><code>MPI_Cart_create</code></strong> (<code>MPI_Comm</code> comm_old, <code>int</code> ndims, <code>int</code> *dims, <code>int</code> *periods, <code>int</code> reorder, <code>MPI_Comm</code> *comm_cart)</p>
+<blockquote>
+<p>Makes a new communicator to which topology information has been attached. <code>MPI_Cart_create</code> creates a Cartesian decomposition of the processes.
+-<code>comm_old</code>: input communicator (handle)
+- <code>ndims</code>: number of dimensions of Cartesian grid (integer)
+- <code>dims</code>: integer array of size ndims specifying the number of processes in each dimension
+- <code>periods</code>: logical array of size ndims specifying whether the grid is periodic (1 = true) or not (0 = false) in each dimension
+- <code>reorder</code>: ranking may be reordered (1 = true) or not (0 = false) (logical)
+- <code>comm_cart</code>: output communicator to which the new Cartesian topology has been attached.
+```c// e.g. creates 3×3 decomposition like above:
+int dims[2] = {3,3};
+int isperiodic[2] = {0,0};
+MPI_Comm comm2d;
+MPI_Cart_create(MPI_COMM_WORLD, 2, dims, isperiodic, 1, &amp;comm2d);
+// arguments start with default communicator MPI_COMM_WORLD,
+// 2-dimensional decomposition, in a 3x3 grid,
+// reorder=1 to take advantage of any system topology,
+// our new communicator</p>
+</blockquote>
+<pre><code>&gt; **Important:**
+&gt;1. `MPI_Comm_rank` should be called **after** the create command, as rank could change with reorder.
+&gt;2. The new communicator `comm2d` should now replace `MPI_COMM_WORLD` in MPI commands.
+
+**`MPI_Cart_coords`** (`MPI_Comm` comm, `int` rank, `int` maxdims, `int` \*coords)
+&gt; Determines process coords in Cartesian topology given rank in group. `MPI_Cart_coords` takes input as a rank in a communicator and returns the coordinates of the process with that rank. `MPI_Cart_coords` is the inverse to `MPI_Cart_rank`; it returns the coordinates of the process with rank `rank` in the Cartesian communicator comm. Note that both of these functions are local.
+
+**`MPI_Cart_rank`** (`MPI_Comm` comm, `int` \*coords, `int` \*rank)
+&gt; Determines process rank in communicator given Cartesian location. `MPI_Cart_rank` returns the rank in the Cartesian communicator comm of the process with Cartesian coordinates. So coordinates is an array with order equal to the number of dimensions in the Cartesian topology associated with comm.
+
+**`MPI_Cart_get`** (`MPI_Comm` comm, `int` maxdims, `int` \*dims, `int` \*periods, `int` \*coords)
+&gt; Retrieves Cartesian topology information associated with a communicator. `MPI_Cart_get` retrieves the coordinates of the calling process in communicator.
+
+**`MPI_Cart_shift`** (`MPI_Comm` comm, `int` direction, `int` disp, `int` \*rank_source, `int` \*rank_dest)
+&gt; Returns the shifted source and destination ranks given a shift direction and amount. `MPI_Cart_shift` returns rank of source and destination processes in arguments rank_source and rank_dest respectively.
+```c
+// e.g.
+MPI_Cart_shift(comm2d, 0, 1, &amp;nbrleft, &amp;nbrright);
+// arguments are: A cartesian communicator, x-direction is 0, step=1,
+// processor to left of me (this is the output),
+// processor to right of me (also output of this routine)
+</code></pre>
+<blockquote>
+<p>This allows you to find out who the neighbouring processors are in the topology.</p>
+</blockquote>
+<h3 id="sending-column-data-in-2d">Sending Column Data in 2D</h3>
+<p>In the 1D decomposition, we sent boundary <strong>rows</strong> to neighbouring processors. In 2D we will need to send both rows (to upper/lower neighbour) and boundary <strong>columns</strong> to neighbours to right and left.</p>
+<p>Sending a row is easy: elements of a row are in consecutive memory locations. This is <strong>not</strong> true of a column.</p>
+<pre><code class="language-c">// e.g. sending a row:
+MPI_Isend(&amp;old[size-1][1], N-1, MPI_FLOAT, nid+1, 10, MPI_COMM_WORLD, &amp;req_send10);
+// beginning of boundary row, N elements in the row
+</code></pre>
+<p>We resolve the problem of sending a column by creating a new <strong>derived data type</strong>:</p>
+<p><strong><code>MPI_Type_vector</code></strong> (<code>int</code> count, <code>int</code> blocklength, <code>int</code> stride, <code>MPI_Datatype</code> oldtype, <code>MPI_Datatype</code> *newtype)
+For inputs we have:
+- <code>count</code>: number of blocks (nonnegative integer)
+- <code>blocklength</code>: number of elements in each block (nonnegative integer)
+- <code>stride</code>: number of elements between start of each block (integer)
+- <code>oldtype</code>: old datatype (handle)
+while the output of the routine is
+- <code>newtype</code>: new datatype (handle)</p>
+<p>Once we create a new data type we must <strong>commit</strong> it: 
+<strong><code>MPI_Type_commit</code></strong>(\&amp;newtype) — Tell the system about our new type and optimize for communication.</p>
+<p><strong>Example:</strong> Suppose we have data in a 2D array declared as <code>double dat[5][7]</code>. 
+<img alt="DataArrayWithColumnMarked" src="../strideEg.svg" />
+To send a column, say the one indicated in yellow (column index 4), we first define a new type "stridetype" via:</p>
+<pre><code class="language-c">MPI_Type_vector(5, 1, 7, MPI_DOUBLE, &amp;stridetype);
+// 5 blocks, 1 element each, stride=7 (row width), MPI_DOUBLE base type
+MPI_Type_commit(&amp;stridetype);
+</code></pre>
+<p>Now when you want to send the column, you could:</p>
+<pre><code class="language-c">MPI_Isend(&amp;dat[0][4], 1, stridetype, partnercs, tag, commie, &amp;req);
+// This is just 1 of this type, and that type gets the whole column
+// Note: dat is reinterpreted as of type stridetype
+</code></pre>
+<p><strong>Note the implications of being allowed to do this: there is NO checking you are not overstepping the array bounds.</strong>  Errors from going out of bounds of the array can vary from a program crash to just getting results that are wrong. You are responsible for the memory management here and you need to be <em>very</em> careful with verifying that things are actually working as intended.</p>
+<h3 id="c-code-poissonjacobi2dmpic">C Code: PoissonJacobi2DMPI.c</h3>
+<p>Note that in this example, $N\times N$ is the size of the interior grid, which is slightly different from what we did before.</p>
+<pre><code class="language-c">// Solve Poisson's equations using the Jacobi method, with MPI parallelization
+// dividing the grid into a 2D array of processors
+// Compile line:
+// mpicc -O3 PoissonJacobi2DMPI.c -lm -o pois2d
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+#include &lt;float.h&gt;
+#include &lt;limits.h&gt;
+#include &quot;mpi.h&quot;
+#define N  8           /* N x N is size of interior grid */
+#define Tol  0.00001
+
+int isperiodic[2]={0,0};  // Flags for periodic boundary conditions are off
+
+// MPI Stuff
+struct mpi_vars {
+  int NProcs;
+  int MyID;
+  MPI_Comm D1Comm; // 1D communicator (explicitly add a 1D communicator,
+                   // copy of MPI_COMM_WORLD but makes this independent
+                   // of any future change to our program
+  int nbrdown, nbrup;
+
+  MPI_Comm D2Comm; // 2D communicator
+  int dims[2], IDcoord[2]; // processors in each direction in 2D
+  int nbrleft, nbrright;
+};
+
+struct mpi_vars mpi_start(int argc, char** argv, int dim)
+{
+  struct mpi_vars mpi;
+  MPI_Init(&amp;argc, &amp;argv);
+
+  // We always want a 1D array of processors so just duplicate default
+  MPI_Comm_dup(MPI_COMM_WORLD, &amp;mpi.D1Comm);
+  MPI_Comm_size(mpi.D1Comm, &amp;mpi.NProcs);
+
+  if (dim == 1) {
+    MPI_Comm_rank(mpi.D1Comm, &amp;mpi.MyID);
+    mpi.nbrup  = mpi.MyID + 1;
+    mpi.nbrdown = mpi.MyID -1;  // (note no bounds check)
+    mpi.D2Comm = MPI_COMM_NULL;
+  }
+
+  // We sometimes want a 2D array so define if requested
+  if (dim == 2) {
+    // Find an integer closest to the square root of the processor number
+    // attempt to create a square grid of processors (or as close as possible)
+    // (obviously if 3, 5, 6, 7 processors will be lost).  Add 2*FLT_EPSILON to avoid 
+    // floating point errors and integer arithemetic effectively rounding this down
+    mpi.dims[0] = (int) (sqrt(((double)mpi.NProcs))+2.*FLT_EPSILON);
+    // Assign as many as possible to other dimension (could leave some unused)
+    mpi.dims[1] = mpi.NProcs/mpi.dims[0];
+
+    /* Create Cartesian grid of processors, the new communicator will be used below */
+    MPI_Cart_create(MPI_COMM_WORLD, 2, mpi.dims, isperiodic, 1, &amp;mpi.D2Comm);
+    MPI_Comm_rank(mpi.D2Comm, &amp;mpi.MyID); //need rank from 2D Comm
+    if (mpi.MyID == 0)
+      printf(&quot;number of processors %i: %i x %i\n&quot;,
+             mpi.NProcs, mpi.dims[0], mpi.dims[1]);
+
+    /* find out who the neighboring processors are */
+    MPI_Cart_coords(mpi.D2Comm, mpi.MyID, 2, mpi.IDcoord);
+    MPI_Cart_shift(mpi.D2Comm, 0, 1, &amp;mpi.nbrleft,  &amp;mpi.nbrright);
+    MPI_Cart_shift(mpi.D2Comm, 1, 1, &amp;mpi.nbrdown,  &amp;mpi.nbrup);
+  }
+
+  return mpi;
+}
+
+// breakup array size N x N in 2D into parts for each processor
+void compute_my_size(int *xsize, int *ysize, struct mpi_vars mpi)
+{
+  // division along x 
+  int xremainder = N  % mpi.dims[0];
+  *xsize = (N - xremainder)/mpi.dims[0];
+  if(mpi.IDcoord[0] &lt; xremainder)
+    *xsize = *xsize + 2;
+  else
+    *xsize = *xsize + 1;
+
+  // division along y
+  int yremainder = N  % mpi.dims[1];
+  *ysize = (N - yremainder)/mpi.dims[1];
+  if(mpi.IDcoord[1] &lt; yremainder)
+    *ysize = *ysize + 2;
+  else
+    *ysize = *ysize + 1;
+
+  // could comment this next line out, but useful for debugging:
+  printf(&quot;compute grid  size (%i + 1) x (%i + 1) set on processor %i \n&quot;,
+         *xsize,*ysize,mpi.MyID);
+}
+
+// allocate 2D array as one contiguous block
+double **matrix(int m, int n)
+{
+    /* Note that you must allocate the array as one block in order to use */
+    /* MPI derived data types on them.  Note also that calloc initializes */
+    /* all entries to zero. */
+    double ** ptr = (double **)calloc(m, sizeof(double *));
+    ptr[0]=(double *)calloc(m*n, sizeof(double));
+    for(int i = 1; i &lt; m ;i++)
+        ptr[i]=ptr[i-1]+n;
+    return (ptr);
+}
+
+void initialize(double **old, double **new, int xsize, int ysize, struct mpi_vars mpi)
+{
+  /* Assume interior is already initialized, just need to set boundaries */
+  /* B.C.s set to a constant, 1 here */
+  /* left edge */
+  if (mpi.IDcoord[0] == 0)
+    for (int i=0; i&lt; ysize + 1; i++)
+      new[i][0]=old[i][0]=1.0;
+  /* right edge */
+  if (mpi.IDcoord[0] == mpi.dims[0]-1)
+    for (int i=0; i&lt; ysize + 1; i++)
+      new[i][xsize]=old[i][xsize]=1.0;
+  /* bottom edge */
+  if(mpi.IDcoord[1] == 0)
+    for(int j = 1; j &lt; xsize+1; j++)
+      new[0][j] = old[0][j] = 1.0;
+  /* top edge */
+  if(mpi.IDcoord[1] == mpi.dims[1] - 1)
+    for(int j = 1; j &lt; xsize+1; j++)
+      new[ysize][j] = old[ysize][j] = 1.0;
+
+  printf(&quot;boundary conditions set on processor %i\n&quot;,mpi.MyID);
+}
+
+double iteration(double **old, double **new, int xstart, int xfinish,
+                  int ystart, int yfinish)
+{
+  /* Jacobi iteration */
+  double maxerr = 0;
+  for(int i = ystart; i &lt; yfinish; i++) {
+    for(int j = xstart; j &lt; xfinish; j++) {
+      new[i][j] = 0.25*(old[i+1][j] + old[i-1][j] +
+                          old[i][j+1] + old[i][j-1]);
+      maxerr = fmax(maxerr,fabs(new[i][j] - old[i][j]));
+    }
+  }
+  return (maxerr);
+}
+
+/* Output result — each processor writes a separate file named result_x_y.txt */
+/* taking care to output &quot;ghost&quot; rows/columns ONLY when they correspond to    */
+/* actual boundaries. */
+void output(double **new, int xsize, int ysize, struct mpi_vars mpi)
+{  
+  char str[20];
+  FILE *fp;
+
+  sprintf(str,&quot;result%d\_%d.txt&quot;,mpi.IDcoord[0],mpi.IDcoord[1]);
+  fp = fopen(str,&quot;wt&quot;);
+
+  if(mpi.IDcoord[1] == 0) {
+    if (mpi.IDcoord[0] == 0)
+      fprintf(fp,&quot;%6.4f &quot;,new[0][0]);
+    for(int j = 1; j &lt; xsize; j++)
+      fprintf(fp,&quot;%6.4f &quot;,new[0][j]);
+    if (mpi.IDcoord[0] == mpi.dims[0]-1)
+      fprintf(fp,&quot;%6.4f &quot;,new[0][xsize]);
+    fprintf(fp,&quot;\n&quot;);
+  }
+
+  for(int i = 1; i &lt; ysize; i++) {
+    if (mpi.IDcoord[0] == 0)
+      fprintf(fp,&quot;%6.4f &quot;,new[i][0]);
+    for(int j = 1; j &lt; xsize; j++)
+      fprintf(fp,&quot;%6.4f &quot;,new[i][j]);
+    if (mpi.IDcoord[0] == mpi.dims[0]-1)
+      fprintf(fp,&quot;%6.4f &quot;,new\[i]\[xsize]);
+    fprintf(fp,&quot;\n&quot;);
+  }
+
+  if(mpi.IDcoord[1] == mpi.dims[1] - 1) {
+    if (mpi.IDcoord[0] == 0)
+      fprintf(fp,&quot;%6.4f &quot;,new[ysize][0]);
+    for(int j = 1; j &lt; xsize; j++)
+      fprintf(fp,&quot;%6.4f &quot;,new[ysize\[j]);
+    if (mpi.IDcoord[0] == mpi.dims[0]-1)
+      fprintf(fp,&quot;%6.4f &quot;,new[ysize][xsize]);
+    fprintf(fp,&quot;\n&quot;);
+  }
+  fclose(fp);
+}
+
+int main(int argc, char** argv)
+{
+  // Start MPI with a 2D Cartesian grid of processors
+  struct mpi_vars mpi = mpi_start(argc, argv, 2);
+
+  MPI_Status status;
+  MPI_Request req_send10, req_send20, req_recv10, req_recv20;
+  MPI_Request req_send30, req_send40, req_recv30, req_recv40;
+
+  int maxit=200;
+
+  /* breakup compute grid among processors */
+  int xsize, ysize;
+  compute_my_size(&amp;xsize, &amp;ysize, mpi);
+  double **new = matrix(ysize+1, xsize+1);
+  double **old = matrix(ysize+1, xsize+1);
+  double **tmp; //used for swapping old and new arrays
+  initialize(old, new, xsize, ysize, mpi);
+
+  /* Create data type to send columns of data */
+  /* If you didn't get this to work, look at the comment in the matrix
+     allocation routine */
+  MPI_Datatype stridetype;
+  MPI_Type_vector(ysize-1, 1, xsize+1, MPI_DOUBLE, &amp;stridetype);
+  MPI_Type_commit(&amp;stridetype);
+
+  /* do one iteration and work out global error */
+  double maxerrG;
+  double maxerr = iteration(old,new,1,xsize,1,ysize);
+  MPI_Allreduce(&amp;maxerr,&amp;maxerrG,1,MPI_DOUBLE,MPI_MAX,mpi.D2Comm);
+  if (mpi.MyID == 0) printf(&quot;initial error %f\n&quot;,maxerrG);
+
+  /* Main loop */
+  int iter=0;
+  while(maxerrG &gt; Tol &amp;&amp; iter &lt; maxit) {
+    tmp = new; new = old; old = tmp;  // Swap old and new arrays
+
+    /* send/receive at top of compute block */
+    req_send10 = req_recv20 = MPI_REQUEST_NULL;
+    if(mpi.IDcoord[1] &lt; mpi.dims[1]-1) {
+      MPI_Isend(&amp;old[ysize-1][1], xsize-1, MPI_DOUBLE, mpi.nbrup, 10, mpi.D2Comm, &amp;req_send10);
+      MPI_Irecv(&amp;old[ysize][1],   xsize-1, MPI_DOUBLE, mpi.nbrup, 20, mpi.D2Comm, &amp;req_recv20);
+    }
+    /* send/receive at bottom of compute block */
+    req_send20 = req_recv10 = MPI_REQUEST_NULL;
+    if(mpi.IDcoord[1] &gt; 0) {
+      MPI_Isend(&amp;old[1][1], xsize-1, MPI_DOUBLE, mpi.nbrdown, 20, mpi.D2Comm, &amp;req_send20);
+      MPI_Irecv(&amp;old[0][1], xsize-1, MPI_DOUBLE, mpi.nbrdown, 10, mpi.D2Comm, &amp;req_recv10);
+    }
+    /* send/receive at right of compute block (similar to row interchanges,
+       except using stridetype for columns) */
+    req_send30 = req_recv40 = MPI_REQUEST_NULL;
+    if(mpi.IDcoord[0] &lt; mpi.dims[0]-1) {
+      MPI_Isend(&amp;old[1][xsize-1], 1, stridetype, mpi.nbrright, 30, mpi.D2Comm, &amp;req_send30);
+      MPI_Irecv(&amp;old[1][xsize],   1, stridetype, mpi.nbrright, 40, mpi.D2Comm, &amp;req_recv40);
+    }
+    /* send/receive at left of compute block */
+    req_send40 = req_recv30 = MPI_REQUEST_NULL;
+    if(mpi.IDcoord[0] &gt; 0) {
+      MPI_Isend(&amp;old[1][1], 1, stridetype, mpi.nbrleft, 40, mpi.D2Comm, &amp;req_send40);
+      MPI_Irecv(&amp;old[1][0], 1, stridetype, mpi.nbrleft, 30, mpi.D2Comm, &amp;req_recv30);
+    }
+
+    /* update interior of compute block except beside boundaries */
+    maxerr = iteration(old,new,2,xsize-1,2,ysize-1);
+
+    /* fill in compute block beside boundaries as available */
+    /* top edge */
+    if(mpi.IDcoord[1] &lt; mpi.dims[1]-1) MPI_Wait(&amp;req_recv20,&amp;status);
+    maxerr = fmax(maxerr, iteration(old,new,2,xsize-1,ysize-1,ysize));
+
+    /* bottom edge */
+    if(mpi.IDcoord[1] &gt; 0) MPI_Wait(&amp;req_recv10,&amp;status);
+    maxerr = fmax(maxerr, iteration(old,new,2,xsize-1,1,2));
+
+    /* right edge */
+    if(mpi.IDcoord[0] &lt; mpi.dims[0]-1) MPI_Wait(&amp;req_recv40,&amp;status);
+    maxerr = fmax(maxerr,iteration(old,new,xsize-1,xsize,1,ysize));
+
+    /* left edge */
+    if(mpi.IDcoord[0] &gt; 0) MPI_Wait(&amp;req_recv30,&amp;status);
+    maxerr = fmax(maxerr,iteration(old,new,1,2,1,ysize));
+
+    /* find global error */
+    MPI_Allreduce(&amp;maxerr,&amp;maxerrG,1,MPI_DOUBLE,MPI_MAX,mpi.D2Comm);
+    if (mpi.MyID == 0) printf(&quot; error %f\n&quot;,maxerrG);
+
+    iter++;
+  }
+
+  /* Output result */
+  output(new, xsize, ysize, mpi);
+
+  free(old[0]); free(old);
+  free(new[0]); free(new);
+  MPI_Finalize();
+  return 0;
+}
+</code></pre>
+<p>The results can be read in and plotted (here using Mathematica). Note: the data must be transposed when plotting because this program expects opposite ordering of rows/columns.
+<img alt="Solution from 2D grid of processors" src="../Solution_2DGrid.png" /></p>
+<p><strong>3×3 grid note on ordering:</strong></p>
+<pre><code>10  21  22
+10  11  12
+00  01  02
+</code></pre>
+<hr />
+<h2 id="output-writing-to-a-single-global-file">Output: Writing to a Single Global File</h2>
+<p>Our output routines are still fairly inadequate. Rather than output each local grid to a separate file, it would be much better to get the complete global grid into a single output file.  There are a couple of issues with doing this:
+a) We don't actually want the entire local grid, just its interior (i.e. excluding ghost/halo/boundary layers)
+b) The local grids may be of unequal size
+It usually turns out to be easier to adjust the lattice spacing ($\Delta x$ or $h$) to ensure all local grids are the same size than to have to deal with different sizes, so we will assume they are all the same.</p>
+<p>You actually have two very distinct <strong>masks</strong> to consider:
+1. The mask for the local data, excluding the halo layers
+2. The mask for the global data, as it should be once collated into the file</p>
+<p>The former corresponds to the <strong>local grid on a single processor</strong> (the interior cells in dark, the ghost layer in light).
+<img alt="local mask" src="../LocalMask.png" />
+The start of the interior data is at index <code>[1,1]</code>,  which if interpreted as a location in physical space is in the lower left.  Here, the data you want to output is in dark blue, and the ghost layer that should not be written is in ligher blue.  The latter corresponds to how the <strong>global mesh is assembled from a 2D grid of processors</strong> (each colour corresponds to the local data from a different process). For example for a $2\times 2$ processor grid:
+<img alt="GlobalMask" src="../GlobalMask.png" />
+Here, each colour represents local data coming from a different process, as organized onto a 2D Cartesion grid.</p>
+<p>To understand what you need to create, you have to think backwards:
+1. Your final call to the I/O routine will be:
+   <code>c
+   MPI_File_write_all(fh, &amp;A[0][0], 1, interior, MPI_STATUS_IGNORE);</code>
+   So you need the interior type defined to exclude the halo boundary. We will define an MPI type grid to do this. File functions will be discussed below.
+2. But now you have to have the view on the file to allow for this <code>MPI_File_write_all</code> call. So the view must be as described in the second picture. We will therefore create a new MPI type representing it. For that, <code>MPI_Type_create_subarray</code> is what we need.</p>
+<h3 id="mpi_type_create_subarray"><code>MPI_Type_create_subarray</code></h3>
+<p>This routine creates a datatype for a subarray of a regular, multidimensional array.</p>
+<pre><code class="language-c">int MPI_Type_create_subarray(int ndims,
+                              const int array_of_sizes[],
+                              const int array_of_subsizes[],
+                              const int array_of_starts[],
+                              int order,
+                              MPI_Datatype oldtype,
+                              MPI_Datatype *newtype)
+</code></pre>
+<p><strong>Input Parameters:</strong>
+- <code>ndims</code> — number of array dimensions (positive integer)
+- <code>array_of_sizes</code> — number of elements of type oldtype in each dimension of the full array (array of positive integers)
+- <code>array_of_subsizes</code> — number of elements of type oldtype in each dimension of the subarray (array of positive integers)
+- <code>array_of_starts</code> — starting coordinates of the subarray in each dimension (array of nonnegative integers)
+- <code>order</code> — array storage order flag (state)
+- <code>oldtype</code> — array element datatype (handle)
+<strong>Output Parameters:</strong>
+- <code>newtype</code> — new datatype (handle)</p>
+<p><strong>Weaknesses of <code>MPI_Type_create_subarray</code>:</strong></p>
+<ul>
+<li>At first sight, <code>MPI_Type_create_subarray</code> looks like it solves all problems, but it has problems all of its own</li>
+<li>Array of sizes must be the same on every process</li>
+<li>Array of subsizes must be the same on every process</li>
+<li>Therefore, <code>MPI_Type_create_subarray</code> is simply to do uniform, even subdivision of an array, with an identical fraction of the array being defined on each processor</li>
+<li>In fact, its main purpose is in MPIIO, where it is used to represent the subsection of a global array held by each processor</li>
+<li>It does still work in communication, although it's not quite as useful as it might be.</li>
+</ul>
+<p>For our Jacobi solver using a 2D array of processors, the <strong>local subarray type</strong> is defined by:</p>
+<pre><code class="language-c">/* Create derived datatype for local interior grid (output grid) */
+MPI_Datatype grid;
+int start[2]  = {1, 1};  // indices of interior &quot;origin&quot;
+int arrsize[2]  = {xsize+1, ysize+1};   // full local array size
+int gridsize[2] = {xsize+1 - 2, ysize+1 - 2};  // size of interior
+
+MPI_Type_create_subarray(2, arrsize, gridsize,
+                          start, MPI_ORDER_FORTRAN, MPI_DOUBLE, &amp;grid);
+MPI_Type_commit(&amp;grid);
+</code></pre>
+<p><strong>Note:</strong> We picked <code>MPI_ORDER_FORTRAN</code> rather than <code>MPI_ORDER_C</code>. This is because we pick our indices as <code>A[y-index][x-index]</code> which is consistent with <code>A[row-index][column-index]</code> for a matrix (except that row-index=0 is at the top and y-index=0 is at the bottom). However, when interpreted as spatial indices, C-order is assumed to be <code>A[x][y]</code>, so our order is actually the Fortran equivalent.</p>
+<p>For our global array we also need a subarray type describing how the local grids fit into the global grid:</p>
+<pre><code class="language-c">/* Create derived type for file view, how local interior fits into global system */
+MPI_Datatype view;
+int nnx = xsize+1-2, nny = ysize+1-2;
+int startV[2]  = { mpi.IDcoord[0]*nnx, mpi.IDcoord[1]*nny };
+int arrsizeV[2] = { mpi.dims[0]*nnx, mpi.dims[1]*nny };
+int gridsizeV[2] = { nnx, nny };
+
+MPI_Type_create_subarray(2, arrsizeV, gridsizeV,
+                          startV, MPI_ORDER_FORTRAN, MPI_DOUBLE, &amp;view);
+MPI_Type_commit(&amp;view);
+</code></pre>
+<p>We will use this type for the "file view", applied simply with:</p>
+<pre><code class="language-c">MPI_File_set_view(fh, 0, MPI_DOUBLE, view, &quot;native&quot;, MPI_INFO_NULL);
+</code></pre>
+<p>and the magic is done.</p>
+<h3 id="mpiio-overview">MPIIO Overview</h3>
+<p><strong>MPIIO Advantages:</strong>
+- Improved output speed in large parallel environments
+- Output to a single file for any number of processors (easily)</p>
+<p><strong>MPIIO Disadvantages:</strong>
+- Syntax is not exactly like either C or FORTRAN IO (although similar in concept)
+- Can be slower on desktop machines
+- Produces C type binary output</p>
+<p><strong>MPIIO Concepts:</strong>
+- In most senses MPIIO is the same as conventional binary IO
+- There are commands to open and close files, read and write data and move file pointers
+- There are things called file views which describe the layout of data across processors
+- There are some commands to help with writing simple data layouts more easily than using file views, but they will not be covered here
+- File views are described using MPI_types</p>
+<h4 id="key-mpiio-functions">Key MPIIO Functions</h4>
+<pre><code class="language-c">int MPI_File_open(MPI_Comm Comm, char *filename, int amode, MPI_Info info, MPI_File *mpi_fh)
+</code></pre>
+<blockquote>
+<p><strong>Description:</strong> Opens a file using MPIIO and returns a file handle mpi_fh.
+- This is a <strong>collective</strong> operation. All processes must have the same <code>amode</code> and the <code>filename</code> must reference the same file (does not have to be the same filename)
+- Choosing whether opening the file for reading or writing is via constants passed as part of <code>amode</code> as normal
+- <code>info</code> is used to pass additional parameter, which will generally vary from system to system. You create MPI Info objects using the MPI Info commands. Most generally, you can use <code>MPI_INFO_NULL</code> to open the file generically.</p>
+<p><strong>MPI File open modes:</strong>
+- <code>MPI_MODE_RDONLY</code> — Open for reading
+- <code>MPI_MODE_RDWR</code> — Open for reading and writing
+- <code>MPI_MODE_WRONLY</code> — Open for writing
+- <code>MPI_MODE_CREATE</code> — Create the file if it does not exist
+- <code>MPI_MODE_EXCL</code> — Throw error if file exists
+- <code>MPI_MODE_DELETE_ON_CLOSE</code> — Delete the file when it's closed
+- <code>MPI_MODE_UNIQUE_OPEN</code> — Throw error if file opened anywhere else
+- <code>MPI_MODE_SEQUENTIAL</code> — Sequential mode (tapes etc.)
+- <code>MPI_MODE_APPEND</code> — Set initial position of all file pointers to end of file</p>
+</blockquote>
+<pre><code class="language-c">int MPI_File_close(MPI_File *mpi_fh)
+</code></pre>
+<blockquote>
+<p><strong>Description:</strong> Closes and frees the file handle <code>mpi_fh</code>. File handles must be closed before MPI is finalized. Otherwise behaviour is undefined.</p>
+</blockquote>
+<pre><code class="language-c">int MPI_File_write_all(MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)
+</code></pre>
+<blockquote>
+<p><strong>Description:</strong> Writes to the file pointed to by the handle mpi_fh using the individual file pointer.
+- This is a <strong>collective</strong> operation and all the processors in the MPI_Comm given to MPI_File_open must call MPI_File_write_all or the code will lock (i.e. this is a blocking operation).</p>
+</blockquote>
+<p><strong>What are file views?</strong>
+- If you wish to have more control over where a given processor will write its data then you have to use file views
+- File views use MPI types to describe the section of the global data that the current processor has, and its location in the final file on disk
+- Makes it easier to write multidimensional arrays into a single file</p>
+<pre><code class="language-c">int MPI_File_set_view(MPI_File mpi_fh, MPI_Offset offset, MPI_Datatype etype, MPI_Datatype filetype, MPI_Datatype datarep, MPI_Info info)
+</code></pre>
+<blockquote>
+<p><strong>Description:</strong> Sets the file view on file handle mpi_fh.
+- <code>offset</code> is the offset from the start of the file at which to apply the file view
+- <code>datarep</code> is a string describing the data representation, usually <code>"native"</code>
+- <code>info</code> contains additional information, will usually be <code>MPI_INFO_NULL</code>
+- <code>etype</code> is the basic datatype being written to the file
+- <code>filetype</code> is (normally) a derived datatype which describes the layout of the data for the current processor on the disk</p>
+</blockquote>
+<h3 id="final-output-routine">Final Output Routine</h3>
+<p>So our final output routine will be:</p>
+<pre><code class="language-c">void output_onefile(double **new, int xsize, int ysize, struct mpi_vars mpi)
+{
+  /* Create derived datatype for local interior grid (output grid) */
+  MPI_Datatype grid;
+  int start[2]  = {1, 1};   // indices of interior &quot;origin&quot;
+  int arrsize[2]  = {xsize+1, ysize+1};   // full local array size
+  int gridsize[2] = {xsize+1 - 2, ysize+1 - 2};  // size of interior
+
+  MPI_Type_create_subarray(2, arrsize, gridsize,
+                            start, MPI_ORDER_FORTRAN, MPI_DOUBLE, &amp;grid);
+  MPI_Type_commit(&amp;grid);
+
+  // Create derived type for file view, how local interior fits into global system
+  MPI_Datatype view;
+  int nnx = xsize+1-2, nny = ysize+1-2;
+  int startV[2]  = { mpi.IDcoord[0]*nnx, mpi.IDcoord[1]*nny };
+  int arrsizeV[2] = { mpi.dims[0]*nnx, mpi.dims[1]*nny };
+  int gridsizeV[2] = { nnx, nny };
+
+  MPI_Type_create_subarray(2, arrsizeV, gridsizeV,
+                            startV, MPI_ORDER_FORTRAN, MPI_DOUBLE, &amp;view);
+  MPI_Type_commit(&amp;view);
+
+  /* MPI IO */
+  MPI_File fp;
+  MPI_File_open(mpi.D2Comm, &quot;output.bin&quot;, MPI_MODE_CREATE | MPI_MODE_WRONLY,
+                MPI_INFO_NULL, &amp;fp);
+
+  MPI_File_set_view(fp, 0, MPI_DOUBLE, view, &quot;native&quot;, MPI_INFO_NULL);
+  MPI_File_write_all(fp, &amp;new[0][0], 1, grid, MPI_STATUS_IGNORE);
+  MPI_File_close(&amp;fp);
+}
+</code></pre>
+<p><strong>Note:</strong> This should only be used when all local grids are the same size. With <code>xremainder = yremainder = 0</code> in Jacobi 2D, this gives a single binary output file that can be read and plotted directly as illustrated below.</p>
+<p><strong>Note:</strong> Output is now in <strong>binary</strong>, not text.</p>
+<p><img alt="MPIIO Solution Output" src="../MPIIO_Solution.png" /></p>
+<hr />
+<h2 id="conjugate-gradient-method">Conjugate Gradient Method</h2>
+<p>The Jacobi method is a nice illustration of how to parallize a problem defined on a computational mesh.  It is NOT, however, an algorithm that is terribly efficient for actually solving Poission's equation.  We now turn to a much better iterative algorithm for solving this problem, namely the <strong>Conjugate Gradient (CG) Method</strong>.  This requires more background in order to understand the algorithm, but parallizing the algorithm requires very similar steps to what was used to parallize the Jacobi algorithm.</p>
+<h3 id="mathematical-background">Mathematical Background</h3>
+<p>Suppose $\mathcal{A}$ is positive definite. Consider the scalar quadratic function with vector arguments:
+$$
+f(\bm{x}) = \frac{1}{2} \bm{x}^T \mathcal{A} \bm{x} - \bm{b}^T \bm{x} + \bm{c} = \frac{1}{2} x_\alpha A_{\alpha\beta} x_\beta - b_\alpha x_\alpha + c
+$$
+where tensor notation with summation convention assumed is used after the 2nd equality sign.  Here $x_\alpha$ is a component of $\bm{x}$, and $A_{\alpha\beta}$ is a matrix element of the matrix $\mathcal{A}$.  Taking the derivative with respect to $x_\gamma$ gives:
+$$
+\frac{\partial f}{x_\gamma} = \frac{1}{2} \delta_{\gamma\alpha} A_{\alpha\beta} x_\beta + \frac{1}{2} x_\alpha A_{\alpha\beta} \delta_{\beta\gamma} - b_\gamma \delta_{\gamma\gamma}
+= A_{\gamma\beta} x_\beta - b_\gamma
+= (Ax - b)<em>\gamma
+$$
+so that $\nabla f = Ax - b$.  Minimizing $f$ is equivalent to solving $\partial f/\partial x</em>\gamma = 0$ for all $\gamma$ and is therefore equivalent to solving $Ax = b.$  (The fact that there is a minimum is guaranteed by the fact that $\mathcal{A}$ is positive definite.)</p>
+<h3 id="line-search">Line Search</h3>
+<p>We try to find approximate ways to minimise $f$ via an iteration scheme:
+$$
+x_\alpha^{(m+1)} = x_\alpha^{(m)} + \lambda_m d_\alpha^{(m)}
+$$
+where $m$ is the iteration label and $\alpha$ is the vector coordinate index.  The idea will be to pick the scalar $\lambda_m$ to minimise $f$ along the line determined by some vector $\bm{d}^{(m)}$ (the search direction).
+$$
+f(\bm{x}^{(m)} + \lambda \bm{d}^{(m)}) = \frac{1}{2}(x_\alpha + \lambda d_\alpha) A_{\alpha\beta}(x_\beta + \lambda d_\beta) - b_\alpha(x_\alpha + \lambda d_\alpha) + c \ \qquad\qquad = f(\bm{x}^{(m)}) + \lambda^2!\left(\frac{1}{2} d_\alpha A_{\alpha\beta} d_\beta\right) + \lambda\, d_\alpha\bigl(A_{\alpha\beta} x_\beta - b_\alpha\bigr)
+$$
+where we have used the fact that $\mathcal{A}$ is symmetric so $d_\alpha A_{\alpha\beta} x_\beta = x_\alpha A_{\alpha\beta} d_\beta$.  Note that the first term is just a number and the second term is greater than zero due to the fact that $\mathcal{A}$ is positive definite so this defines an upward parabola if plotted as a function of $\lambda$.  We define the <strong>residual</strong> (the gradient of $f$ at $\bm{x}^{(m)}$) as 
+$$\bm{r}^{(m)} = \mathcal{A}\bm{x}^{(m)} - \bm{b}.$$</p>
+<p>Minimizing $f$ along our search direction is then at $\partial f / \partial \lambda = 0$:
+$$
+\lambda\, d_\alpha A_{\alpha\beta} d_\beta + d_\alpha r_\alpha^{(m)} = 0
+\quad \Rightarrow \quad
+\lambda_{min} = -\frac{d_\alpha^{(m)} r_\alpha^{(m)}}{d_\alpha^{(m)} A_{\alpha\beta} d_\beta^{(m)}}
+$$
+to get to the minimum along our line.</p>
+<h3 id="choosing-the-search-direction">Choosing the Search Direction</h3>
+<p>What direction should we search in? It makes sense to take $\bm{d}^{(0)}$ along the gradient $\nabla f({\bm x}^{(0)}) = -\bm{r}^{(0)}$, i.e. in the downhill direction. Subsequent searches are along:
+$$
+\bm{d}^{(m+1)} = -\bm{r}^{(m+1)} + \alpha_m \bm{d}^{(m)}
+$$
+where $-\bm{r}^{(m+1)}$ is the gradient at the current minimum and $\alpha_m \bm{d}^{(m)}$ removes directions we have just searched.
+<strong>How?</strong> Choose $\bm{d}^{(m+1)}$ to be <strong>$\mathcal{A}$-conjugate</strong> to $\bm{d}^{(m)}$, i.e. so that
+$$
+d_\alpha^{(m+1)} A_{\alpha\beta} d_\beta^{(m)} = 0.
+$$
+You can think of this as choosing $\bm{d}^{(m+1)}$ to be orthogonal to $\bm{d}^{(m)}$ in a space where $\mathcal{A}$ is a metric.
+Substituting:</p>
+<p>$$
+\bigl(-r_\alpha^{(m+1)} + \alpha_m d_\alpha^{(m)}\bigr) A_{\alpha\beta} d_\beta^{(m)} = 0
+\quad \Rightarrow \quad
+\alpha_m = \frac{r_\alpha^{(m+1)} A_{\alpha\beta} d_\beta^{(m)}}{d_\alpha^{(m)} A_{\alpha\beta} d_\beta^{(m)}}
+$$</p>
+<h3 id="conjugate-gradient-algorithm">Conjugate Gradient Algorithm</h3>
+<p>Before writing down the full algorithm, a few simplifications are possible by noting that it is not too hard to show that</p>
+<p>i) $d_\alpha^{(m)} r_\alpha^{(m+1)} = 0$  — i.e. previous search direction and new residual are orthogonal</p>
+<p>ii) $r_\alpha^{(m)} r_\alpha^{(\ell)} = 0$ for $m \neq \ell$  — i.e. all residuals are orthogonal (we are eliminating residuals along a new specific direction at every step)</p>
+<p>iii) With i) and ii), it is possible to show:
+$$
+\lambda_m = \frac{r_\alpha^{(m)} r_\alpha^{(m)}}{d_\alpha^{(m)} A_{\alpha\beta} d_\beta^{(m)}}, \qquad \alpha_m = \frac{r_\alpha^{(m+1)} r_\alpha^{(m+1)}}{r_\beta^{(m)} r_\beta^{(m)}}
+$$
+To save repeating work,  $\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}$ should be saved for the next step (where it will be used as $\delta^{(m)}$), and since $\bf{r}^{(m+1)} = \bm{r}^{(m)} + \lambda_m \bm{u}$ (where $\bm{u} = \mathcal{A}\bm{d}^{(m)}$, the same matrix-vector product already computed for $\lambda_m$), we can avoid re-computing $\mathcal{A}\bm{d}^{(m+1)}-\bm{b}$ from scratch.</p>
+<p>The full algorithm then becomes:</p>
+<hr />
+<p>$\bm{r}^{(0)} = \mathcal{A}\bm{x}^{(0)} - \bm{b}; \quad \bm{d}^{(0)} = -\bm{r}^{(0)}; \quad \delta^{(0)} = \bm{r}^{(0)T} \bm{r}^{(0)};$
+$\text{for } m = 0, 1, 2, \ldots$
+ $\qquad \bm{u} = \mathcal{A}\bm{d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}$
+ $\qquad \lambda_m = \frac{\delta^{(m)}}{\bm{d}^{(m)T} \bm{u}}; \quad \leftarrow \text{do locally then AllReduce}$
+ $\qquad \bm{x}^{(m+1)} = \bm{x}^{(m)} + \lambda_m \bm{d}^{(m)}$;
+ $\qquad \bm{r}^{(m+1)} = \bm{r}^{(m)} + \lambda_m \bm{u}$;
+ $\qquad \delta^{(m+1)} = \bm{r}^{(m+1)T} \bm{r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}$
+ $\qquad \text{if } \sqrt{\delta^{(m+1)}} &lt; \text{tol}: \text{ output } \bm{x}^{(m+1)}, \text{ stop}$;
+ $\qquad \alpha_m = \frac{\delta^{(m+1)}}{\delta^{(m)}}$;
+ $\qquad \bm{d}^{(m+1)} = -\bm{r}^{(m+1)} + \alpha_m \bm{d}^{(m)}; \quad \leftarrow \text{local}$</p>
+<hr />
+<h3 id="how-many-iterations-are-needed">How Many Iterations Are Needed?</h3>
+<p><strong>Not many!</strong> Suppose the initial guess is $\bm{x}^{(0)} = \mathbf{0}$, then:
+$$
+\bm{x}^{(m)} = \sum_{k=0}^{m} c_k \bm{d}^{(k)}
+$$
+But all $\bm{d}^{(k)}$ are linearly dependent, by construction. If $\mathcal{A}$ is $n \times n$, then we can need at most $n$ iterations, and then should terminate. For well-conditioned problems, much fewer iterations are needed.</p>
+<h3 id="c-code-cgc">C Code: CG.c</h3>
+<p>A serial code for the conjugate gradient algorithm in C is given here for solving Laplace's equation.  Note that in this case $\mathcal{A}$ is very sparse so you should not store it explicitly.  As $\mathcal{A}$ is only used in computing $\mathcal{A}\bm{d^{(m)}}$ we can do this multiplication explictly using the five nonzero elements in a row of $\mathcal{A}$ associated with the 5-point stencil discussed above.  Also, for this problem $\bm{x}$ is our solution vector $\bm{v}$ on the mesh, stored in row-major ordering.</p>
+<pre><code class="language-c">/* Compile line: */
+/*   gcc -O3 CG.c -lm   */
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+
+#define N  500
+#define Tol  0.0001
+#define maxitr 2*N
+#define h 0.1
+
+double **matrix(int m, int n)
+{
+  /* Note that you must allocate the array as one block in order to use */
+  /* MPI derived data types on them.  Note also that calloc initializes */
+  /* all entries to zero. */
+  double ** ptr = (double **)calloc(m, sizeof(double *));
+  ptr[0]=(double *)calloc(m*n, sizeof(double));
+  for(int i = 1; i &lt; m ;i++)
+    ptr[i]=ptr[i-1]+n;
+  return (ptr);
+}
+
+void initialize(double ** r, double **x, int size)
+{
+  /* Subtract off b from a particularly boring set of boundary conditions
+     where x=1 on the boundary */
+  for(int i = 1; i &lt; size; i++) {
+    r[i][1]    -= 1;
+    r[i][size-1] -= 1;
+    x[i][0]=1;     // we won't use x on the boundary but useful for output at end
+    x[i][size]=1;
+  }
+  for(int j = 1; j &lt; size; j++) {
+    r[1][j]    -= 1;
+    r[size-1][j] -= 1;
+    x[0][j]=1;
+    x[size][j]=1;
+  }
+  x[0][0]=x[0][size]=x[size][0]=x[size][size]=1; /* fill in the corners */
+}
+
+// Compute Ad = A*d using auxiliary layer around the outside that is all zero
+// (similar to iteration routine in Jacobi algorithm; Ad similar to &quot;new&quot;, d similar to &quot;old&quot;)
+void AD(double **Ad, double **d, int start, int finish)
+{
+  int i, j;
+  for(i = start; i &lt; finish; i++) {
+    for(j = 1; j &lt; N; j++) {
+      Ad[i][j] = -(d[i+1][j] + d[i-1][j] + d[i][j+1] + d[i][j-1]-4.0*d[i][j]);
+    }
+  }
+  return;
+}
+
+void output(double **x, int size)
+{
+  char str[20];
+  FILE *fp;
+  sprintf(str,&quot;Solution.Txt&quot;);
+  fp = fopen(str,&quot;wt&quot;);
+  for(int i = 0; i &lt; size+1; i++) {
+    for(int j = 0; j &lt; size + 1; j++)
+      fprintf(fp,&quot;%6.4f\n&quot;,x[i][j]);
+  }
+  fclose(fp);
+}
+
+int main(int argc, char** argv)
+{
+  double delta, lambda, olddelta, alpha;
+
+  /* create arrays and initialize to all zeros */
+  /* Note: Although these are column vectors in the algorithm, they represent */
+  /* locations in 2D space so it is easiest to store them as 2D arrays */
+  double **x = matrix(N+1,N+1);
+  double **r = matrix(N+1,N+1);
+  double **d = matrix(N+1,N+1);
+  double **u = matrix(N+1,N+1);
+
+  /* Work out A x(0), note that we make use of the x being zero on the boundary */
+  /* so we don't need the boundaries to be special cases in the iteration */
+  AD(r,x,1,N);
+
+  initialize(r,x,N); // setup boundary conditions (from the -b part of r=Ax-b)
+
+  /* Fill in d */
+  for (int i=1; i&lt;N; i++)
+    for (int j=1; j&lt;N; j++)
+      d[i][j]=-r[i][j];
+
+  /* Compute first delta */
+  delta=0.0;
+  for (int i=1; i&lt;N; i++)
+    for (int j=1; j&lt;N; j++)
+      delta+= r[i][j]*r[i][j];
+  printf(&quot;itr = %i delta = %g\r&quot;,0,delta);
+
+  /* Main loop */
+  int itr;
+  for (itr=0; itr&lt; maxitr; itr++) {
+    AD(u,d,1,N); // this could be parallelized similar to Jacobi, with new&lt;=&gt;u, old&lt;=&gt;d
+
+    lambda=0.0;
+    for (int i=1; i&lt;N; i++)
+      for (int j=1;j&lt;N; j++)
+        lambda+= d[i][j]*u[i][j];
+    lambda=delta/lambda; // would need to collect/sum results here with an AllReduce
+
+    // local, no change for parallelization:
+    for (int i=1; i&lt;N; i++) {
+      for (int j=1;j&lt;N; j++) {
+        x[i][j] += lambda*d[i][j];
+        r[i][j] += lambda*u[i][j];
+      }
+    }
+
+    olddelta=delta;
+    delta=0.0;
+    for (int i=1; i&lt;N; i++)
+      for (int j=1; j&lt;N; j++)
+        delta+= r[i][j]*r[i][j];
+    printf(&quot;itr = %i delta = %g\r&quot;,itr,delta);
+
+    if (sqrt(delta) &lt; Tol)
+      break;
+
+    alpha=delta/olddelta;
+    // local, no change for parallelization:
+    for (int i=1; i&lt;N; i++) {
+      for (int j=1;j&lt;N; j++) {
+        d[i][j] = -r[i][j]+alpha*d[i][j];
+      }
+    }
+  }
+
+  printf(&quot;\nComplete in %d iterations \n&quot;,itr);
+
+  /* Output result */
+  output(x,N);
+
+  free(r[0]); free(r);
+  free(d[0]); free(d);
+  free(u[0]); free(u);
+  free(x[0]); free(x);
+  return 0;
+}
+</code></pre>
+<h3 id="parallelisation-of-the-cg-method">Parallelisation of the CG Method</h3>
+<p>Parallelisation of this code is very similar to what we did before:</p>
+<ol>
+<li>
+<p>The "matrix-vector" product for the case where $A$ is defined from the Poisson equation is almost identical to what we did for an "iteration" of the Jacobi algorithm.</p>
+</li>
+<li>
+<p>Most other computations are <strong>local</strong> except for a few dot products/norms which can easily be done locally and then collected together using an <code>MPI_Allreduce</code>.</p>
+</li>
+</ol>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.4e0fa4ba.min.js"></script>
+      
+    
+  </body>
+</html>

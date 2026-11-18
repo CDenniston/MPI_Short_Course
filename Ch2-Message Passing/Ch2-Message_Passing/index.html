@@ -1,0 +1,1279 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://CDenniston.github.io/MPI_Short_Course/Ch2-Message%20Passing/Ch2-Message_Passing/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.0">
+    
+    
+      
+        <title>Message Passing between Processes - Using MPI for Scientific Computing - Short Course</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.9f615399.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#message-passing-between-processes" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Using MPI for Scientific Computing - Short Course" class="md-header__button md-logo" aria-label="Using MPI for Scientific Computing - Short Course" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Using MPI for Scientific Computing - Short Course
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Message Passing between Processes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Using MPI for Scientific Computing - Short Course" class="md-nav__button md-logo" aria-label="Using MPI for Scientific Computing - Short Course" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Using MPI for Scientific Computing - Short Course
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#passing-data" class="md-nav__link">
+    Passing Data
+  </a>
+  
+    <nav class="md-nav" aria-label="Passing Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-computing-ln-2" class="md-nav__link">
+    Example: Computing ln 2
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#boss-worker-model" class="md-nav__link">
+    Boss-Worker Model
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-implementation-ln-2" class="md-nav__link">
+    C++ Implementation: ln 2
+  </a>
+  
+    <nav class="md-nav" aria-label="C++ Implementation: ln 2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flowchart" class="md-nav__link">
+    Flowchart
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpi-function-signatures" class="md-nav__link">
+    MPI Function Signatures
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arrays-in-mpi" class="md-nav__link">
+    Arrays in MPI
+  </a>
+  
+    <nav class="md-nav" aria-label="Arrays in MPI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#c-style-1d-arrays" class="md-nav__link">
+    C-Style 1D Arrays
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpi-data-types" class="md-nav__link">
+    MPI Data Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-stdvector-c" class="md-nav__link">
+    Using std::vector (C++)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#one-to-one-communication-dot-product" class="md-nav__link">
+    One-to-One Communication: Dot Product
+  </a>
+  
+    <nav class="md-nav" aria-label="One-to-One Communication: Dot Product">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flowchart_1" class="md-nav__link">
+    Flowchart
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-implementation-dot-product" class="md-nav__link">
+    C++ Implementation: Dot Product
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpi_send-and-mpi_recv" class="md-nav__link">
+    MPI_Send and MPI_Recv
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#design-comments" class="md-nav__link">
+    Design Comments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-of-mpi-commands-encountered-so-far" class="md-nav__link">
+    Summary of MPI Commands Encountered So Far
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi_allreduce" class="md-nav__link">
+    MPI_Allreduce
+  </a>
+  
+    <nav class="md-nav" aria-label="MPI_Allreduce">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reduction-operations" class="md-nav__link">
+    Reduction Operations
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi_status" class="md-nav__link">
+    MPI_Status
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controlling-synchronisation-blocking-vs-non-blocking-communication" class="md-nav__link">
+    Controlling Synchronisation: Blocking vs Non-Blocking Communication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-task-distribution" class="md-nav__link">
+    Example: Task Distribution
+  </a>
+  
+    <nav class="md-nav" aria-label="Example: Task Distribution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-c-with-mpi_vars-struct" class="md-nav__link">
+    Code (C with mpi_vars struct)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sample-output" class="md-nav__link">
+    Sample Output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flowchart-1st-loop" class="md-nav__link">
+    Flowchart (1st Loop)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi_barrier" class="md-nav__link">
+    MPI_Barrier
+  </a>
+  
+    <nav class="md-nav" aria-label="MPI_Barrier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sample-output-with-mpi_barrier-between-loops" class="md-nav__link">
+    Sample Output (with MPI_Barrier between loops)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ordering-with-blocking-mpi_send" class="md-nav__link">
+    Ordering with Blocking MPI_Send
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#non-blocking-communication" class="md-nav__link">
+    Non-Blocking Communication
+  </a>
+  
+    <nav class="md-nav" aria-label="Non-Blocking Communication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#revised-task-loop-non-blocking-mpi_isend" class="md-nav__link">
+    Revised Task Loop (Non-Blocking MPI_Isend)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#separating-send-and-receive-loops-boss-avoids-waiting" class="md-nav__link">
+    Separating Send and Receive Loops (Boss Avoids Waiting)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="message-passing-between-processes">Message Passing between Processes</h1>
+<hr />
+<h2 id="passing-data">Passing Data</h2>
+<p>Two main paradigms for sharing data between MPI processes:</p>
+<ul>
+<li><strong>One-to-all (broadcast):</strong> one node sends the same data to all others → <code>MPI_Bcast</code></li>
+<li><strong>All-to-one (reduce):</strong> each node contributes data that is combined on one node → <code>MPI_Reduce</code></li>
+</ul>
+<h3 id="example-computing-ln-2">Example: Computing ln 2</h3>
+<p>Consider the formula for computing $\ln 2$ from a series:
+$$\ln 2 = \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n} = 1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \cdots$$
+We want to compute this by dividing the terms to be computed amongst the processors.  Obviously we can't go to $\infty$ so we will terminate the sum at $N$ terms.  If there are <code>NProcs</code> processors with IDs $0, 1, \ldots, \text{NProcs}-1$, then processor <code>nid</code> handles the terms where $i = \text{nid}, \text{nid}+\text{NProcs}, \text{nid}+2\cdot\text{NProcs}, \ldots$ .  The sum above starts at 1 rather than 0 so it makes sense to first shift to zero-based indexing, so the $n$-th term is $(-1)^n/(n+1)$).  Mathematically we can rewrite the sum as:
+$$\ln 2 = \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n} = \lim_{N\rightarrow\infty}  \sum_{n=0}^{N} \frac{(-1)^{n}}{n+1}=\sum_{n_{id}=0}^{N_{Procs}-1}\left(\sum_{i=n_{id},N_{Procs}}^N \frac{(-1)^{i}}{i+1}\right)$$
+where in the inner sum, the $N_{Procs}$ is the increment for $i$.  Each processor works on one inner loop and then at the end we will need to collect and sum the results from each processor.  For example with <code>NProcs = 2</code>:</p>
+<table>
+<thead>
+<tr>
+<th>$i$</th>
+<th>$(-1)^i/(i+1)$</th>
+<th>processor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>$+1/1$</td>
+<td>nid = 0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>$-1/2$</td>
+<td>nid = 1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>$+1/3$</td>
+<td>nid = 0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>$-1/4$</td>
+<td>nid = 1</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+<p>Note that processor nid = 0 always handles even-indexed terms (positive) and nid = 1 always handles odd-indexed terms (negative) — provided <code>NProcs</code> is even. In general, for even <code>NProcs</code>, processors with an even ID always add their terms and processors with an odd ID always subtract, so the sign can be determined from <code>MyID</code> alone, without checking <code>i</code> inside the loop.</p>
+<hr />
+<h2 id="boss-worker-model">Boss-Worker Model</h2>
+<p>The Boss-Worker pattern is the standard structure for MPI programs:</p>
+<ul>
+<li><strong>Node 0</strong> is designated the <strong>Boss</strong> (it does all I/O, since multiple processes cannot, for example, safely access the same file simultaneously).</li>
+<li>All other nodes are <strong>Workers</strong>.</li>
+<li>The Boss reads input (or asks the user), then broadcasts it to all workers via <code>MPI_Bcast</code>.</li>
+<li>Every processor (Boss and Workers) works on its own set of terms: Boss handles $n = 0, \text{NProcs}, 2\cdot\text{NProcs}, \ldots$; Worker 1 handles $n = 1, 1+\text{NProcs}, \ldots$; etc.</li>
+<li>Partial results are collected (reduced) back to the Boss via <code>MPI_Reduce</code>.</li>
+</ul>
+<hr />
+<h2 id="c-implementation-ln-2">C++ Implementation: ln 2</h2>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &quot;mpi.h&quot;
+
+/* MPI_stuff is same as class from helloworld code in last lecture */
+class MPI_stuff {
+public:
+    int NProcs;
+    int MyID;
+    MPI_stuff(int&amp; argc, char**&amp; argv) {
+        MPI_Init(&amp;argc, &amp;argv);
+        MPI_Comm_size(MPI_COMM_WORLD, &amp;NProcs);
+        MPI_Comm_rank(MPI_COMM_WORLD, &amp;MyID);
+    }
+    ~MPI_stuff() { MPI_Finalize(); }
+};
+
+/* This function actually computes the sum
+float compute_lnsum(const MPI_stuff&amp; the_mpi, const int N)
+{
+    float sum = 0, Gsum;
+    /* processor MyID handles terms i = MyID, MyID+NProcs, MyID+2*NProcs, ... */
+    for (int i = the_mpi.MyID; i &lt; N; i += the_mpi.NProcs) {
+        /* for even NProcs: even-ID procs handle even i (positive), odd-ID handle odd i (negative) */
+        if (the_mpi.MyID % 2)
+            sum -= (float)1 / (i + 1);
+        else
+            sum += (float)1 / (i + 1);
+    }
+
+    /* Now we need to collect and sum the results from each processor using MPI_Reduce */
+    MPI_Reduce(&amp;sum, &amp;Gsum, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    return Gsum; //the answer
+}
+
+int main(int argc, char** argv)
+{
+    MPI_stuff the_mpi(argc, argv);
+
+    if (the_mpi.NProcs % 2 != 0) {
+        std::cout &lt;&lt; &quot;Program only works for an even number of processors&quot; &lt;&lt; std::endl;
+        return 0;
+    }
+
+    int N;
+    if (the_mpi.MyID == 0) {          /* Boss asks the user for N */
+        std::cout &lt;&lt; &quot;Please enter the number of terms N -&gt; &quot;;
+        std::cin &gt;&gt; N;
+    }
+
+    MPI_Bcast(&amp;N, 1, MPI_INT, 0, MPI_COMM_WORLD);   /* send N to everyone */
+
+    float Gsum = compute_lnsum(the_mpi, N);
+
+    /* Boss outputs the result
+    if (the_mpi.MyID == 0)
+        std::cout &lt;&lt; &quot;An estimate of ln(2) is &quot; &lt;&lt; Gsum &lt;&lt; std::endl;
+
+    return 0;
+}
+</code></pre>
+<h3 id="flowchart">Flowchart</h3>
+<p><img alt="Boss-Worker flowchart for the ln 2 computation: Boss broadcasts N, all nodes compute partial sums, Workers reduce results to Boss." src="../ln2-flowchart.svg" /></p>
+<p>We have omitted the check that <code>NProcs</code> is even in the flowchart and the black dashed lines indicate processes not shown (only the $0^{th}$ and last highest two processes are shown).  The blue dotted lines indicate communication between the processes.  </p>
+<hr />
+<h3 id="mpi-function-signatures">MPI Function Signatures</h3>
+<p><strong><code>MPI_Bcast</code></strong> — broadcast from root to all processes:</p>
+<pre><code class="language-c">MPI_Bcast(&amp;N,               1,       MPI_INT,        0,       MPI_COMM_WORLD);
+//         ↑                ↑          ↑             ↑            ↑
+//    pointer to start   buffer     data type     sending     &quot;communicator&quot;
+//    of data buffer     size       being sent    processor   data structure
+//    to send                                        ID       for who is involved
+//                                                            (everyone here)
+</code></pre>
+<p><strong><code>MPI_Reduce</code></strong> — combine values from all processes onto root:</p>
+<pre><code class="language-c">MPI_Reduce(&amp;sum,      &amp;Gsum,    1,     MPI_FLOAT,  MPI_SUM,       0,       MPI_COMM_WORLD);
+//          ↑            ↑      ↑         ↑          ↑           ↑              ↑
+//      send_buffer recv_buf  buffer  data type  operation   receiving     communicator
+//                             size                         processor ID
+</code></pre>
+<p>Here the Reduce operation performs a sum on all the values received from the different processors (values from <code>sum</code>) and puts the resulting sum in <code>Gsum</code>.</p>
+<p><strong>Note:</strong> <code>N</code> does not have to be a multiple of <code>NProcs</code>. When it is not, some processors will simply have slightly less work — the <code>for</code> loop terminates naturally when <code>i ≥ N</code>. No zero-padding is required. Passing large contiguous blocks of data (rather than individual elements) is much more efficient for MPI communication.</p>
+<hr />
+<h2 id="arrays-in-mpi">Arrays in MPI</h2>
+<p>So far we have just passed data of a simple fundamental type.  To pass larger blocks of data we first need to consider how they are stored in C as the MPI library is written in C.</p>
+<h3 id="c-style-1d-arrays">C-Style 1D Arrays</h3>
+<p>A declration like
+<code>double a[100];</code>
+creates a C-style array (also in C++) where each element is laid out contiguously in memory.  We can illustrate for an array of length <code>n</code> as:</p>
+<p><img alt="1D C array memory layout: elements a_0, a_1, … a_{n-1} in adjacent cells." src="../array-layout.svg" />
+Note that the allowed entries are $0,...,n-1$, i.e. they always start at zero.  The size (in memory) of each box is <code>sizeof(double)</code> = 64 bits for an array of <code>double</code> .  In order to send an array from one process to anothe we need to know where it starts in memory (it's address) and its size.  An important identity in C: the array name <strong>is</strong> the address of its first element.  For example:</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+int main() { 
+    int array[5] = { 9, 7, 5, 3, 1 }; 
+
+    // print the value of the array variable 
+    std::cout&lt;&lt; &quot;The array has address: &quot;&lt;&lt; array &lt;&lt; '\n'; 
+
+    // print address of the array elements 
+    std::cout&lt;&lt; &quot;Element 0 has address: &quot;&lt;&lt; &amp;array[0] &lt;&lt; '\n'; 
+
+    return 0; 
+}
+</code></pre>
+<p>will produce an output something like</p>
+<p><code>The array has address: 0042FD5C 
+Element 0 has address: 0042FD5C</code>
+Note that both give the address of the first element.</p>
+<p>In C, dynamic allocation of arrays typically uses <code>malloc</code> or <code>calloc</code>. The second is preferable as it also initializes the elements (to zero).  e.g.</p>
+<pre><code class="language-c">float *a;
+a = (float*) calloc(n, sizeof(float));   /* allocate n floats, zero-initialised */
+</code></pre>
+<p>As with statically declared arrays, this creates an array of size <code>n</code> (an integer) doubles.  </p>
+<p>This means you can pass <code>&amp;array[k]</code> to <code>MPI_Send</code>/<code>MPI_Recv</code> to start the transfer at any element — a convenient way to send a sub-section of an array. Data sizes to keep in mind:</p>
+<ul>
+<li><code>sizeof(float)</code>  = 32 bits</li>
+<li><code>sizeof(double)</code> = 64 bits</li>
+</ul>
+<blockquote>
+<p><strong>Warning:</strong> C arrays do <strong>not</strong> perform bounds checking. Accessing <code>a[-1]</code> or <code>a[n]</code> causes undefined behaviour with no error raised.</p>
+</blockquote>
+<h3 id="mpi-data-types">MPI Data Types</h3>
+<p>To ensure compatible sizes across a potentially heterogeneous environment, MPI introduces its own fundamental data types that you should use in MPI functions.
+| MPI type | C type |
+|----------|--------|
+| <code>MPI_INT</code> | <code>int</code> |
+| <code>MPI_FLOAT</code> | <code>float</code> |
+| <code>MPI_DOUBLE</code> | <code>double</code> |
+| <code>MPI_CHAR</code> | <code>char</code> |</p>
+<h3 id="using-stdvector-c">Using <code>std::vector</code> (C++)</h3>
+<p>In C++ we can create dynamically allocated arrays using <code>new[]</code> and <code>delete[]</code>, but this is no longer recommended (it will be made obsolete in future versions of C++). The preferred replacement is <code>std::vector</code>.</p>
+<p><code>std::vector</code> manages memory automatically and is safer than raw C arrays. It has two separate size concepts:</p>
+<ul>
+<li><strong>capacity</strong> — the amount of memory currently reserved (set by <code>reserve</code>)</li>
+<li><strong>size</strong> — the number of elements actually in use (set by <code>resize</code>)</li>
+</ul>
+<pre><code class="language-cpp">std::vector&lt;float&gt; a;
+a.reserve(n);    /* allocate memory for n elements (capacity = n, size = 0) */
+a.resize(n);     /* now size = n; new elements are zero-initialised */
+
+/* Or in one step: */
+std::vector&lt;float&gt; a(n);   /* capacity = size = n, zero-initialised */
+</code></pre>
+<p>These create an array with similarites (and differences) to what we did in C.  Importantly, the elements <code>a[0], a[1],...</code> are stored consecutively in memory, which is vitally important for using MPI (and performance in general).  For a C++ vector, the name is <em>no longer</em> the address of the first element of the array (i.e. <code>&amp;a[0] ≠ a</code>).  There is also the issue that the array could have no reserved capacity if it was not constructed with a size origianally.</p>
+<p><strong>Important (Compute Canada / HPC advice):</strong> Do <strong>not</strong> use <code>push_back</code> in performance-critical code. <code>push_back</code> can trigger reallocation and copying of the entire array. Use <code>reserve</code> + <code>resize</code> (or construct with a size) instead.</p>
+<p>If you need to use a pointer to the array even in the case it could be empty, using the <code>.data()</code> member function is always safe as it will return <code>nullptr</code> in the case there is nothing allocated (but generally avoid creating empty vectors).</p>
+<p>For bounds-checked access, use <code>.at(i)</code> instead of <code>operator[]</code>:</p>
+<pre><code class="language-cpp">a.at(i) = 3.14f;   /* throws std::out_of_range if i is out of bounds */
+a[i]    = 3.14f;   /* no bounds check — same risk as a C array */
+</code></pre>
+<hr />
+<h2 id="one-to-one-communication-dot-product">One-to-One Communication: Dot Product</h2>
+<p>Let's look at how we would comput the dot product of two vectors of length $n$: </p>
+<p>$\displaystyle\vec{a} \cdot \vec{b} = \sum_{i=1}^{n} a_i b_i=\sum_{i=0}^{n-1}$<code>a[i]b[i]</code></p>
+<p>Let's assume we have <code>NProcs</code> processors and that <code>n</code> is exactly divisible by  <code>NProcs</code>.  We can then break the task into parts of 
+$$size=\frac{n}{N_{procs}}$$
+Anticipating a SIMD scheme, we rewrite the sum as:</p>
+<p>$\displaystyle\vec{a} \cdot \vec{b} = \sum_{i=0}^{n-1}$ <code>a[i]b[i]</code>$\displaystyle=\sum_{i=0}^{size-1}$<code>a[i]b[i]</code> $\displaystyle+ \sum_{i=size}^{2 size-1}$<code>a[i]b[i]</code>$\displaystyle+ ... +\sum_{i=(N_{procs}-1)size}^{n-1}$<code>a[i]b[i]</code></p>
+<p>and processor <code>j</code> works on a contiguous block of <code>size = n/NProcs</code> elements starting at index <code>j × size</code>:</p>
+<p>$$\text{processor } j \text{ handles } a[j \cdot \text{size}] \ldots a[(j+1)\cdot\text{size} - 1]$$</p>
+<p>To summarize, we distribute the arrays across <code>NProcs</code> processors using a SIMD-style split: each processor receives a contiguous block of <code>size = n/NProcs</code> elements, computes a local dot product, then the partial sums are reduced (summed) to the Boss process.</p>
+<h3 id="flowchart_1">Flowchart</h3>
+<p><img alt="Boss-Worker flowchart for the dot product: Boss sends array chunks to Workers, all compute local dot products, results are reduced to Boss." src="../dotproduct-flowchart.svg" /></p>
+<hr />
+<h3 id="c-implementation-dot-product">C++ Implementation: Dot Product</h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;     /* regular I/O */
+#include &lt;fstream&gt;      /* file stream header for functions interacting with files */
+#include &lt;vector&gt;       /* needed for std::vector */
+#include &quot;mpi.h&quot;
+
+/* MPI_stuff class should come here— same as above */
+
+// Function to get the number of rows of data in the file from first row of file
+int GetNumberElements(std::ifstream&amp; fin)
+{
+    int n;
+    if (fin.is_open())
+        fin &gt;&gt; n;
+    else {                                      /* no file to read from */
+        std::cout &lt;&lt; &quot;Input File not found\n&quot;;
+        MPI_Abort(MPI_COMM_WORLD, -2);
+    }
+    return n;
+}
+
+// Function to read n elements of two column data from a file, store in arrays a,b
+void ReadArrays(std::ifstream&amp; fin, std::vector&lt;float&gt;&amp; a,
+                std::vector&lt;float&gt;&amp; b, int n)
+{
+    if (fin.is_open()) {
+        for (int i = 0; i &lt; n; i++)
+            fin &gt;&gt; a[i] &gt;&gt; b[i];
+    } else {                                    /* fp null means no file to read from */
+        std::cout &lt;&lt; &quot;Input File not found\n&quot;;
+        MPI_Abort(MPI_COMM_WORLD, -2);
+    }
+}
+
+// Function to compute dot product of two vectors owned and fully stored on Boss node
+// but subdivded amongst avaialble processors which individually compute the dot product
+// of their subsections.
+float DotProduct(std::vector&lt;float&gt;&amp; a, std::vector&lt;float&gt;&amp; b,
+                 int size, MPI_stuff&amp; mpi)
+{
+    MPI_Status status;
+
+    if (mpi.MyID == 0) {
+        /* Boss sends each worker its chunk of both arrays */
+        for (int i = 1; i &lt; mpi.NProcs; i++) {
+            MPI_Send(&amp;a[size*i], size, MPI_FLOAT, i, 10, MPI_COMM_WORLD);
+            MPI_Send(&amp;b[size*i], size, MPI_FLOAT, i, 20, MPI_COMM_WORLD);
+        }
+    } else {
+        /* Workers receive their chunks */
+        MPI_Recv(&amp;a[0], size, MPI_FLOAT, 0, 10, MPI_COMM_WORLD, &amp;status);
+        MPI_Recv(&amp;b[0], size, MPI_FLOAT, 0, 20, MPI_COMM_WORLD, &amp;status);
+    }
+
+    /* Each node computes its local dot product */
+    float local_sum = 0.0f;
+    for (int i = 0; i &lt; size; i++)
+        local_sum += a[i] * b[i];
+
+    /* Reduce partial sums to Boss */
+    float global_sum = 0.0f;
+    MPI_Reduce(&amp;local_sum, &amp;global_sum, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+    return global_sum;
+}
+
+
+int main(int argc, char** argv)
+{
+    MPI_stuff the_mpi(argc, argv);
+
+    std::ifstream fin;
+    int n = 0;
+
+    if (the_mpi.MyID == 0) {
+        fin.open(&quot;DotData.txt&quot;);          /* only Boss reads from file */
+        n = GetNumberElements(fin);       /* (multiple processes cannot access file simultaneously) */
+    }
+    MPI_Bcast(&amp;n, 1, MPI_INT, 0, MPI_COMM_WORLD);   /* send n to everyone */
+
+    if (n % the_mpi.NProcs) {            /* is n divisible by NProcs? */
+        std::cout &lt;&lt; &quot;Number of processes is not a multiple of n.\n&quot;;
+        MPI_Abort(MPI_COMM_WORLD, -2);   /* kills program gracefully on all nodes */
+    }
+
+    int size = n / the_mpi.NProcs;
+
+    std::vector&lt;float&gt; a, b;
+    if (the_mpi.MyID == 0) {
+        a.reserve(n);  a.resize(n);      /* node 0 stores the full arrays */
+        b.reserve(n);  b.resize(n);
+        ReadArrays(fin, a, b, n);        /* node 0 reads from file */
+    } else {
+        a.reserve(size);  a.resize(size);  /* workers only need smaller array for their chunk */
+        b.reserve(size);  b.resize(size);
+    }
+
+    float adotb = DotProduct(a, b, size, the_mpi);   /* compute a·b */
+
+    if (the_mpi.MyID == 0)
+        std::cout &lt;&lt; &quot;The inner product is &quot; &lt;&lt; adotb &lt;&lt; std::endl;
+
+    return 0;
+}
+</code></pre>
+<hr />
+<h3 id="mpi_send-and-mpi_recv"><code>MPI_Send</code> and <code>MPI_Recv</code></h3>
+<pre><code class="language-c">MPI_Send(&amp;a[size*i],   size, MPI_FLOAT,     i,      10,   MPI_COMM_WORLD);
+//        ↑             ↑       ↑          ↑        ↑           ↑
+//   ptr to buffer    count    type    processor   tag       communicator
+//   (beginning of   (buffer           to send to  (match
+//    buffer to send)  size)                        to RecV)
+
+MPI_Recv(&amp;a[0],      size, MPI_FLOAT,  0,      10, MPI_COMM_WORLD, &amp;status);
+//        ↑           ↑       ↑        ↑       ↑       ↑               ↑
+//   ptr to recv   count    type    source     tag  communicator      status
+//   buffer                         of message
+</code></pre>
+<h3 id="design-comments">Design Comments</h3>
+<ol>
+<li>
+<p>The <strong>tag</strong> in <code>MPI_Send</code> must match the tag in the corresponding <code>MPI_Recv</code>. Use a different tag for each distinct message type — here tag <code>10</code> is used for the <code>a</code> array and tag <code>20</code> for the <code>b</code> array.</p>
+</li>
+<li>
+<p>The <code>n % NProcs != 0</code> condition causes <code>MPI_Abort</code>. In the dot product case, <code>n</code> must be divisible by <code>NProcs</code>. </p>
+</li>
+<li>
+<p>The Boss uses more memory than the Workers (it has to store the full arrays <code>a</code> and <code>b</code>). A better approach: have the Boss read and send segments one at a time — it reads a segment, sends it to worker <code>i</code>, reads the next segment, sends it to worker <code>i+1</code>, etc., and then works on the last segment (segment <code>NProcs − 1</code>) itself. This also resolves issue 2: <code>n</code> no longer needs to be a multiple of <code>NProcs</code> (the last segment simply absorbs the remainder).</p>
+</li>
+<li>
+<p>Potential crash points (e.g. file not found, wrong input) should call <code>MPI_Abort(MPI_COMM_WORLD, -2)</code> so that <strong>all</strong> MPI processes are killed cleanly — not just the one that detected the error.</p>
+</li>
+</ol>
+<hr />
+<h2 id="summary-of-mpi-commands-encountered-so-far">Summary of MPI Commands Encountered So Far</h2>
+<pre><code class="language-c">MPI_Init(&amp;argc, &amp;argv);
+MPI_Finalize();
+MPI_Abort(MPI_COMM_WORLD, -1);
+
+MPI_Comm_size(MPI_COMM_WORLD, &amp;nprocs);
+MPI_Comm_rank(MPI_COMM_WORLD, &amp;myrank);
+
+MPI_Bcast(&amp;N,    1, MPI_INT,   0, MPI_COMM_WORLD);
+MPI_Reduce(&amp;sum, &amp;Gsum, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+MPI_Send(&amp;a[size*i], size, MPI_FLOAT, i,  10, MPI_COMM_WORLD);  /* tag 10 for a */
+MPI_Send(&amp;b[size*i], size, MPI_FLOAT, i,  20, MPI_COMM_WORLD);  /* tag 20 for b */
+MPI_Recv(&amp;a[0],      size, MPI_FLOAT, 0,  10, MPI_COMM_WORLD, &amp;status);
+MPI_Recv(&amp;b[0],      size, MPI_FLOAT, 0,  20, MPI_COMM_WORLD, &amp;status);
+</code></pre>
+<hr />
+<h2 id="mpi_allreduce"><code>MPI_Allreduce</code></h2>
+<p>A variant of <code>MPI_Reduce</code> that distributes the result to <strong>all</strong> processors (All-to-All communication):</p>
+<pre><code class="language-c">MPI_Allreduce(&amp;maxerr, &amp;maxerrG, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+</code></pre>
+<p>Here <code>maxerr</code> is reduced (e.g. finding the global maximum across all processors) and the result <code>maxerrG</code> is available on every processor — not only on one specific node.</p>
+<h3 id="reduction-operations">Reduction Operations</h3>
+<p>The <code>op</code> argument accepted by <code>MPI_Reduce</code>, <code>MPI_Allreduce</code>, <code>MPI_Reduce_scatter</code>, and <code>MPI_Scan</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MPI_MAX</code></td>
+<td>maximum</td>
+</tr>
+<tr>
+<td><code>MPI_MIN</code></td>
+<td>minimum</td>
+</tr>
+<tr>
+<td><code>MPI_SUM</code></td>
+<td>sum</td>
+</tr>
+<tr>
+<td><code>MPI_PROD</code></td>
+<td>product</td>
+</tr>
+<tr>
+<td><code>MPI_LAND</code></td>
+<td>logical and</td>
+</tr>
+<tr>
+<td><code>MPI_BAND</code></td>
+<td>bit-wise and</td>
+</tr>
+<tr>
+<td><code>MPI_LOR</code></td>
+<td>logical or</td>
+</tr>
+<tr>
+<td><code>MPI_BOR</code></td>
+<td>bit-wise or</td>
+</tr>
+<tr>
+<td><code>MPI_LXOR</code></td>
+<td>logical xor</td>
+</tr>
+<tr>
+<td><code>MPI_BXOR</code></td>
+<td>bit-wise xor</td>
+</tr>
+<tr>
+<td><code>MPI_MAXLOC</code></td>
+<td>max value and location</td>
+</tr>
+<tr>
+<td><code>MPI_MINLOC</code></td>
+<td>min value and location</td>
+</tr>
+</tbody>
+</table>
+<p><em>(Source: OpenMPI docs — https://www.open-mpi.org/doc/v3.0/man3/MPI_Reduce.3.php)</em></p>
+<hr />
+<h2 id="mpi_status"><code>MPI_Status</code></h2>
+<p>Before going on, let's discuss the status variable in the <code>MPI_Recv</code> call.  <code>MPI_Status</code> is a data structure type with fields:</p>
+<pre><code class="language-c">MPI_Status status;
+status.MPI_SOURCE   /* id of the processor that sent the message */
+status.MPI_TAG      /* the message tag */
+status.MPI_ERROR    /* error status (often not modified; same as function return value) */
+/* other fields possible but implementation-dependent */
+</code></pre>
+<p><code>status.MPI_SOURCE</code> is particularly useful when receiving with <code>MPI_ANY_SOURCE</code> — it tells you which processor the message actually came from.</p>
+<hr />
+<h2 id="controlling-synchronisation-blocking-vs-non-blocking-communication">Controlling Synchronisation: Blocking vs Non-Blocking Communication</h2>
+<p><code>MPI_Send</code> is a <strong>blocking</strong> routine: the sending processor waits for a "received" confirmation before proceeding to the next line of code. Similarly, <code>MPI_Recv</code> causes the receiving processor to block until the message arrives. </p>
+<h2 id="example-task-distribution">Example: Task Distribution</h2>
+<p>Suppose we have 10 tasks numbered 1 to 10 to distribute across <code>nprocs = 4</code> processors with $\mathit{nid} \in {0, 1, 2, 3}$.</p>
+<pre><code class="language-c">int node, nprocs;
+ ...
+
+for (int task=1; task &lt;= 10; task++) {
+    node = task - nprocs * (task/nprocs);   /* integer arithmetic — equivalent to task % nprocs */
+    ...
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>task</th>
+<th>task/nprocs</th>
+<th>node</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>7</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>8</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>9</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>10</td>
+<td>2</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="code-c-with-mpi_vars-struct">Code (C with <code>mpi_vars</code> struct)</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &quot;mpi.h&quot;
+
+/* mpi_vars struct and mpi_start() would go here — see Ch1 refactored C version */
+
+main(int argc, char** argv)
+{
+    struct mpi_vars this_mpi = mpi_start(argc, argv);
+    MPI_Status status;
+    int task, taskx, node;
+
+    for (task=1; task &lt;= 10; task++) {
+        node = task - this_mpi.NProcs*(task/this_mpi.NProcs);  /* see which node does this task */
+
+        if (node == this_mpi.MyID &amp;&amp; node != 0) {    /* my task, and I'm not the Boss */
+            if (node==2) waste_your_time();           /* some slow function */
+            MPI_Send(&amp;task, 1, MPI_INT, 0, 10, MPI_COMM_WORLD);   /* tell Boss I am the one */
+        }
+        if (this_mpi.MyID == 0) {
+            if (node == 0)
+                printf(&quot;Processor %d will compute %d\n&quot;, 0, task);
+            else {
+                /* receive a message from anyone */
+                MPI_Recv(&amp;taskx, 1, MPI_INT, MPI_ANY_SOURCE, 10, MPI_COMM_WORLD, &amp;status);
+                printf(&quot;Processor %d will compute %d\n&quot;, status.MPI_SOURCE, taskx);
+                /*                                       ↑ node the message actually came from */
+            }
+        }
+    }
+
+    for (task=11; task &lt;= 20; task++) {
+        node = task - this_mpi.NProcs*(task/this_mpi.NProcs);
+
+        if (node == this_mpi.MyID &amp;&amp; node != 0) { /* Is this is my task? */
+            if (node==2) waste_your_time();
+            MPI_Send(&amp;task, 1, MPI_INT, 0, 10, MPI_COMM_WORLD); /* tell Boss I am the one */
+        }
+        if (this_mpi.MyID == 0) {
+            if (node == 0)
+                printf(&quot;Processor %d will compute %d\n&quot;, 0, task);
+            else {
+                MPI_Recv(&amp;taskx, 1, MPI_INT, MPI_ANY_SOURCE, 10, MPI_COMM_WORLD, &amp;status);
+                printf(&quot;Processor %d will compute %d\n&quot;, status.MPI_SOURCE, taskx);
+            }
+        }
+    }
+    MPI_Finalize();
+}
+</code></pre>
+<h3 id="sample-output">Sample Output</h3>
+<pre><code>Processor 1 will compute 1
+Processor 1 will compute 5
+Processor 1 will compute 9
+Processor 1 will compute 13
+Processor 1 will compute 17
+Processor 3 will compute 3
+Processor 3 will compute 7
+Processor 3 will compute 11
+Processor 3 will compute 15
+Processor 3 will compute 19
+Processor 0 will compute 4
+Processor 0 will compute 8
+Processor 0 will compute 12
+Processor 2 will compute 2
+Processor 2 will compute 6
+Processor 0 will compute 16
+Processor 2 will compute 10
+Processor 2 will compute 14
+Processor 2 will compute 18
+Processor 0 will compute 20
+</code></pre>
+<p><strong>Comments:</strong>
+1. Tasks are not completed in order (and the order may change on each run).
+2. There is no synchronization between loops: some processors are working on the second loop while other processors are still working on the first loop. 
+3. Node 2 is slow, as expected, because of the <code>waste_your_time()</code> call.
+4. Node 0 is slower because it is busy receiving results from other processors and outputting.
+5. Nodes 1 and 3 finish all their tasks before nodes 0 and 2 finish even their first — they complete both loops before nodes 0 and 2 get through the first.</p>
+<h3 id="flowchart-1st-loop">Flowchart (1st Loop)</h3>
+<p>To better understand the code, let's look at a flowchart of the first loop:</p>
+<p><img alt="Flowchart for the first task-distribution loop: two columns for nid=0 (Boss) and nid≠0 (Workers), showing the blocking MPI_Send/Recv pattern." src="../task-flowchart.svg" /></p>
+<p>If we need to have all of tasks 1-10 complete <em>before</em> going on to the 11-20 tasks, we need to synchronize the threads.  This can be cone with a <code>MPI_Barrier</code> line between the loops:</p>
+<h2 id="mpi_barrier"><code>MPI_Barrier</code></h2>
+<pre><code class="language-c">MPI_Barrier(MPI_COMM_WORLD);
+</code></pre>
+<p>This function blocks the calling process from proceeding until <strong>all</strong> processes in <code>MPI_COMM_WORLD</code> have made a similar call. Adding <code>MPI_Barrier</code> between the two task loops ensures all tasks 1–10 are complete before tasks 11–20 begin.</p>
+<h3 id="sample-output-with-mpi_barrier-between-loops">Sample Output (with <code>MPI_Barrier</code> between loops)</h3>
+<pre><code>Processor 1 will compute 1
+Processor 3 will compute 3
+Processor 1 will compute 5
+Processor 3 will compute 7
+Processor 1 will compute 9
+Processor 0 will compute 4
+Processor 2 will compute 2
+Processor 0 will compute 8
+Processor 2 will compute 6
+Processor 2 will compute 10
+Processor 1 will compute 13
+Processor 3 will compute 11
+Processor 1 will compute 17
+Processor 3 will compute 15
+Processor 3 will compute 19
+Processor 0 will compute 12
+Processor 0 will compute 16
+Processor 2 will compute 14
+Processor 2 will compute 18
+Processor 0 will compute 20
+</code></pre>
+<hr />
+<h2 id="ordering-with-blocking-mpi_send">Ordering with Blocking <code>MPI_Send</code></h2>
+<p>In the task example, the blocking effect of <code>MPI_Send</code> and <code>MPI_Recv</code> was somewhat ameleorated by having the Boss use <code>MPI_ANY_SOURCE</code> to accept data from anyone, regardless of order.   Since <code>MPI_Send</code> and <code>MPI_Recv</code> are blocking, you can force tasks to arrive in order by using the task number as the tag:</p>
+<pre><code class="language-c">MPI_Send(&amp;task, 1, MPI_INT, 0, 10+node, MPI_COMM_WORLD);  /* tag = 10+node */
+...
+MPI_Recv(&amp;taskx, 1, MPI_INT, MPI_ANY_SOURCE, 10+node, MPI_COMM_WORLD, &amp;status);
+</code></pre>
+<p>Note that this leads to an asymmetry: a Worker does its task and immediately sends; the Boss must wait for a Worker's send before it can proceed. If one Worker is slow, the Boss waits. This leads to a form of implicit synchronisation imposed by blocking sends.  Note that this also blocks the other workers as they are also waiting for an acknowledgment from their Send's which won't be sent until the corresponding <code>MPI_Recv</code> by the Boxx.</p>
+<blockquote>
+<p><strong>Note:</strong> This will slow things down significantly — a processor that finishes early must now wait for node 0 to receive the previous task before it can proceed. Effectively, tasks are executed sequentially in time, just on different processors.  This effectively eliminates the benefit of parallelism as tasks must now be done sequentially, just on different processors.</p>
+</blockquote>
+<hr />
+<h2 id="non-blocking-communication">Non-Blocking Communication</h2>
+<p><code>MPI_Isend</code> and <code>MPI_Irecv</code> are <strong>non-blocking</strong> variants: the calling processor submits the communication request and immediately proceeds to the next line of code without waiting for delivery confirmation. This allows computation and communication to overlap.</p>
+<p>The function signatures are the same as <code>MPI_Send</code>/<code>MPI_Recv</code> but with an extra <code>MPI_Request*</code> argument at the end:</p>
+<pre><code class="language-c">MPI_Request req_send10 = MPI_REQUEST_NULL;
+MPI_Request req_recv10 = MPI_REQUEST_NULL;
+
+MPI_Isend(&amp;old[size-1][1], N-1, MPI_FLOAT, nid+1, 10, MPI_COMM_WORLD, &amp;req_send10);
+MPI_Irecv(&amp;old[0][1],      N-1, MPI_FLOAT, nid+1, 10, MPI_COMM_WORLD, &amp;req_recv10);
+
+/* ... do other useful work here while the communication is in progress ... */
+
+MPI_Wait(&amp;req_recv10, &amp;status);   /* block until the receive has completed */
+</code></pre>
+<p>Key points:</p>
+<ul>
+<li><code>MPI_Request</code> is a type (like <code>int</code> or <code>float</code>) used to track the status of a non-blocking operation. Declare one for each non-blocking call.</li>
+<li><code>MPI_REQUEST_NULL</code> is the null/default value for an <code>MPI_Request</code>. Always initialise request variables to this before use.</li>
+<li><code>MPI_Wait</code> blocks the calling processor until the specified operation has completed. For a receive, this is necessary before the received data can be used. For a send, it is usually not needed (the buffer may be reused safely after the wait, but many programs never wait on sends).</li>
+<li><code>MPI_Irecv</code> + <code>MPI_Wait</code> is functionally equivalent to <code>MPI_Recv</code>; the advantage of the split form is that you can do useful work between the two calls.</li>
+</ul>
+<h3 id="revised-task-loop-non-blocking-mpi_isend">Revised Task Loop (Non-Blocking <code>MPI_Isend</code>)</h3>
+<pre><code class="language-c">for (task=1; task &lt;= 10; task++) {
+    node = task - this_mpi.NProcs*(task/this_mpi.NProcs);
+
+    if (node == this_mpi.MyID) {
+        if (node==2) waste_your_time();
+        MPI_Isend(&amp;task, 1, MPI_INT, 0, 10, MPI_COMM_WORLD, &amp;req_send10);
+        /* req_send10 previously declared of type MPI_Request */
+    }
+    if (this_mpi.MyID == 0) {
+        req_recv10 = MPI_REQUEST_NULL; /* must set so the later MPI_Wait is not prematurely passed */
+        MPI_Irecv(&amp;taskx, 1, MPI_INT, MPI_ANY_SOURCE, 10, MPI_COMM_WORLD, &amp;req_recv10);
+        MPI_Wait(&amp;req_recv10, &amp;status);
+        printf(&quot;Processor %d will compute %d\n&quot;, status.MPI_SOURCE, taskx);
+    }
+}
+</code></pre>
+<p>This removes the blocking wait imposed by <code>MPI_Send</code>. Workers post their <code>MPI_Isend</code> and immediately loop back to check the next task. The Boss posts <code>MPI_Irecv</code> then calls <code>MPI_Wait</code> to collect each result before printing — but it does not have to wait for the <em>sender</em> to be ready before posting the receive, which reduces idle time compared to the fully blocking version.</p>
+<h3 id="separating-send-and-receive-loops-boss-avoids-waiting">Separating Send and Receive Loops (Boss Avoids Waiting)</h3>
+<p>To avoid having the Boss wait for others to complete before doing its own task, move the receives into a separate loop:</p>
+<pre><code class="language-c">for (task=1; task &lt;= 10; task++) {
+    node = task - this_mpi.NProcs*(task/this_mpi.NProcs);
+
+    if (node == this_mpi.MyID) {  // Check to see if this is my task
+        if (node==2) waste_your_time();
+        MPI_Isend(&amp;task, 1, MPI_INT, 0, 10, MPI_COMM_WORLD, &amp;req_send10); //Tell Boss I am the one
+    }
+}
+
+if (this_mpi.MyID == 0) {
+    for (task=1; task &lt;= 10; task++) {
+        req_recv10 = MPI_REQUEST_NULL;
+        MPI_Irecv(&amp;taskx, 1, MPI_INT, MPI_ANY_SOURCE, 10, MPI_COMM_WORLD, &amp;req_recv10);
+        MPI_Wait(&amp;req_recv10, &amp;status);
+        printf(&quot;Processor %d will compute %d\n&quot;, status.MPI_SOURCE, taskx);
+    }
+}
+MPI_Barrier(MPI_COMM_WORLD);
+/* A good idea to put MPI_Barrier here to prevent messages from the next group
+   of tasks being confused with the current group, since MPI_Irecv is very
+   non-specific — it accepts messages from MPI_ANY_SOURCE with tag 10.
+   The barrier ensures all sends from the first loop are complete before
+   any process starts sending messages for the next group. */
+</code></pre>
+<p>In this version all Workers post their sends immediately (without waiting for the Boss to receive), so they can all finish their tasks in parallel. The Boss then collects the results in a separate loop at its own pace. The <code>MPI_Barrier</code> at the end is essential: without it, some Workers from this group of tasks could still be sending while the Boss has moved on to receiving messages for the next group, causing messages to be misattributed.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.4e0fa4ba.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1357 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://CDenniston.github.io/MPI_Short_Course/Ch3-MatrixVector%20Operations/Ch3-Matrix-Vector_Operations/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.0">
+    
+    
+      
+        <title>Chapter 3: Matrix-Vector Operations - Using MPI for Scientific Computing - Short Course</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.9f615399.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-3-matrix-vector-operations" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Using MPI for Scientific Computing - Short Course" class="md-header__button md-logo" aria-label="Using MPI for Scientific Computing - Short Course" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Using MPI for Scientific Computing - Short Course
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 3: Matrix-Vector Operations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Using MPI for Scientific Computing - Short Course" class="md-nav__button md-logo" aria-label="Using MPI for Scientific Computing - Short Course" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Using MPI for Scientific Computing - Short Course
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#note-on-storing-large-arrays" class="md-nav__link">
+    Note on Storing Large Arrays
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-style-2d-arrays" class="md-nav__link">
+    C-Style 2D Arrays
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamically-allocated-2d-arrays-in-c" class="md-nav__link">
+    Dynamically Allocated 2D Arrays in C
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamically Allocated 2D Arrays in C">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deallocation" class="md-nav__link">
+    Deallocation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-2d-arrays" class="md-nav__link">
+    C++ 2D Arrays
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#boost-multi-array" class="md-nav__link">
+    Boost Multi-Array
+  </a>
+  
+    <nav class="md-nav" aria-label="Boost Multi-Array">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#boost-example" class="md-nav__link">
+    Boost Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slices" class="md-nav__link">
+    Slices
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resizing" class="md-nav__link">
+    Resizing
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#array-access-and-performance" class="md-nav__link">
+    Array Access and Performance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compiler-optimizations" class="md-nav__link">
+    Compiler Optimizations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#matrix-operations-in-parallel" class="md-nav__link">
+    Matrix Operations in Parallel
+  </a>
+  
+    <nav class="md-nav" aria-label="Matrix Operations in Parallel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-vector-multiplication-code-ab-c" class="md-nav__link">
+    Matrix-Vector Multiplication Code (Ab = c)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#note-variable-scope-and-conditional-allocation" class="md-nav__link">
+    Note: Variable Scope and Conditional Allocation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-analysis-matrix-vector-multiplication" class="md-nav__link">
+    Performance Analysis: Matrix-Vector Multiplication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-matrix-matrix-multiplication" class="md-nav__link">
+    Example: Matrix-Matrix Multiplication
+  </a>
+  
+    <nav class="md-nav" aria-label="Example: Matrix-Matrix Multiplication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-analysis-matrix-matrix-multiplication" class="md-nav__link">
+    Performance Analysis: Matrix-Matrix Multiplication
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#timing-your-own-code" class="md-nav__link">
+    Timing your own code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-considerations-message-latency" class="md-nav__link">
+    Other Considerations: Message Latency
+  </a>
+  
+    <nav class="md-nav" aria-label="Other Considerations: Message Latency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sending-row-chunks" class="md-nav__link">
+    Sending Row Chunks
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi-scatter-gather-and-allgather" class="md-nav__link">
+    MPI Scatter, Gather, and Allgather
+  </a>
+  
+    <nav class="md-nav" aria-label="MPI Scatter, Gather, and Allgather">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mpi_scatter" class="md-nav__link">
+    MPI_Scatter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpi_gather" class="md-nav__link">
+    MPI_Gather
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpi_allgather" class="md-nav__link">
+    MPI_Allgather
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blas-lapack" class="md-nav__link">
+    BLAS &amp; LAPACK
+  </a>
+  
+    <nav class="md-nav" aria-label="BLAS & LAPACK">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blas-basic-linear-algebra-subprograms" class="md-nav__link">
+    BLAS: Basic Linear Algebra Subprograms
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blas-nomenclature" class="md-nav__link">
+    BLAS Nomenclature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blas-calling-conventions" class="md-nav__link">
+    BLAS Calling Conventions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-calling-dgemm-from-c" class="md-nav__link">
+    Example: Calling DGEMM from C
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-blas-implementations" class="md-nav__link">
+    Multiple BLAS Implementations
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lapack-standard-linear-algebra-package" class="md-nav__link">
+    LAPACK: Standard Linear Algebra Package
+  </a>
+  
+    <nav class="md-nav" aria-label="LAPACK: Standard Linear Algebra Package">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linear-equations" class="md-nav__link">
+    Linear Equations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lapack-function-naming" class="md-nav__link">
+    LAPACK Function Naming
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intel-mkl-examples" class="md-nav__link">
+    Intel MKL Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="chapter-3-matrix-vector-operations">Chapter 3: Matrix-Vector Operations</h1>
+<hr />
+<h2 id="note-on-storing-large-arrays">Note on Storing Large Arrays</h2>
+<p>In this section we will look at matrix-vector operations and often will use very large arrays.</p>
+<p>If you allocate an array using something like:</p>
+<pre><code class="language-cpp">double a[100000];
+</code></pre>
+<p>the array will be stored in something called the <strong>stack</strong>. This is also where the program keeps track of function calls and other code details. Space on the stack is limited, so if you allocate a very large array in this manner you may get a stack "overflow", typically signalled by a "seg fault 11".</p>
+<p>If you dynamically allocate memory (through <code>new</code> in C++ or <code>calloc</code>/<code>malloc</code> in C) the array will be stored in something called the <strong>heap</strong>, which does not have space limitations.</p>
+<p>Things in the stack can often be accessed faster, so there are cons/benefits to both cases. However, if you arrange the order in which you access elements on the stack, you can often speed up your code by 20–30% due to caching effects. To understand this, and to understand how to send/receive multidimensional arrays using MPI, we need to understand how multidimensional arrays are stored in memory.</p>
+<hr />
+<h2 id="c-style-2d-arrays">C-Style 2D Arrays</h2>
+<p>Consider a static array declared via:</p>
+<pre><code class="language-c">double array[4][4];
+</code></pre>
+<p>We think of this as a matrix, but device memory is addressed in a single linear sequence (i.e. 1D). Therefore, to store this 2D array in memory it must first be converted to a 1D sequence.</p>
+<p><img alt="C-style row-major storage of a 2D array" src="../rowmajor.svg" /></p>
+<p>C uses <strong>row-major order</strong>: the elements of each row are stored consecutively in memory. The element <code>array[i][j]</code> is stored at:
+$$\texttt{array[i][j]} \;\longrightarrow\; <em>!\bigl(\&amp;\texttt{array[0][0]} + i \times \texttt{ncols} + j\bigr)$$
+where <code>&amp;array[0][0]</code> is the memory address of the beginning of the array, <code>ncols</code> is the number of columns, <code>(&amp;array[0][0]+i*ncols+j)</code> is then the memory address of the element in row <code>i</code> column <code>j</code>, and the <code>*</code> operator placed in front of a memory address 'de-references' this address to give you the value that is stored at the memory address.  This means:
+$$\texttt{array[i][j]} \;\equiv\; \texttt{array[0][i{</em>}4 + j]}$$
+As there is no bounds checking, you can use either form interchangeably in code.</p>
+<p>The compiler actually converts all multidimensional arrays into 1D arrays at compile time, which is why in C you need to pass functions the number of columns in order for the function to decode what you mean by <code>a[i][j]</code>.  Note that C puts a significant burden on the programmer to manage memory precisely and without errors.  The failure of programmers to do this consistently is one of the main drivers for creation of so-called "memory-safe" languages like Rust. You must be <em>extremely</em> careful to avoid coding errors and diligently test and debug.</p>
+<hr />
+<h2 id="dynamically-allocated-2d-arrays-in-c">Dynamically Allocated 2D Arrays in C</h2>
+<p>In order to use external libraries like MPI (and others like the BLAS and LAPACK) we need to ensure dynamically allocated multidimensional arrays break into 1D storage in a manner consistent with a static 2D array.</p>
+<p>There are several ways to dynamically allocate multidimensional arrays. Many are <strong>not</strong> consistent with static storage. We will do this so that the entire array is stored in one contiguous block of memory.  There are many reference, like <em>Numerical Recipies in C</em>, where the array is not stored in one contiguous block and you should watch for this when parallizing legacy code.</p>
+<p>For example:</p>
+<pre><code class="language-c">int rows = 5, cols = 3;
+double** A;
+A = (double**) calloc(rows, sizeof(double*));       // allocate array of row pointers
+A[0] = (double*) calloc(rows*cols, sizeof(double)); // allocate entire data block
+for (int i=1; i&lt;rows; i++)
+    A[i] = A[i-1] + cols;                           // make A[i] point to start of row i
+</code></pre>
+<p><img alt="Dynamic 2D array memory layout" src="../dynamic2d.svg" /></p>
+<p>Notes on the pictorial layout:
+1. Each <code>A[i]</code> is a pointer that points to <code>A[i][0]</code>.
+2. <code>A</code> is a pointer that points to <code>A[0]</code>, which is itself a pointer pointing to <code>A[0][0]</code>.
+As such, <code>A</code> is a pointer to an array of pointers, each of which points to the beginning of a new row.
+Note that the actual array data is stored sequentially (all <code>rows*cols</code> doubles in one contiguous block), just like a fixed array.</p>
+<h3 id="deallocation">Deallocation</h3>
+<p>To deallocate this array, we must do it in <strong>reverse order</strong> from the way we created it with the <code>calloc</code> statements:</p>
+<pre><code class="language-c">free(A[0]);  // deallocates actual data array
+free(A);     // deallocates array of row pointers
+</code></pre>
+<p>If we attempted to deallocate in the opposite order, we would have lost what <code>A[0]</code> pointed to (the actual array), and would have a big <strong>memory leak</strong> (i.e. we would no longer have access to the actual data array: it would remain allocated but completly useless and taking up memory space that cannot be reused.)</p>
+<hr />
+<h2 id="c-2d-arrays">C++ 2D Arrays</h2>
+<p>In order for us to use MPI and other external libraries, we need the actual data in our arrays to be stored in memory in the same way as a static multidimensional C array. We can still do this with C++ vectors:</p>
+<pre><code class="language-cpp">int rows = 5, cols = 3;
+std::vector&lt;double*&gt; A;
+A.reserve(rows);  A.resize(rows);
+std::vector&lt;double&gt; Amem;
+Amem.reserve(rows*cols);  Amem.resize(rows*cols);
+A[0] = &amp;(Amem[0]);
+for (int i=1; i&lt;rows; i++) {
+    A[i] = A[i-1] + cols;
+}
+</code></pre>
+<p>This sets up something analogous to what we did in C. We can use <code>A[i][j]</code> as if we declared the array statically as <code>double A[5][3]</code>.</p>
+<p>However, this is obviously less than ideal and makes bounds checking very messy. The C++23 standard introduced  <code>std::mdspan</code> as a multidimensional view into a non-owned 1D array but is still not fully implemented into all compilers (as of late 2026). In the meantime, a good way to avoid these problems is to use the Boost libraries.</p>
+<hr />
+<h2 id="boost-multi-array">Boost Multi-Array</h2>
+<p><strong>Boost</strong> is a set of libraries that are similar to, and often expand on, the STL. They are close enough to the standard that different parts of Boost have been incorporated into C++11  and later standards (btw, if the code you are working with is not compliant with a version of C++ from 2011 or newer, you should probably start by updating the code to a newer standard).</p>
+<p>To use the Boost libraries, we must first install them on our machine using the command line:
+- On <strong>Linux/WSL</strong> (Windows Subsytem for Linux (WSL) bash shell): <code>sudo apt-get install libboost-all-dev</code>
+- On a <strong>Mac</strong>, first install MacPorts from <a href="http://www.macports.org">www.macports.org</a>, then: <code>sudo port install boost-devel</code>
+You will typically be prompted for a password and then it will install Boost <em>plus</em> anything else you many need to use it on your machine.</p>
+<p>On Linux/WSL you should not need to do anything else. In some systems you may have to link when you compile using something like <code>-lboost_xx</code> where <code>xx</code> is one of the Boost sublibrary names.</p>
+<h3 id="boost-example">Boost Example</h3>
+<p><code>std::vector</code> is great for 1-dimensional arrays but does not naturally handle multi-dimensional arrays well. The <code>boost::multi_array</code> library provides <code>std::vector</code>-like functionality to multidimensional arrays.</p>
+<pre><code class="language-cpp">#include &quot;boost/multi_array.hpp&quot;  // from Boost library
+#include &lt;cassert&gt;
+
+int main () {
+    // Create a 3D array that is 3 x 4 x 2
+    typedef boost::multi_array&lt;double, 3&gt; array_type; // &lt;&gt; args: element type, number of indices
+    array_type A(boost::extents[3][4][2]);     // declares A with size 3 in 1st dim, 4 in 2nd, 2 in 3rd
+
+    // Assign values to the elements
+    typedef array_type::index index;  // index type for our array
+    int values = 0;
+    for(index i = 0; i != 3; ++i)
+        for(index j = 0; j != 4; ++j)
+            for(index k = 0; k != 2; ++k)
+                A[i][j][k] = values++;  // access elements just like a simple array
+
+    // Verify values
+    int verify = 0;
+    for(index i = 0; i != 3; ++i)
+        for(index j = 0; j != 4; ++j)
+            for(index k = 0; k != 2; ++k)
+                assert(A[i][j][k] == verify++);
+
+    return 0;
+}
+</code></pre>
+<p><strong>Note:</strong> The <code>[]</code> operator <em>does</em> bounds checking here. To disable range-checking (for performance reasons and only after the code has been thoroughly tested), define <code>BOOST_DISABLE_ASSERTS</code> prior to the <code>multi_array.hpp</code> include.</p>
+<h3 id="slices">Slices</h3>
+<p>We can also grab a part, or slice, of our array:</p>
+<pre><code class="language-cpp">// myarray = 2 x 3 x 4
+
+//
+// array_view dims: [base,bound) (dimension striding default = 1)
+// dim 0: [0,2) 
+// dim 1: [1,3) 
+// dim 2: [0,4) (strided by 2), 
+// 
+
+typedef boost::multi_array_types::index_range range;
+  // OR typedef array_type::index_range range;
+  array_type::array_view&lt;3&gt;::type myview =
+    myarray[ boost::indices[range(0,2)][range(1,3)][range(0,4,2)] ];
+// myview is now a 3D array consisting of indices 0:1 of 1st dim of myarray,
+// 1:2 of 2nd dimension, and 0:2 of 3rd dim. So myview is 2x2x2.
+
+for (array_type::index i = 0; i != 2; ++i)
+    for (array_type::index j = 0; j != 2; ++j)
+      for (array_type::index k = 0; k != 2; ++k) 
+            assert(myview[i][j][k] == myarray[i][j+1][k*2]);
+
+</code></pre>
+<p>from: https://www.boost.org/doc/libs/latest/libs/multi_array/doc/user.html </p>
+<h3 id="resizing">Resizing</h3>
+<p>We can also resize the array using the <code>resize()</code> function:</p>
+<pre><code class="language-cpp">typedef boost::multi_array&lt;int, 3&gt; array_type;    // define 3D array type
+array_type::extent_gen extents;                    // define member variable to hold extents
+array_type A(extents[3][3][3]);                    // define A as 3x3x3
+A[0][0][0] = 4;
+A[2][2][2] = 5;                                   // set some elements
+A.resize(extents[2][3][4]);                        // resize the array to 2x3x4
+assert(A[0][0][0] == 4);                           // this should still be valid
+// A[2][2][2] is no longer valid.
+</code></pre>
+<p><strong>Note:</strong> This changes the length in each dimension; it does not change the number of dimensions.</p>
+<hr />
+<h2 id="array-access-and-performance">Array Access and Performance</h2>
+<p>Consider a multidimensional array <code>A</code> with, say, 4 indices. Many algorithms will involve nested loops over the entries of such an array. Does the loop order matter? In many cases, the order does not matter for getting the correct answer, but it can make a big difference to performance. Why? Because when you retrieve an entry of an array from main memory, typically a block of nearby entries are loaded into cache at the same time.</p>
+<p>For example, consider a 3×4 matrix stored in row-major order:</p>
+<pre><code>     col 0  1  2  3
+row 0: [ 0, 1, 2, 3 ]
+row 1: [ 4, 5, 6, 7 ]   ← memory order
+row 2: [ 8, 9,10,11 ]
+</code></pre>
+<p>If we ask for <code>A[i][j]</code>, there is a good chance we will "pre-fetch" <code>A[i][j+1]</code> at the same time because it is stored next in memory (C row-major).</p>
+<p>Therefore:</p>
+<pre><code class="language-cpp">// FASTER: inner loop over j (sequential in memory for row-major C arrays)
+for (int i=0; i&lt;3; ++i)
+    for (int j=0; j&lt;3; ++j)
+        A[i][j] = atan(M_PI*i/3, M_PI*j/3);
+
+// SLOWER: inner loop over i (jumps in memory for row-major storage)
+for (int j=0; j&lt;3; ++j)
+    for (int i=0; i&lt;3; ++i)
+        A[i][j] = atan(M_PI*i/3, M_PI*j/3);
+</code></pre>
+<p>Keeping the innermost loop over the <strong>last index</strong> (the "fastest-changing" index in C/C++ row-major storage) exploits cache pre-fetching and can yield 20–30% speedups.</p>
+<hr />
+<h2 id="compiler-optimizations">Compiler Optimizations</h2>
+<p>There are multiple sources of error in Scientific Computing. Two main ones are:</p>
+<ol>
+<li><strong>Finite precision arithmetic</strong> — overflow/underflow, roundoff errors</li>
+<li><strong>Truncation or discretization errors</strong> — arise from the fact that our models and algorithms usually only try to approximate the solution</li>
+</ol>
+<p>In most cases, errors from the second source dominate. We can then usually relax some of the constraints usually set up to minimize roundoff errors, such as strictly following IEEE rules on arithmetic, to speed things up. This is done via compiler flags:</p>
+<pre><code class="language-bash">g++ -O3 program.cpp -o prog
+</code></pre>
+<p>or</p>
+<pre><code class="language-bash">mpiCC -O3 program.cpp -o prog
+</code></pre>
+<p><code>-O3</code> means apply aggressive optimization to code. In many cases this can substantially speed up run times.</p>
+<hr />
+<h2 id="matrix-operations-in-parallel">Matrix Operations in Parallel</h2>
+<p>Let's write some code to do $A \cdot b = c$, where $A$ is a matrix and $b$ and $c$ are vectors. We will use a Boss-Worker model where Workers do all computation while Boss directs the work.</p>
+<p>To do this, we divide the task of $A \cdot b = c$ into:
+$$A[i] \cdot b = c[i], \quad i = 0, \ldots, n_\text{rows} - 1$$
+where $A[i]$ is the $i$-th row of $A$ (itself a row vector of length $n_\text{cols}$) and $c[i]$ is the $i$-th element of the result vector. We have different processors work on each of these row tasks until done.</p>
+<p><img alt="Boss-Worker flowchart for matrix-vector multiplication" src="../matvec-flowchart.svg" /></p>
+<h3 id="matrix-vector-multiplication-code-ab-c">Matrix-Vector Multiplication Code (Ab = c)</h3>
+<pre><code class="language-cpp">/////////////////////////////////////////////
+// Matrix-vector multiplication code Ab=c //
+/////////////////////////////////////////////
+
+// Note that I will index arrays from 0 to n-1.
+// Here workers do all the work and boss just handles collating results
+// and sending info about A.
+
+// include, definitions, globals etc here
+#include &lt;iostream&gt;
+#include &quot;boost/multi_array.hpp&quot;  // use boost arrays
+#include &quot;mpi.h&quot;
+
+// ... mpi stuff declared here
+
+int main(int argc, char** argv)
+{
+    // initialize MPI
+    MPI_stuff the_mpi(argc, argv);
+
+    // determine/distribute size of arrays here to all nodes
+    // ...
+
+    // Allocate and initialize A and b here on the Boss node and space for c
+    // Workers need space for b and a row of A, Arow
+    // Assume A will have rows 0,nrows-1 and columns 0,ncols-1, so b is 0,ncols-1
+    // so c must be 0,nrows-1.  Note declarations need to be outside of an if block to
+    // avoid going out of scope.  Boss should initialize A and only Boss needs this whole
+    // matrix.  Workers need only space for a row of A which we will call Arow
+    // ...
+
+    // send b to every worker process, note b is a std::vector so b and &amp;b[0] not same
+    MPI_Bcast(&amp;b[0], ncols, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    MPI_Status status;
+    // Boss part
+    if (the_mpi.MyID == 0) {
+        // Send one row to each worker tagged with row number+1 (+1 as we reserve 0 for done signal)
+        // Assume nprocs&lt;nrows
+        int rowsent=0;
+        for (int i=1; i&lt; the_mpi.NProcs; i++) {
+            MPI_Send(&amp;A[rowsent][0], ncols, MPI_DOUBLE, i, rowsent+1, MPI_COMM_WORLD);
+            rowsent++;
+        }
+
+        for (int i=0; i&lt;nrows; i++) {   
+            double ans;
+            // together, MPI_ANY_SOURCE and MPI_ANY_TAG mean: take next message
+            // regardless of source or tag
+            MPI_Recv(&amp;ans, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &amp;status);
+            int sender = status.MPI_SOURCE;     // who sent
+            int anstype = status.MPI_TAG;       // which answer (= row number + 1)
+            c[anstype-1] = ans;
+            if (rowsent &lt; nrows) {              // send new row to who we got result from
+                MPI_Send(&amp;A[rowsent][0], ncols, MPI_DOUBLE, sender, rowsent+1, MPI_COMM_WORLD);
+                rowsent++;
+            }
+            else        // tell sender no more work to do via a 0 TAG
+                MPI_Send(MPI_BOTTOM, 0, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD);
+                // MPI_BOTTOM = address of &quot;bottom of memory&quot;, just a placeholder
+                // no actual buffer is sent; just TAG=0 and other status stuff
+        }
+    }
+    // Worker part: compute dot products of Arow.b until done message received
+    else {
+        // Get a row of A
+        MPI_Recv(&amp;Arow[0], ncols, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &amp;status);
+        while(status.MPI_TAG != 0) {    // keep working until we get a 0 tag
+            int crow = status.MPI_TAG;  // which row did we get
+
+            // work out Arow.b
+            double ans=0.0;
+            for (int i=0; i&lt; ncols; i++)
+                ans+=Arow[i]*b[i];      // actual dot product of row of A dotted with b
+
+            // Send answer of Arow.b back to boss and get another row to work on
+            MPI_Send(&amp;ans, 1, MPI_DOUBLE, 0, crow, MPI_COMM_WORLD);
+            MPI_Recv(&amp;Arow[0], ncols, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &amp;status);
+        }
+    }
+
+    // output c here on Boss node
+    // ...
+
+    // in C you should free space and MPI_Finalize here
+}
+</code></pre>
+<h3 id="note-variable-scope-and-conditional-allocation">Note: Variable Scope and Conditional Allocation</h3>
+<p>Here we only need the full matrix $A$ on the Boss node. It would be tempting to declare $A$ inside an <code>if (MyID == 0)</code> block, but then $A$ would immediately go out of scope. Instead, create the pointers to $A$ on all nodes and only allocate space on Boss.</p>
+<p><strong>In C:</strong></p>
+<pre><code class="language-c">double** A;
+if (the_mpi.MyID == 0) {
+    A = (double**) calloc(nrows, sizeof(double*));
+    A[0] = (double*) calloc(nrows*ncols, sizeof(double));
+    // ... etc
+}
+</code></pre>
+<p><strong>In C++:</strong></p>
+<pre><code class="language-cpp">typedef boost::multi_array&lt;double, 2&gt; A_type;
+A_type A;
+if (the_mpi.MyID == 0) {
+    // Set size of A
+    A.resize(boost::extents[nrows][ncols]);
+    // ... etc
+}
+</code></pre>
+<p>And similarly with <code>std::vector</code> on 1D arrays.</p>
+<hr />
+<h2 id="performance-analysis-matrix-vector-multiplication">Performance Analysis: Matrix-Vector Multiplication</h2>
+<p>This code is an example of <strong>Dynamic Load Balancing</strong> — if one node is bogged down doing something else, other nodes which finish faster will get more work.</p>
+<p>This seems like a brilliant idea! What could go wrong? To analyze the performance we first need to decide on the hardware model we are going to do the analysis for.  MPI was originally designed for a distributed memory Beowulf cluster-style hardware where the individual CPU cores are distinct and connected via some communications network, such as an ethernet connection.  As such, let's analyze the expected performance on such a system:</p>
+<p>For a square $n \times n$ matrix $A$, the number of floating point operations (defined as one linear operation so multiplication plus add), or <em>flops</em>, is roughly
+$$#\text{flops} = n_\text{rows} \times n_\text{cols} = n^2 \quad (\text{multiplication + add} = 1 \text{ flop})$$
+which leads to a compute time for a serial code of
+$$\text{compute time (serial)} = n^2 \, T_\text{flop}$$
+where $T_\text{flop}$ is the time required to compute 1 flop.</p>
+<p>If we do this on $p$ processors using the above algorithm we also need to account for the communication between processors.  First we count the number of communication calls needed:
+$$#\text{doubles sent/received} \approx (n+1) \cdot n = n^2 + n$$
+(send $n$ rows of $A$, each of which consists of $n$ doubles, and receive 1 answer back for each case).  If we assume the communication depends only on the amount of information sent, then
+$$\text{communication time} \approx (n^2 + n) \, T_\text{comm}$$
+where $T_{\text{comm}}$ is the time required to send one double.  In the ideal case,
+$$\text{compute time spread over } p \text{ processors} \approx \frac{n^2 T_\text{flop}}{p}$$
+$$\text{total runtime on } p \text{ processors} \approx \frac{n^2}{p} T_\text{flop} + (n^2 + n) T_\text{comm}$$
+To quantify the gains (or losses) from parallelizing the code, a commonly used simple measure is the speedup, 
+$$S(p) = \text{speedup} \equiv \frac{\text{runtime on 1 processor}}{\text{runtime on } p \text{ processors}}$$
+One would like to see something like
+$$S(p)\approx a p$$
+for some constant $a$ so that the code runs faster when supplied with more processors.  The ideal case would have $a=1$ and this is referred to as <em>linear</em> scaling.  It is possible in some circumstances to see $a&gt;1$ and this is often referred to as "superlinear" scaling (although mathematically it is still linear).  This fortuitous case is typically an effect due to caching when breaking the problem down into smaller parts results in more (or all) of each part fitting in the processor cache.  It is also possible to get $S(p)&lt;1$, or a <em>slowdown</em> rather than a speedup.</p>
+<p>For our problem, we have
+$$S(p) \approx \left[\frac{n^2 T_\text{flop}}{\frac{n^2}{p} T_\text{flop} + (n^2+n) T_\text{comm}}\right] \approx \frac{1}{\frac{1}{p} + \frac{T_\text{comm}}{T_\text{flop}}}=\frac{p}{1+p\frac{T_\text{comm}}{T_\text{flop}}}$$
+Now, $T_\text{flop}$ is of order 1 clock cycle $\approx 0.5\,\text{ns}$ for a 2 GHz core. A Gigabit Ethernet connection takes $\approx 64\,\text{bits} \times 1\,\text{ns} = 64\,\text{ns}$ to transmit a double. So $T_\text{comm} &gt; T_\text{flop}$.⇒ <strong>The program will likely run <em>slower</em> in parallel on a classic Beowulf cluster!</strong> The second term in the denominaor $T_\text{comm}/T_\text{flop}&gt;1$ dominates, dragging the speedup below 1 for any $p$.  </p>
+<p>However, most modern clusters consist of some combination of multicore processors, with memory shared by cores on each processor, and slower communication only occuring between processors.  This is obviously more complicated but one could imagine a similar analysis for a single multicore processor machine with shared memory where it might be that $T_\text{comm} &lt; T_\text{flop}$.  In that case, one might observe speedup greater than 1 for small $p$ and  reaching the limit of $T_\text{flop}/T_\text{comm}$ for really large $p$ where adding more processors would not make much difference for how fast the code runs.</p>
+<hr />
+<h2 id="example-matrix-matrix-multiplication">Example: Matrix-Matrix Multiplication</h2>
+<p>Let's generalize the above code to do Matrix-Matrix multiplication:
+$$A \cdot B = C \quad (\text{all } n \times n \text{ matrices})$$
+The changes to the Worker part are:</p>
+<pre><code class="language-cpp">// changes for Matrix-Matrix multiplication code
+{
+    // changes to BOSS part: you figure it out
+
+    // changes to Worker part:
+    // worker receives B, then computes rows of C until done message received
+    MPI_Bcast(B, Bcols*Brows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    // (assumes B is stored as a contiguous block of memory)
+
+    MPI_Recv(&amp;Arow[0], Acols, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &amp;status);
+    while (status.MPI_TAG != 0) {
+        int crow = status.MPI_TAG;
+
+        // Work out Arow.B = Crow
+        for (i=0; i&lt; Bcols; i++) {
+            Crow[i]=0.0;
+            for (j=0; j&lt; Acols; j++)
+                Crow[i] += Arow[j]*B[j][i];
+        }
+        MPI_Send(Crow, Bcols, MPI_DOUBLE, 0, crow, MPI_COMM_WORLD);
+        MPI_Recv(&amp;Arow[0], Acols, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &amp;status);
+    }
+
+    // blah, blah, blah...
+}
+</code></pre>
+<h3 id="performance-analysis-matrix-matrix-multiplication">Performance Analysis: Matrix-Matrix Multiplication</h3>
+<p>We can easily generalize our previous analysis for this situation.  In this case, based on our previous analysis, $A$ times one column of $B$ requires roughly $n^2$ flops, so for $n$ columns we should have
+$$#\text{flops for } A \cdot B = n^2 \times n = n^3$$
+$$\text{compute time using } p \text{ processors} \approx \frac{n^3 T_\text{flop}}{p}$$
+$$#\text{doubles sent/received} = (n + n) \times n \approx 2n^2$$
+(send $n$ rows of $A$, each of which consists of $n$ doubles, and receive 1 answer back for each case with each answer now consisting of $n$ doubles).  Note that Bcast of $B$ is also $\mathcal{O}(n^2)$ operations.
+$$\text{total runtime on } p \text{ processors} \approx \frac{n^3}{p} T_\text{flop} + 3n^2 T_\text{comm}$$
+$$S(p) = \left[\frac{\frac{n^3}{p} T_\text{flop} + 3n^2 T_\text{comm}}{n^3 T_\text{flop}}\right]^{-1} = \left[\frac{1}{p} + \frac{3}{n} \cdot \frac{T_\text{comm}}{T_\text{flop}}\right]^{-1} \xrightarrow{n \to \infty} p$$</p>
+<p>So here $S(p) \to p$ as $n \to \infty$ (for fixed $p$) — <strong>the program scales and gives an ideal speedup for large matrices!</strong>  NB: $n$ may need to be very large in order to overcome the case where $T_\text{comm} &gt; T_\text{flop}$.</p>
+<hr />
+<h2 id="timing-your-own-code">Timing your own code</h2>
+<p>Timers across cores on different machines may not be syncrionized so using standard timer functions to measure performance in an MPI based code could be problematic. MPI resolves this issue by providing the routine <code>MPI_Wtime()</code> which returns a double precision <em>synchronized</em> time in seconds:</p>
+<pre><code class="language-cpp">begintime = MPI_Wtime();
+// ... computation ...
+endtime = MPI_Wtime();
+</code></pre>
+<p>To evaluate parallel performance it is often worth timing the computational part separately from the communication part (e.g. by putting a timer around MPI calls).</p>
+<p>In addition to speedup, it is also interesting to consider <strong>efficiency</strong>:
+$$\text{efficiency} = \frac{\text{runtime on 1 processor}}{p \times \text{runtime on } p \text{ processors}}=\frac{S(p)}{p}$$
+Efficiency $= 1$ means "perfect" parallelism.</p>
+<hr />
+<h2 id="other-considerations-message-latency">Other Considerations: Message Latency</h2>
+<p>Typically the time to send a message $T_{\text{message}}$ includes a constant:
+$$T_\text{message} = t_s + k \cdot t_c$$
+where:
+- $t_s$ = constant time to send one message (setup / "latency" time)
+- $k$ = number of units of data in the message
+- $t_c$ = time to communicate one unit of data</p>
+<ul>
+<li>$t_s$ and $t_c$ vary enormously among different hardware/implementations.</li>
+<li>Typically you cannot ignore $t_s$ (i.e. $t_s \gg t_c$), so you should <strong>send data in the largest possible chunks</strong>.</li>
+</ul>
+<p>These considerations suggest dividing up Matrix operations differently for systems where dynamic load balancing is not necessary (but you can still do <em>static</em> load balancing). For example, SharcNet gives $n$-processor MPI jobs exclusive use of $n$-processors, so dynamic balancing is often not really necessary.</p>
+<h3 id="sending-row-chunks">Sending Row Chunks</h3>
+<p>Consider an array in C/C++ declared as a contiguous block of memory. Rather than sending each row individually, we can send a chunk of rows at once:</p>
+<p><img alt="Sending row chunks rather than individual rows" src="../chunked-array.svg" /></p>
+<p>Then do matrix operations on blocks.</p>
+<p>MPI has some useful commands for doing this automatically:</p>
+<h2 id="mpi-scatter-gather-and-allgather">MPI Scatter, Gather, and Allgather</h2>
+<h3 id="mpi_scatter"><code>MPI_Scatter</code></h3>
+<pre><code class="language-c">MPI_Scatter(void *send_buffer, int send_count, MPI_DATATYPE send_type,
+            void *recv_buffer, int recv_count, MPI_DATATYPE recv_type,
+            int root, MPI_Comm comm)
+</code></pre>
+<p><em>Sends data from one processor to all other processes in a group.</em></p>
+<p>The process with rank <code>root</code> distributes the contents of <code>send_buffer</code> among the processes. The contents of <code>send_buffer</code> are split into <code>p</code> segments (<code>p</code> being the number of processors involved), each consisting of <code>send_count</code> elements. The first segment goes to process 0, the second to process 1, etc. <strong>It is up to you to ensure</strong> that <code>p * send_count</code> elements after the address <code>send_buffer</code> are available. The send arguments are significant only on process root — they are essentially ignored on the other processors.</p>
+<h3 id="mpi_gather"><code>MPI_Gather</code></h3>
+<pre><code class="language-c">MPI_Gather(void *send_buffer, int send_count, MPI_DATATYPE send_type,
+           void *recv_buffer, int recv_count, MPI_DATATYPE recv_type,
+           int root, MPI_Comm comm)
+</code></pre>
+<p><em>Gathers together values from a group of tasks.</em></p>
+<p>Each process in <code>comm</code> sends the contents of <code>send_buffer</code> to the process with rank <code>root</code>. The process root concatenates the received data in process rank order in <code>recv_buffer</code>. The receive arguments are significant only on the process with rank root. The argument <code>recv_count</code> indicates the number of items received from <strong>each</strong> process — not the total number received.</p>
+<h3 id="mpi_allgather"><code>MPI_Allgather</code></h3>
+<pre><code class="language-c">MPI_Allgather(void *send_buffer, int send_count, MPI_DATATYPE send_type,
+              void *recv_buffer, int recv_count, MPI_Datatype recv_type,
+              MPI_Comm comm)
+</code></pre>
+<p><em>Gathers data from all processes and distributes it to all.</em></p>
+<p><code>MPI_Allgather</code> gathers the contents of each <code>send_buffer</code> on each process. Its effect is the same as if there were a sequence of <code>p</code> calls to <code>MPI_Gather</code>, each of which has a different process acting as root.</p>
+<p>Useful variants of these commands are <code>MPI_Scatterv</code> and <code>MPI_Gatherv</code>, which allow different-sized segments to be sent to different processors.</p>
+<p>A great resource for more info on a specific MPI command, often including an example, can be found at: <a href="https://docs.open-mpi.org/en/v5.0x/">docs.open-mpi.org</a></p>
+<hr />
+<h2 id="blas-lapack">BLAS &amp; LAPACK</h2>
+<p>Before building more efficient Matrix operations in parallel, let's step back and consider how to do this in serial.</p>
+<h3 id="blas-basic-linear-algebra-subprograms">BLAS: Basic Linear Algebra Subprograms</h3>
+<p>Let's discuss the Basic Linear Algebra Subprograms first. These are standards over which all supercomputers (and regular computers) are tested. There are several implementations tuned for specific architectures.</p>
+<p>There are 3 levels of routines:</p>
+<ul>
+<li><strong>BLAS1:</strong> vector operations, e.g. dot products, norms, $\vec{y} \leftarrow \alpha \vec{z} + \vec{y}$</li>
+<li><strong>BLAS2:</strong> matrix-vector operations, e.g. $\vec{y} \leftarrow \alpha A \vec{z} + \beta \vec{y}$; also solve $T\vec{x} = \vec{y}$ for $T$ triangular</li>
+<li><strong>BLAS3:</strong> matrix-matrix operations, e.g. $C \leftarrow \alpha AB + \beta C$ ($A$, $B$ and $C$ are matrices; routine to do this is <code>dgemm</code>)</li>
+</ul>
+<p>and the Greek letters above are scalars.</p>
+<h3 id="blas-nomenclature">BLAS Nomenclature</h3>
+<p>How would I know to look for something as weirdly named as <code>dgemm()</code>? The BLAS have a (mostly) systematic naming convention.</p>
+<p>For almost all BLAS, the <strong>first letter</strong> is one from the set <code>{S, D, C, Z}</code>, indicating single precision (<code>float</code>), double precision (<code>double</code>), complex, and double complex, respectively. Exception: <code>i#amax(n,x,incx)</code> where $#$ is from the set <code>{S, D, C, Z}</code>.</p>
+<p>For BLAS2/BLAS3, the <strong>second and third letters</strong> give the type of matrix:
+- <code>GE</code> = general matrix
+- <code>GB</code> = general banded matrix
+- <code>GP</code> = general "packed" matrix
+- <code>HE</code> = general Hermitian matrix
+- <code>SY</code> = general symmetric matrix
+- <code>TR</code> = triangular matrix</p>
+<p>For BLAS2/BLAS3, the <strong>fourth and fifth letters</strong> give the type of operation:
+- <code>MV</code> = matrix-vector product
+- <code>SV</code> = solve (for triangular matrices only)
+- <code>MM</code> = matrix-matrix product
+- <code>R*</code> = low rank update (R1, R2)</p>
+<p>Vector operations will have an "increment" associated with each vector (normally you would pick one, but you could do a vector operation on a column of a 2D array by picking an increment equal to the number of columns in a row). For example, the <code>daxpy</code> call is <code>daxpy(n, alpha, x, incx, y, incy)</code>. This is a BLAS1 routine and the name means: D for double precision and <code>axpy</code> indicates the operation $\alpha \vec{x} + \vec{y}$ (<code>a</code> for $\alpha$, <code>x</code> for $\vec{x}$, <code>p</code> for <code>+</code>, and <code>y</code> for $\vec{y}$).</p>
+<h3 id="blas-calling-conventions">BLAS Calling Conventions</h3>
+<p>When using the BLAS, beware that:</p>
+<ul>
+<li>
+<p>The BLAS have to be callable from both Fortran and C/C++. That means all arguments passed in are <strong>addresses</strong>. So if the length of the vector is <code>n</code>, from C you need to pass the argument <code>&amp;n</code>. From a Fortran program it is called with argument <code>n</code>; the default in Fortran is to pass the address, not a copy of the actual datum. C-interface versions of the BLAS (called CBLAS) can make life easier when writing from C/C++, but the interface is nonstandard.</p>
+</li>
+<li>
+<p>2D arrays are presumed to be in <strong>column-major order</strong> (as in Fortran). That is, in the computer's memory, consecutive locations correspond to going down one column after another.</p>
+</li>
+</ul>
+<p><strong>THIS IS A VERY IMPORTANT POINT:</strong> C/C++ stores arrays in row-major order, but BLAS/LAPACK expect column-major. You must account for this when calling BLAS from C.</p>
+<p><img alt="Column-major vs row-major memory layout" src="../storage-order.svg" /></p>
+<p>With row-major order (C-style), the last array index changes most quickly and the first one changes most slowly when traversing the memory segment. With Fortran column-major order, the last index changes most slowly and the first index changes most quickly.</p>
+<p>For example, if a two-dimensional matrix $A$ of size $m \times n$ is stored densely in a one-dimensional array $B$:
+$$A[i][j] = B[i{<em>}n + j] \quad \text{in C} \quad (i = 0, \ldots, m-1; \; j = 0, \ldots, n-1)$$
+$$A(i,j) = B[(j-1){</em>}m + i] \quad \text{in Fortran} \quad (i = 1, \ldots, m; \; j = 1, \ldots, n)$$
+When calling LAPACK or BLAS routines from C, be aware that because Fortran is case-insensitive, routine names can be upper or lower case, with or without the trailing underscore. For example, the following are equivalent:
+- LAPACK: <code>dgetrf</code>, <code>DGETRF</code>, <code>dgetrf_</code>, and <code>DGETRF_</code>
+- BLAS: <code>dgemm</code>, <code>DGEMM</code>, <code>dgemm_</code>, and <code>DGEMM_</code></p>
+<p>The <strong>leading dimension</strong> (<code>lda</code>) of each 2D array needs to be passed in, usually in an integer variable <code>lda</code>. Mapping matrix coordinates $(i,j)$ into singly-indexed computer memory coordinates requires the array's declared leading dimension, as well as the sizes of the matrix stored in the 2D array.</p>
+<p>When calling Fortran-based BLAS from a C routine, the invoked BLAS function must be declared as <code>extern</code>:</p>
+<pre><code class="language-c">extern void dgemv_(char *trans, int *m, int *n,
+                   double *alpha, double *a, int *lda, double *x, int *incx,
+                   double *beta, double *y, int *incy);
+</code></pre>
+<p>When calling from a C++ function, you will need to subvert the name-mangling that C++ does. Use a header file that says to use the C-calling convention:</p>
+<pre><code class="language-cpp">extern &quot;C&quot; {
+    extern void dgemv_(char *trans, int *m, int *n,
+                       double *alpha, double *a, int *lda, double *x, int *incx,
+                       double *beta, double *y, int *incy);
+}
+</code></pre>
+<p>Inside the braces, put all the BLAS (and C and Fortran) functions you will be calling.</p>
+<p>Usually a header file is provided along with the BLAS that does the above declarations for you, and you just have to <code>#include</code> it.</p>
+<p>Additional notes on compilation:
+- Linking in the BLAS library requires using something like <strong><code>-lblas</code></strong> on the link line.
+- Since the BLAS are compiled using <strong><code>-dalign</code></strong>, you will need to do the same for your functions/routines in any language.
+- When calling the standard BLAS from C/C++, most machines require appending an underscore to the name of the BLAS routine. So a call is to <code>daxpy_()</code> instead of <code>daxpy()</code>. IBM machines do not follow this "underscore convention".</p>
+<h3 id="example-calling-dgemm-from-c">Example: Calling DGEMM from C</h3>
+<p><code>DGEMM</code> does the operation $C \leftarrow \alpha \cdot \text{op}(A) \cdot \text{op}(B) + \beta C$, where $C$ comes out in <strong>column-major</strong> form:</p>
+<p>$$\text{op}(A) = A \quad \text{or} \quad A^T \quad \text{or} \quad A^H$$</p>
+<p>A good way to figure out the function arguments is from the netlib LAPACK website: <a href="https://netlib.org/lapack/explore-html/index.html">https://netlib.org/lapack/explore-html/index.html</a> — then search for <code>dgemm</code> (take the first option, not the actual .f file).</p>
+<p>Below is an example showing 4 methods to compute $A \cdot B = C$ where $A$ is 2×3, $B$ is 3×2, and $C$ is 2×2. This illustrates the key point about row-major vs column-major storage.</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+// compile with: gcc Blas_dgemm.c -lblas
+// (C needs this linking explicitly)
+
+// dgemm_ is a symbol in the BLAS library files
+// Need to explicitly declare a prototype for BLAS functions and declare them as extern
+// Also note the '_' at the end of the name
+extern int dgemm_(char*,char*,int*,int*,int*,double*,double*,
+                  int*,double*, int*,double*, int*);
+
+int main(void)
+{
+    /******* Method I *******/
+    // store as normal C-style array in row-major form
+    // a is 2x3, b is 3x2, c is 2x2 and storage is row-major here
+    double A2[2][3];
+    double B2[3][2];
+    double C2[2][2];
+
+    A2[0][0] = 0.11; A2[0][1] = 0.12; A2[0][2] = 0.13;
+    A2[1][0] = 0.21; A2[1][1] = 0.22; A2[1][2] = 0.23;
+    B2[0][0] = 1011; B2[0][1] = 1012;
+    B2[1][0] = 1021; B2[1][1] = 1022;
+    B2[2][0] = 1031; B2[2][1] = 1032;
+    C2[0][0] = 0.00; C2[0][1] = 0.00;
+    C2[1][0] = 0.00; C2[1][1] = 0.00;
+
+    // We want A.B but we have A and B in row-major so need to &quot;transpose&quot; to
+    // get in col-major form
+    char transa='T', transb='T';  // op(A) = A, similar for B
+    double alpha=1.0, beta=0.0;
+    int m=2, n=2, k=3;    // m=rows of op(A), n=cols of op(B), k=cols of op(A)
+                           // and rows of op(B)
+    int lda=3, ldb=2, ldc=2;  // leading dimensions of A, B, C as declared
+                               // ie. last (fastest changing) index in C-style
+
+    /* Compute C = alpha*op(A)*op(B) + beta*C  using DGEMM and C is overwritten */
+    dgemm_(&amp;transa, &amp;transb, &amp;m, &amp;n, &amp;k, &amp;alpha, &amp;A2[0][0], &amp;lda,
+           &amp;B2[0][0], &amp;ldb, &amp;beta, &amp;C2[0][0], &amp;ldc);
+
+    // Note that we get c back in col-major order so output transpose
+    printf (&quot;[ %g, %g\n&quot;, C2[0][0], C2[1][0]);
+    printf (&quot; %g, %g ]\n&quot;, C2[0][1], C2[1][1]);
+
+    /******* Method II *******/
+    // store as 2D array in col-major form
+    // a is 2x3, b is 3x2, c is 2x2 and storage is row-major here but
+    // let's interpret first index as column and 2nd as row
+    double A3[3][2];
+    double B3[2][3];
+    double C3[2][2];
+
+    A3[0][0] = 0.11; A3[1][0] = 0.12; A3[2][0] = 0.13;
+    A3[0][1] = 0.21; A3[1][1] = 0.22; A3[2][1] = 0.23;
+    B3[0][0] = 1011; B3[0][1] = 1021; B3[0][2] = 1031;
+    B3[1][0] = 1012; B3[1][1] = 1022; B3[1][2] = 1032;
+    C3[0][0] = 0.00; C3[0][1] = 0.00;
+    C3[1][0] = 0.00; C3[1][1] = 0.00;
+
+    // We want A.B but we have A and B in col-major so no &quot;transpose&quot; needed
+    transa='N'; transb='N';
+    alpha=1.0; beta=0.0;
+    m=2; n=2; k=3;    // m=rows of op(A), n=cols of op(B), k=cols of op(A)
+    lda=2; ldb=3; ldc=2;  // leading dimensions of A, B, C as declared
+                           // &quot;leading&quot; means fastest changing, which is actually the last in C
+
+    dgemm_(&amp;transa, &amp;transb, &amp;m, &amp;n, &amp;k, &amp;alpha, &amp;A3[0][0], &amp;lda,
+           &amp;B3[0][0], &amp;ldb, &amp;beta, &amp;C3[0][0], &amp;ldc);
+
+    // Note we get c back in col-major order so output with row-column switch
+    printf (&quot;[ %g, %g\n&quot;, C3[0][0], C3[1][0]);
+    printf (&quot; %g, %g ]\n&quot;, C3[0][1], C3[1][1]);
+
+    /******* Method III *******/
+    // store as linear array in row-major form
+    // a is 2x3, b is 3x2, c is 2x2 and storage is row-major here
+    // so in col-major order we have a as 3x2, b as 2x3, and c as 2x2
+    double a[] = { 0.11, 0.12, 0.13, 0.21, 0.22, 0.23 };
+    double b[] = { 1011, 1012, 1021, 1022, 1031, 1032 };
+    double c[] = { 0.00, 0.00, 0.00, 0.00 };
+
+    // We want A.B but need to &quot;transpose&quot; to col-major order (not real transpose)
+    transa='T'; transb='T';  // op(A) = A transpose, similar for B
+    alpha=1.0; beta=0.0;
+    m=2; n=2; k=3;
+    lda=3; ldb=2; ldc=2;
+
+    dgemm_(&amp;transa, &amp;transb, &amp;m, &amp;n, &amp;k, &amp;alpha, &amp;a[0], &amp;lda,
+           &amp;b[0], &amp;ldb, &amp;beta, &amp;c[0], &amp;ldc);
+
+    // Note we get the transpose of c back again due to col-major order
+    printf (&quot;[ %g, %g\n&quot;, c[0], c[2]);
+    printf (&quot; %g, %g ]\n&quot;, c[1], c[3]);
+
+    /******* Method IV *******/
+    // store as linear array in col-major form
+    // a is 2x3, b is 3x2, c is 2x2 and storage is col-major here
+    double A[] = { 0.11, 0.21, 0.12, 0.22, 0.13, 0.23 };
+    double B[] = { 1011, 1021, 1031, 1012, 1022, 1032 };
+    double C[] = { 0.00, 0.00, 0.00, 0.00 };
+
+    // We want A.B which are already in col-major form so don't transpose
+    transa='N'; transb='N';
+    alpha=1.0; beta=0.0;
+    m=2; n=2; k=3;
+    lda=2; ldb=3; ldc=2;
+
+    dgemm_(&amp;transa, &amp;transb, &amp;m, &amp;n, &amp;k, &amp;alpha, &amp;A[0], &amp;lda,
+           &amp;B[0], &amp;ldb, &amp;beta, &amp;C[0], &amp;ldc);
+
+    // Note we get c back in col-major order
+    printf (&quot;[ %g, %g\n&quot;, C[0], C[2]);
+    printf (&quot; %g, %g ]\n&quot;, C[1], C[3]);
+
+    return 0;
+}
+</code></pre>
+<p>This is similar but not identical in C++. We only illustrate below the first two methods in the C++ example, using the Boost multi-arrays.  Note that a native access to blas is defined in the <code>std:linalg</code> library for the C++ 26 standard but this standard is still experimental, at best, in current compilers. </p>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &quot;boost/multi_array.hpp&quot;
+
+// compile with: g++ Blas_dgemm.cpp -lblas
+
+// dgemm_ is a symbol in the BLAS library files
+extern &quot;C&quot; {
+    extern int dgemm_(char*,char*,int*,int*,int*,double*,double*,
+                      int*,double*, int*,double*, int*);
+}
+
+int main (void)
+{
+    /******* Method I *******/
+    // store as normal C-style array in row-major form
+    boost::multi_array&lt;double,2&gt; A2(boost::extents[2][3]);
+    boost::multi_array&lt;double,2&gt; B2(boost::extents[3][2]);
+    boost::multi_array&lt;double,2&gt; C2(boost::extents[2][2]);
+
+    A2[0][0] = 0.11; A2[0][1] = 0.12; A2[0][2] = 0.13;
+    A2[1][0] = 0.21; A2[1][1] = 0.22; A2[1][2] = 0.23;
+    B2[0][0] = 1011; B2[0][1] = 1012;
+    B2[1][0] = 1021; B2[1][1] = 1022;
+    B2[2][0] = 1031; B2[2][1] = 1032;
+    C2[0][0] = 0.00; C2[0][1] = 0.00;
+    C2[1][0] = 0.00; C2[1][1] = 0.00;
+
+    char transa='T', transb='T';  // op(A) = A, similar for B
+    double alpha=1.0, beta=0.0;
+    int m=2, n=2, k=3;
+    int lda=3, ldb=2, ldc=2;  // leading dimensions, fastest changing index in C-style
+
+    dgemm_(&amp;transa, &amp;transb, &amp;m, &amp;n, &amp;k, &amp;alpha, &amp;A2[0][0], &amp;lda,
+           &amp;B2[0][0], &amp;ldb, &amp;beta, &amp;C2[0][0], &amp;ldc);
+
+    // Note we get c back in col-major order so output transpose
+    printf (&quot;[ %g, %g\n&quot;, C2[0][0], C2[1][0]);
+    printf (&quot; %g, %g ]\n&quot;, C2[0][1], C2[1][1]);
+
+    /******* Method II *******/
+    // store as 2D array in col-major form
+    // option to store in col-major form using boost::fortran_storage_order()
+    boost::multi_array&lt;double,2&gt; A3(boost::extents[2][3],boost::fortran_storage_order());
+    boost::multi_array&lt;double,2&gt; B3(boost::extents[3][2],boost::fortran_storage_order());
+    boost::multi_array&lt;double,2&gt; C3(boost::extents[2][2],boost::fortran_storage_order());
+
+    A3[0][0] = 0.11; A3[0][1] = 0.12; A3[0][2] = 0.13;
+    A3[1][0] = 0.21; A3[1][1] = 0.22; A3[1][2] = 0.23;
+    B3[0][0] = 1011; B3[0][1] = 1021; B3[0][2] = 1031;
+    B3[1][0] = 1012; B3[1][1] = 1022; B3[1][2] = 1032;
+    C3[0][0] = 0.00; C3[0][1] = 0.00;
+    C3[1][0] = 0.00; C3[1][1] = 0.00;
+
+    // We want A.B but we have A and B in col-major so no &quot;transpose&quot; needed
+    transa='N'; transb='N';
+    alpha=1.0; beta=0.0;
+    m=2; n=2; k=3;
+    lda=2; ldb=3; ldc=2;  // &quot;leading&quot; means fastest changing, actually the last in C
+
+    dgemm_(&amp;transa, &amp;transb, &amp;m, &amp;n, &amp;k, &amp;alpha, &amp;A3[0][0], &amp;lda,
+           &amp;B3[0][0], &amp;ldb, &amp;beta, &amp;C3[0][0], &amp;ldc);
+
+    // Note we get c back in col-major order but stored in Fortran form
+    // so no output transpose necessary here
+    printf (&quot;[ %g, %g\n&quot;, C3[0][0], C3[0][1]);
+    printf (&quot; %g, %g ]\n&quot;, C3[1][0], C3[1][1]);
+
+    return 0;
+}
+</code></pre>
+<h3 id="multiple-blas-implementations">Multiple BLAS Implementations</h3>
+<p>There are multiple implementations of the BLAS, and in particular:</p>
+<ol>
+<li><strong>Intel MKL library</strong> — includes a version that when used with the Intel library can be very fast (on machines with Intel chips, they have got into trouble for attempting to slow AMD chips).</li>
+<li><strong>AMD</strong> has a library called AOCL-BLAS (and AOCL-LAPACK) based on BLIS (and libFLAME) with similar functionality.</li>
+<li><strong>Open Source implementations</strong> — which are easy to install/use but may not be as fast. We will use these as they are easiest to set up and don't cost money.</li>
+</ol>
+<p>There are C implementations of the BLAS, but we will stick with the standard FORTRAN versions as this leads to more portable code, and LAPACK is still primarily implemented in FORTRAN conventions.</p>
+<p>On <strong>WSL/LINUX</strong> we can add BLAS and LAPACK (which uses BLAS) via:</p>
+<pre><code class="language-bash">sudo apt-get install liblapack-dev
+</code></pre>
+<p>Using MacPorts, the analogous instruction would be:</p>
+<pre><code class="language-bash">sudo port install lapack-devel
+</code></pre>
+<p>As LAPACK uses BLAS, this should install both.</p>
+<hr />
+<h2 id="lapack-standard-linear-algebra-package">LAPACK: Standard Linear Algebra Package</h2>
+<p>LAPACK = Standard Linear Algebra Package. While there are several implementations (versions are included in Intel MKL and AMD libraries), the calls are very standard and almost always follow the FORTRAN implementation (though callable from C/C++, just like BLAS).</p>
+<p>Similar to BLAS, you need to link to the LAPACK libraries when compiling with a flag like <code>-llapack</code>. Generally, they are included in the Intel MKL libraries or AMD AOCL libraries, so linking with <code>-lmkl</code> or similar will pick up LAPACK and BLAS.</p>
+<h3 id="linear-equations">Linear Equations</h3>
+<p>Two types of driver routines are provided for solving systems of linear equations:</p>
+<ul>
+<li>A <strong>simple</strong> driver (name ending <code>-SV</code>), which solves the system $AX = B$ by factorizing $A$ and overwriting $B$ with the solution $X$.</li>
+<li>An <strong>expert</strong> driver (name ending <code>-SVX</code>), which can also perform the following functions (some of them optionally):</li>
+<li>Solve $A^TX = B$ or $A^HX = B$ (unless $A$ is symmetric or Hermitian)</li>
+<li>Estimate the condition number of $A$, check for near-singularity, and check for pivot growth</li>
+<li>Refine the solution and compute forward and backward error bounds</li>
+<li>Equilibrate the system if $A$ is poorly scaled</li>
+</ul>
+<p>Both types of driver routines can handle multiple right-hand sides (the columns of $B$).</p>
+<p>LAPACK provides specialized routines that take advantage of special properties or storage schemes of the matrix $A$ and uses appropriate matrix factorizations based on the type of matrix.  For example:</p>
+<ul>
+<li><strong>General matrices</strong> ($LU$ factorization with partial pivoting): $A = PLU$, where $P$ is a permutation matrix, $L$ is lower triangular with unit diagonal, and $U$ is upper triangular.</li>
+<li><strong>Symmetric/Hermitian positive definite matrices</strong> (Cholesky factorization):
+$$A = U^T U \quad \text{or} \quad A = L L^T \quad (\text{symmetric})$$
+$$A = U^H U \quad \text{or} \quad A = L L^H \quad (\text{Hermitian})$$</li>
+<li><strong>Symmetric/Hermitian positive definite tridiagonal matrices</strong> ($LDL^T$ factorization):
+$$A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})$$
+$$A = U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})$$</li>
+<li><strong>Symmetric/Hermitian indefinite matrices</strong> (symmetric indefinite factorization):
+$$A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})$$
+$$A \approx U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})$$
+where $U$ (or $L$) is a product of permutation and unit upper (lower) triangular matrices, and $D$ is symmetric and block diagonal with diagonal blocks of order 1 or 2.</li>
+</ul>
+<p>See <a href="https://netlib.org/lapack/lug/node26.html">Linear Equations</a>  for more varieties of linear solvers and and <a href="https://netlib.org/lapack/lug/node38.html">Linear Equations</a> for factorizations.</p>
+<h3 id="lapack-function-naming">LAPACK Function Naming</h3>
+<p>The following list relates tasks to the last 3 characters of the name of the corresponding computational routine:</p>
+<ul>
+<li><strong>xyyTRF</strong>: factorize (obviously not needed for triangular matrices)</li>
+<li><strong>xyyTRS</strong>: use the factorization (or the matrix $A$ itself if triangular) to solve $(2.5)$ by forward or backward substitution</li>
+<li><strong>xyyCON</strong>: estimate the reciprocal of the condition number $\kappa(A) = |A||A^{-1}|$</li>
+<li><strong>xyyRFS</strong>: compute bounds on the error in the computed solution, and refine the solution to reduce the backward error</li>
+<li><strong>xyyTRI</strong>: use the factorization to compute $A^{-1}$ (not provided for band matrices)</li>
+<li><strong>xyyEQU</strong>: compute scaling factors to equilibrate $A$</li>
+</ul>
+<p>Banded matrices arise very often in Scientific Computing and LAPACK has an efficient method of storing them (see <a href="https://netlib.org/lapack/lug/node124.html">Band Storage</a>) that you should definitely take advantage if you have such a matrix.</p>
+<h3 id="intel-mkl-examples">Intel MKL Examples</h3>
+<p>The Intel MKL library is very well documented. Here is an example illustrating a call to the complex BLAS Level 1 function <code>zdotc()</code>, which computes the dot product of two double-precision complex vectors.</p>
+<p><strong>In C</strong> (using <code>mkl.h</code>):</p>
+<pre><code class="language-c">#include &quot;mkl.h&quot;  // need this include for Intel library
+#define N 5
+int main()
+{
+    int n = N, inca = 1, incb = 1, i;
+    MKL_Complex16 a[N], b[N], c;  // array of double complex type
+    for(i = 0; i &lt; n; i++ ){
+        a[i].real = (double)i;  a[i].imag = (double)i * 2.0;
+        b[i].real = (double)(n - i);  b[i].imag = (double)i * 2.0;
+    }
+    zdotc(&amp;c, &amp;n, a, &amp;inca, b, &amp;incb );
+    printf(&quot;The complex dot product is: (%6.2f,%6.2f)\n&quot;, c.real, c.imag );
+    return 0;
+}
+</code></pre>
+<p><strong>In C++</strong> (using standard <code>&lt;complex&gt;</code> — this example illustrates the power of using C++ for scientific computing):</p>
+<pre><code class="language-cpp">#include &lt;complex&gt;
+#include &lt;iostream&gt;
+#define MKL_Complex16 std::complex&lt;double&gt;  // this allows much more portable code:
+                                            // you can use standard C++ complex type
+                                            // in code and MKL will still work
+#include &quot;mkl.h&quot;
+#define N 5
+
+int main()
+{
+    int n, inca = 1, incb = 1, i;
+    std::complex&lt;double&gt; a[N], b[N], c;
+    n = N;
+    for( i = 0; i &lt; n; i++ ){
+        a[i] = std::complex&lt;double&gt;(i, i*2.0);
+        b[i] = std::complex&lt;double&gt;(n-i, i*2.0);
+    }
+    zdotc(&amp;c, &amp;n, a, &amp;inca, b, &amp;incb );
+    std::cout &lt;&lt; &quot;The complex dot product is: &quot; &lt;&lt; c &lt;&lt; std::endl;
+    return 0;
+}
+</code></pre>
+<p>Full documentation for Intel MKL can be found at: <a href="http://software.intel.com/en-us/articles/intel-math-kernel-library-documentation">http://software.intel.com/en-us/articles/intel-math-kernel-library-documentation</a></p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.4e0fa4ba.min.js"></script>
+      
+    
+  </body>
+</html>

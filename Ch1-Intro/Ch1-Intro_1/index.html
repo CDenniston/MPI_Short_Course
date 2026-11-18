@@ -1,0 +1,815 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://CDenniston.github.io/MPI_Short_Course/Ch1-Intro/Ch1-Intro_1/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.0">
+    
+    
+      
+        <title>Intro to Parallel Computing - Using MPI for Scientific Computing - Short Course</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.9f615399.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#intro-to-parallel-computing" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Using MPI for Scientific Computing - Short Course" class="md-header__button md-logo" aria-label="Using MPI for Scientific Computing - Short Course" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Using MPI for Scientific Computing - Short Course
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Intro to Parallel Computing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Using MPI for Scientific Computing - Short Course" class="md-nav__button md-logo" aria-label="Using MPI for Scientific Computing - Short Course" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Using MPI for Scientific Computing - Short Course
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#announcements" class="md-nav__link">
+    Announcements
+  </a>
+  
+    <nav class="md-nav" aria-label="Announcements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#computer-hardware-evolution" class="md-nav__link">
+    Computer Hardware Evolution
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reasons-to-parallelize" class="md-nav__link">
+    Reasons to Parallelize
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classification-of-parallelization" class="md-nav__link">
+    Classification of Parallelization
+  </a>
+  
+    <nav class="md-nav" aria-label="Classification of Parallelization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#by-data-instruction-schemes" class="md-nav__link">
+    By Data &amp; Instruction Schemes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-1-sisd-single-instruction-same-data-serial" class="md-nav__link">
+    Example ① — SISD: Single Instruction Same Data (Serial)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-simd-single-instruction-multiple-data" class="md-nav__link">
+    Example ② — SIMD: Single Instruction Multiple Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-misd-multiple-instruction-same-data" class="md-nav__link">
+    Example ③ — MISD: Multiple Instruction Same Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-4-mimd-multiple-instruction-multiple-data" class="md-nav__link">
+    Example ④ — MIMD: Multiple Instruction Multiple Data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classification-of-parallel-computing-by-memory" class="md-nav__link">
+    Classification of Parallel Computing by Memory
+  </a>
+  
+    <nav class="md-nav" aria-label="Classification of Parallel Computing by Memory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shared-memory-typical-desktop-today" class="md-nav__link">
+    Shared Memory (typical desktop today)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distributed-memory-classic-beowulf-cluster" class="md-nav__link">
+    Distributed Memory (classic Beowulf cluster)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi" class="md-nav__link">
+    MPI
+  </a>
+  
+    <nav class="md-nav" aria-label="MPI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-hello-world-in-c" class="md-nav__link">
+    Example: "Hello World" in C
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flowchart-of-what-happens" class="md-nav__link">
+    Flowchart of What Happens
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#refactored-c-version" class="md-nav__link">
+    Refactored C Version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-version-raii" class="md-nav__link">
+    C++ Version (RAII)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="intro-to-parallel-computing">Intro to Parallel Computing</h1>
+<hr />
+<h2 id="announcements">Announcements</h2>
+<ul>
+<li>Course outline is on OWL; make sure you have access.</li>
+<li>We will use C/C++ and MPI in this course, so you need access to a computer running these.</li>
+<li>A Linux-like environment is needed.</li>
+<li>WSL (Windows Subsystem for Linux) should work for program development if you install the MPI runtime &amp; developer packages in setup.</li>
+<li>On Macs, you can probably get by using the XCode package. There is also an MPI implementation you will need.</li>
+<li>There are some tips on OWL in the "Set-Up" file.</li>
+<li>You need to get a SharcNet account → see SharcNet website.</li>
+<li>A line terminal is needed to compile and run code.</li>
+</ul>
+<hr />
+<p>Back in the day, computers looked like this 
+<img alt="funny picture of old computer" src="../OldComputer.jpg" />
+The steering wheel is to play Mario Chariot  — (<em>not really…</em>)</p>
+<h3 id="computer-hardware-evolution">Computer Hardware Evolution</h3>
+<table>
+<thead>
+<tr>
+<th>Year</th>
+<th>Machine</th>
+<th>CPU</th>
+<th>Memory</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1980</td>
+<td>Commodore VIC 20</td>
+<td>1 MHz</td>
+<td>5 kByte RAM, 20 kByte ROM</td>
+<td>—</td>
+</tr>
+<tr>
+<td>1995</td>
+<td>Gateway Pentium PC</td>
+<td>100 MHz (×100)</td>
+<td>4 MByte</td>
+<td>Clock speed is 100 times faster than 1980</td>
+</tr>
+<tr>
+<td>2005</td>
+<td>Dell Pentium PC</td>
+<td>2 GHz (×200)</td>
+<td>1 GByte</td>
+<td>Clock speed is 20 times faster than 1995</td>
+</tr>
+<tr>
+<td>2015</td>
+<td>Lenovo i7 PC</td>
+<td>4× 3 GHz (×1.5)</td>
+<td>4 GByte</td>
+<td>Clock speed is only 1.5 times faster than 2005 BUT now we have 4 processors (multicore) and a GPU: 1526× 1 GHz (Nvidia GeForce 770) — <em>The 1526 cores on the gpu is by far the biggest improvement</em></td>
+</tr>
+</tbody>
+</table>
+<p>Conclusion: To run code faster we cannot rely on hardware improvements of serial processors, we must take advantage of the multicore CPU and GPU which means we need to parallelize our code.</p>
+<h3 id="reasons-to-parallelize">Reasons to Parallelize</h3>
+<ul>
+<li><strong>Time</strong> (clock time) by dividing up the work hopefully more processors working will reduce the (wall) time to run code</li>
+<li><strong>Memory</strong> by dividing up the work, each process may be able to use less memory to solve a smaller part of the problem</li>
+</ul>
+<hr />
+<h2 id="classification-of-parallelization">Classification of Parallelization</h2>
+<h3 id="by-data-instruction-schemes">By Data &amp; Instruction Schemes</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Same Data</th>
+<th>Multiple Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Single Instruction</strong></td>
+<td>SISD (<em>serial</em>)</td>
+<td>SIMD</td>
+</tr>
+<tr>
+<td><strong>Multiple Instructions</strong></td>
+<td>MISD</td>
+<td>MIMD</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note:</strong> Different computer architectures may be required for different schemes, but some architectures can run different schemes.</p>
+</blockquote>
+<hr />
+<h3 id="example-1-sisd-single-instruction-same-data-serial">Example ① — SISD: Single Instruction Same Data (Serial)</h3>
+<p>Compute $\displaystyle F_1 = \sum_{n=1}^N f_n$</p>
+<p><strong>Algorithm</strong> (sequential in time ↓):</p>
+<p>$$
+\begin{aligned}
+F_1 &amp;= f_1 \
+F_1 &amp;\mathrel{+}= f_2 \
+F_1 &amp;\mathrel{+}= f_3 \
+&amp;\;\vdots \
+F_1 &amp;\mathrel{+}= f_N
+\end{aligned}
+$$</p>
+<hr />
+<h3 id="example-2-simd-single-instruction-multiple-data">Example ② — SIMD: Single Instruction Multiple Data</h3>
+<p>Compute $A = 4 \cdot B$ where $A$, $B$ are arrays of length $n$, with $n$ divisible by 3.</p>
+<p><strong>Algorithm</strong> — three CPUs work in parallel (time ↓):</p>
+<table>
+<thead>
+<tr>
+<th>CPU 1</th>
+<th>CPU 2</th>
+<th>CPU 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A[1] = 4*B[1]</code></td>
+<td><code>A[2] = 4*B[2]</code></td>
+<td><code>A[3] = 4*B[3]</code></td>
+</tr>
+<tr>
+<td><code>A[4] = 4*B[4]</code></td>
+<td><code>A[5] = 4*B[5]</code></td>
+<td><code>A[6] = 4*B[6]</code></td>
+</tr>
+<tr>
+<td>⋮</td>
+<td>⋮</td>
+<td>⋮</td>
+</tr>
+<tr>
+<td><code>A[n-2] = 4*B[n-2]</code></td>
+<td><code>A[n-1] = 4*B[n-1]</code></td>
+<td><code>A[n] = 4*B[n]</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>The division of data is clearly not unique. Different divisions may result in faster/slower code.</em></p>
+<hr />
+<h3 id="example-3-misd-multiple-instruction-same-data">Example ③ — MISD: Multiple Instruction Same Data</h3>
+<p>Moments Problem: Compute $\displaystyle F_\mu = \dfrac{1}{N} \sum_{n=1}^N f_n^\mu$ for $\mu=1,2,...,M$</p>
+<p><strong>Algorithm</strong> — $M$ CPUs, each computing a different power sum (time ↓):</p>
+<table>
+<thead>
+<tr>
+<th>CPU 1</th>
+<th>CPU 2</th>
+<th>$\cdots$</th>
+<th>CPU M</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$F_1 = f_1$</td>
+<td>$F_2 = f_1^2$</td>
+<td>$\cdots$</td>
+<td>$F_M = f_1^M$</td>
+</tr>
+<tr>
+<td>$F_1 \mathrel{+}= f_2$</td>
+<td>$F_2 \mathrel{+}= f_2^2$</td>
+<td>$\cdots$</td>
+<td>$F_M \mathrel{+}= f_2^M$</td>
+</tr>
+<tr>
+<td>$F_1 \mathrel{+}= f_3$</td>
+<td>$F_2 \mathrel{+}= f_3^2$</td>
+<td>$\cdots$</td>
+<td>$F_M \mathrel{+}= f_3^M$</td>
+</tr>
+<tr>
+<td>$\vdots$</td>
+<td>$\vdots$</td>
+<td>$\cdots$</td>
+<td>$\vdots$</td>
+</tr>
+<tr>
+<td>$F_1 \mathrel{+}= f_N$</td>
+<td>$F_2 \mathrel{+}= f_N^2$</td>
+<td>$\cdots$</td>
+<td>$F_M \mathrel{+}= f_N^M$</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="example-4-mimd-multiple-instruction-multiple-data">Example ④ — MIMD: Multiple Instruction Multiple Data</h3>
+<p>Different CPUs have different tasks and act on different data sets.</p>
+<table>
+<thead>
+<tr>
+<th>CPU 1–10</th>
+<th>CPU 11–20</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Solve diffusion equation and write data at each time step to a file</td>
+<td>Analyze output files to calculate toxicity at a given location</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="classification-of-parallel-computing-by-memory">Classification of Parallel Computing by Memory</h2>
+<h3 id="shared-memory-typical-desktop-today">Shared Memory (<em>typical desktop today</em>)</h3>
+<p><img alt="Shared memory architecture: CPU 1, CPU 2, and CPU 3 each connected by bidirectional arrows to a single shared memory block below." src="../shared-memory.svg" /></p>
+<h3 id="distributed-memory-classic-beowulf-cluster">Distributed Memory (<em>classic Beowulf cluster</em>)</h3>
+<p><img alt="Distributed memory architecture: CPU 1, CPU 2, and CPU 3 connected by bidirectional arrows, each with its own local memory block below." src="../distributed-memory.svg" /></p>
+<p>In practice, most systems today are some combination. However, it is useful to develop algorithms based on a single paradigm in order to make portable code.</p>
+<p>MPI is based on a distributed memory paradigm. It provides a library of functions to facilitate communication between processors.</p>
+<p>$$
+\text{MPI} = \left{ \begin{array}{l} \text{Message} \ \text{Passing} \ \text{Interface} \end{array} \right.
+$$</p>
+<hr />
+<h2 id="mpi">MPI</h2>
+<p>The MPI Library consists of more than 100 functions.  Of these, 6 functions are really important:
+1. Initialize MPI
+2. Find # of processes (specified when program submitted)
+3. Find out which process I am
+4. Send a message → <em>main point of library</em>
+5. Receive a message ← <em>main point of library</em>
+6. Terminate MPI.  This is <em>essential — <strong>always</strong> do this! MPI is C-based, not C++</em></p>
+<h3 id="example-hello-world-in-c">Example: "Hello World" in C</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &quot;mpi.h&quot;        /* MPI header files — always need this */
+
+main(int argc, char** argv)
+{
+    int noprocs, nid;
+
+    MPI_Init(&amp;argc, &amp;argv);                       /* starts MPI and code
+                                                     communications on all processors */
+    /* The following commands now run on each node independently */
+    MPI_Comm_size(MPI_COMM_WORLD, &amp;noprocs);   
+    MPI_Comm_rank(MPI_COMM_WORLD, &amp;nid);       
+
+    printf(&quot;Hello from processor %i of %i\n&quot;, nid, noprocs);
+
+    MPI_Finalize();     /* close off all the processes */
+}
+</code></pre>
+<p><strong>Comments:</strong></p>
+<ul>
+<li><code>MPI_Init</code> must be called <strong>exactly once</strong> before all other MPI commands.</li>
+<li><code>MPI_Finalize</code> should be called after all other MPI commands.</li>
+<li><code>MPI_Comm_size</code> finds out the number of processors (stored in <code>noprocs</code>).</li>
+<li><code>MPI_Comm_rank</code> finds out which process I am; $nid \in {0, \ldots, nprocs - 1}$.</li>
+<li><code>MPI_COMM_WORLD</code> is an MPI "communicator".</li>
+</ul>
+<h3 id="flowchart-of-what-happens">Flowchart of What Happens</h3>
+<p><img alt="MPI Hello World execution flowchart: start → MPI_Init → three parallel processes each running MPI_Comm_Size, MPI_Comm_Rank, and printf → MPI_Finalize → stop." src="../mpi-flowchart.svg" /></p>
+<p>Note that once multiprocesses are running they are <strong>independent</strong> and variables like <code>"nid"</code> are <strong>different</strong> for each process.</p>
+<p>The <code>printf</code> statement is executed on each processor independently (as are the previous 2 commands), and there is a different local version of <code>nid</code> and <code>noprocs</code> on each processor, potentially with different values.</p>
+<p>The different processes are not typically in sync, so the output may come in any order and be different if you run the code again.</p>
+<p><strong>Typical compile line:</strong></p>
+<pre><code class="language-sh">mpicc -o hello.o hello.c
+</code></pre>
+<p><strong>Typical run command</strong> <em>(specify # of processes, 4 in this example)</em>:</p>
+<pre><code class="language-sh">mpirun -np 4 ./hello.o
+</code></pre>
+<p><strong>Expected output</strong> <em>(perhaps not in this order)</em>:</p>
+<pre><code>Hello from processor 0 of 4
+Hello from processor 1 of 4
+Hello from processor 2 of 4
+Hello from processor 3 of 4
+</code></pre>
+<hr />
+<p>MPI is a library written in C. It also has a Fortran version interface. There was a long-term effort to get a C++ version but it was buggy, largely shunned in favour of the C version, and was abandoned as unnecessary (C++ can just use the C library).</p>
+<p>For C++ it is always a good idea to try to follow the RAII paradigm and try to automate cleanup using class destructors to take care of it. To make our C and C++ code as similar as possible, we will first rewrite <code>hello.c</code> to put MPI variables into a data structure and add a startup function.</p>
+<h3 id="refactored-c-version">Refactored C Version</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &quot;mpi.h&quot;
+
+struct mpi_vars {   /* data structure type declaration */
+    int NProcs;
+    int MyID;
+};
+
+struct mpi_vars mpi_start(int argc, char** argv)
+{
+    struct mpi_vars this_mpi;
+
+    MPI_Init(&amp;argc, &amp;argv);
+    MPI_Comm_size(MPI_COMM_WORLD, &amp;this_mpi.NProcs);
+    MPI_Comm_rank(MPI_COMM_WORLD, &amp;this_mpi.MyID);
+
+    return this_mpi;
+}
+
+int main(int argc, char** argv)
+{
+    /* initialize MPI data structure using start function */
+    struct mpi_vars this_mpi = mpi_start(argc, argv);
+
+    printf(&quot;Hello from processor %i of %i\n&quot;,
+           this_mpi.MyID, this_mpi.NProcs);
+
+    MPI_Finalize();
+    return 0;
+}
+</code></pre>
+<p><strong>Notes:</strong></p>
+<ol>
+<li>Only <strong>one</strong> instance of <code>mpi_vars</code> should be created (on each MPI thread).</li>
+<li>The <code>mpi_start</code> function should only ever be called <strong>once</strong>.</li>
+<li>In C, <code>MPI_Finalize()</code> should <strong>always</strong> be called before you exit the program.</li>
+</ol>
+<h3 id="c-version-raii">C++ Version (RAII)</h3>
+<p>Translation of this to C++ is then very straightforward:</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &quot;mpi.h&quot;
+
+class MPI_stuff
+{
+public:
+    /* The variables we had in a mpi_vars struct in the C version: */
+    int NProcs; 
+    int MyID;
+
+    /* put MPI initialization into class constructor */
+    MPI_stuff(int &amp;argc, char** &amp;argv)
+    {
+        MPI_Init(&amp;argc, &amp;argv);
+        MPI_Comm_size(MPI_COMM_WORLD, &amp;NProcs);
+        MPI_Comm_rank(MPI_COMM_WORLD, &amp;MyID);
+    }
+
+    /* put MPI cleanup into class destructor */
+    ~MPI_stuff()
+    {
+        MPI_Finalize();
+    }
+};
+
+int main(int argc, char** argv)
+{
+    /* MPI will be started automatically by the MPI_stuff constructor */
+    MPI_stuff the_mpi(argc, argv);
+
+    std::cout &lt;&lt; &quot;Hello from processor &quot; &lt;&lt; the_mpi.MyID
+              &lt;&lt; &quot; of &quot; &lt;&lt; the_mpi.NProcs &lt;&lt; std::endl;
+
+    /* the_mpi variable goes out of scope here,
+       so the destructor will be called to close off MPI */
+    return 0;
+}
+</code></pre>
+<p><strong>Notes:</strong></p>
+<ol>
+<li>The class <code>MPI_stuff</code> should only ever have <strong>one</strong> instance in existence (but this one instance may/will have different values for <code>MyID</code> on each processor).</li>
+<li><code>MPI_Finalize</code> will automatically be called when <code>the_mpi</code> variable goes out of scope (useful if the program exits in an unexpected manner too).</li>
+<li>Compilation is typically something like <code>mpiCC -o hello.o hello.cpp</code> <em>(note: capital C's)</em>.</li>
+</ol>
+<hr />
+<blockquote>
+<p><strong>"Homework"</strong></p>
+<ol>
+<li>Sign up for a Digital Research Alliance of Canada (DRA) account and online "training seminar".</li>
+<li>Try to get Hello World running on your machine.</li>
+<li>Try to get Hello World running on a DRA cluster</li>
+</ol>
+</blockquote>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.4e0fa4ba.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://CDenniston.github.io/MPI_Short_Course/</loc>
+         <lastmod>2026-11-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://CDenniston.github.io/MPI_Short_Course/Ch1-Intro/Ch1-Intro_1/</loc>
+         <lastmod>2026-11-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://CDenniston.github.io/MPI_Short_Course/Ch2-Message%20Passing/Ch2-Message_Passing/</loc>
+         <lastmod>2026-11-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://CDenniston.github.io/MPI_Short_Course/Ch2-Message%20Passing/v0/Ch2-Message_Passing/</loc>
+         <lastmod>2026-11-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://CDenniston.github.io/MPI_Short_Course/Ch3-MatrixVector%20Operations/Ch3-Matrix-Vector_Operations/</loc>
+         <lastmod>2026-11-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://CDenniston.github.io/MPI_Short_Course/Ch4-MeshSolutions/Ch4-MeshSolutions/</loc>
+         <lastmod>2026-11-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+</urlset>
