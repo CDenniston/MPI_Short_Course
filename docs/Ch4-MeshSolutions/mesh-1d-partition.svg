@@ -1,0 +1,1499 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="523.26685"
+   height="435.75192"
+   viewBox="0 0 523.26685 435.75193"
+   version="1.1"
+   id="svg117"
+   sodipodi:docname="mesh-1d-partition.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:c2pa="http://c2pa.org/manifest">
+  <defs
+     id="defs117" />
+  <sodipodi:namedview
+     id="namedview117"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="2.94712"
+     inkscape:cx="273.14802"
+     inkscape:cy="262.79894"
+     inkscape:window-width="2662"
+     inkscape:window-height="1353"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg117" />
+  <metadata
+     id="metadata1">
+    <c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYToxOWQyZWI0NS0xYzUwLTQ0MzgtODc1NC1mMmU4NGI4OGU4YzAAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaOxM31hpQdBYlqLFWPPy2J4AAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo5ZDUzMWI0Mi05ZjRlLTRjNjctOGI1NS1mNWFkNDQ3OTY3YjNscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNobpm326+oLEv8KMfsmaqj/gAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg1wRWjakkCb0jI1GylCZzLPhZZWyRfJt0TO0iob0pC4WkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaOolTbb+5zT6ROc24Df3dBEAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCAcDNN8Lx4eKJ/5xzeuzZPvniHPk14annzuWZm7lJ5O82RuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiWZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjE5ZDJlYjQ1LTFjNTAtNDQzOC04NzU0LWYyZTg0Yjg4ZThjMC9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjc4YTlmMGNiLWI1MWMtNDUxOS04MGNiLTk2NjgwM2ViMmIxOXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCDXBFaNqSQJvSMjUbKUJnMs+FllbJF8m3RM7SKhvSkLhaJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggA9kwWjl70EIewyF8mxby5/+y6/scZDagiRSxurl0IJuiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggsceTpDghPEHrLCblKvw8QwdSRPmAKfYeP5pZ35rUIB90Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQFGPdybW1DwkIouu4howfMH7a/b3vRUHIB5gmL51wm94xhZ/3hifGzP+7YMKPY+vxSZhD1vJc4VdueWG4hia1gA=</c2pa:manifest>
+  </metadata>
+  <style
+     id="style1">text{font-family:sans-serif;}</style>
+  <circle
+     cx="114.4494"
+     cy="46.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle1" />
+  <circle
+     cx="150.4494"
+     cy="46.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle2" />
+  <circle
+     cx="186.4494"
+     cy="46.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle3" />
+  <circle
+     cx="222.4494"
+     cy="46.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle4" />
+  <circle
+     cx="258.4494"
+     cy="46.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle5" />
+  <circle
+     cx="294.4494"
+     cy="46.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle6" />
+  <circle
+     cx="330.4494"
+     cy="46.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle7" />
+  <circle
+     cx="366.4494"
+     cy="46.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle8" />
+  <circle
+     cx="402.4494"
+     cy="46.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle9" />
+  <circle
+     cx="114.4494"
+     cy="82.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle13" />
+  <circle
+     cx="150.4494"
+     cy="82.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle14" />
+  <circle
+     cx="186.4494"
+     cy="82.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle15" />
+  <circle
+     cx="222.4494"
+     cy="82.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle16" />
+  <circle
+     cx="258.4494"
+     cy="82.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle17" />
+  <circle
+     cx="294.4494"
+     cy="82.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle18" />
+  <circle
+     cx="330.4494"
+     cy="82.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle19" />
+  <circle
+     cx="366.4494"
+     cy="82.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle20" />
+  <circle
+     cx="402.4494"
+     cy="82.439896"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle21" />
+  <circle
+     cx="114.48445"
+     cy="10.412642"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle1-8"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="150.48444"
+     cy="10.412642"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle2-8"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="186.48444"
+     cy="10.412642"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle3-2"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="222.48444"
+     cy="10.412642"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle4-4"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="258.48444"
+     cy="10.412642"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle5-5"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="294.48444"
+     cy="10.412642"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle6-5"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="330.48444"
+     cy="10.412642"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle7-1"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="366.48444"
+     cy="10.412642"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle8-7"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="402.48447"
+     cy="10.412642"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle9-1"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="438.48447"
+     cy="10.412642"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle10-1"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="114.48445"
+     cy="46.412643"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle13-7" />
+  <circle
+     cx="150.48444"
+     cy="46.412643"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle14-6" />
+  <circle
+     cx="186.48444"
+     cy="46.412643"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle15-1" />
+  <circle
+     cx="222.48444"
+     cy="46.412643"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle16-4" />
+  <circle
+     cx="258.48444"
+     cy="46.412643"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle17-2" />
+  <circle
+     cx="294.48444"
+     cy="46.412643"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle18-3" />
+  <circle
+     cx="330.48444"
+     cy="46.412643"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle19-2" />
+  <circle
+     cx="366.48444"
+     cy="46.412643"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle20-2" />
+  <circle
+     cx="402.48447"
+     cy="46.412643"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle21-1" />
+  <circle
+     cx="114.4494"
+     cy="118.43987"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle25" />
+  <circle
+     cx="150.4494"
+     cy="118.43987"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle26" />
+  <circle
+     cx="186.4494"
+     cy="118.43987"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle27" />
+  <circle
+     cx="222.4494"
+     cy="118.43987"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle28" />
+  <circle
+     cx="258.4494"
+     cy="118.43987"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle29" />
+  <circle
+     cx="294.4494"
+     cy="118.43987"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle30" />
+  <circle
+     cx="330.4494"
+     cy="118.43987"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle31" />
+  <circle
+     cx="366.4494"
+     cy="118.43987"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle32" />
+  <circle
+     cx="402.4494"
+     cy="118.43987"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle33" />
+  <circle
+     cx="114.4494"
+     cy="154.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle37" />
+  <circle
+     cx="150.4494"
+     cy="154.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle38" />
+  <circle
+     cx="186.4494"
+     cy="154.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle39" />
+  <circle
+     cx="222.4494"
+     cy="154.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle40" />
+  <circle
+     cx="258.4494"
+     cy="154.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle41" />
+  <circle
+     cx="294.4494"
+     cy="154.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle42" />
+  <circle
+     cx="330.4494"
+     cy="154.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle43" />
+  <circle
+     cx="366.4494"
+     cy="154.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle44" />
+  <circle
+     cx="402.4494"
+     cy="154.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle45" />
+  <circle
+     cx="114.4494"
+     cy="190.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle49" />
+  <circle
+     cx="150.4494"
+     cy="190.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle50" />
+  <circle
+     cx="186.4494"
+     cy="190.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle51" />
+  <circle
+     cx="222.4494"
+     cy="190.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle52" />
+  <circle
+     cx="258.4494"
+     cy="190.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle53" />
+  <circle
+     cx="294.4494"
+     cy="190.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle54" />
+  <circle
+     cx="330.4494"
+     cy="190.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle55" />
+  <circle
+     cx="366.4494"
+     cy="190.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle56" />
+  <circle
+     cx="402.4494"
+     cy="190.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle57" />
+  <circle
+     cx="114.4494"
+     cy="226.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle61" />
+  <circle
+     cx="150.4494"
+     cy="226.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle62" />
+  <circle
+     cx="186.4494"
+     cy="226.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle63" />
+  <circle
+     cx="222.4494"
+     cy="226.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle64" />
+  <circle
+     cx="258.4494"
+     cy="226.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle65" />
+  <circle
+     cx="294.4494"
+     cy="226.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle66" />
+  <circle
+     cx="330.4494"
+     cy="226.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle67" />
+  <circle
+     cx="366.4494"
+     cy="226.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle68" />
+  <circle
+     cx="402.4494"
+     cy="226.43988"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle69" />
+  <circle
+     cx="114.4494"
+     cy="262.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle73" />
+  <circle
+     cx="150.4494"
+     cy="262.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle74" />
+  <circle
+     cx="186.4494"
+     cy="262.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle75" />
+  <circle
+     cx="222.4494"
+     cy="262.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle76" />
+  <circle
+     cx="258.4494"
+     cy="262.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle77" />
+  <circle
+     cx="294.4494"
+     cy="262.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle78" />
+  <circle
+     cx="330.4494"
+     cy="262.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle79" />
+  <circle
+     cx="366.4494"
+     cy="262.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle80" />
+  <circle
+     cx="402.4494"
+     cy="262.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle81" />
+  <circle
+     cx="114.4494"
+     cy="298.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle85" />
+  <circle
+     cx="150.4494"
+     cy="298.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle86" />
+  <circle
+     cx="186.4494"
+     cy="298.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle87" />
+  <circle
+     cx="222.4494"
+     cy="298.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle88" />
+  <circle
+     cx="258.4494"
+     cy="298.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle89" />
+  <circle
+     cx="294.4494"
+     cy="298.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle90" />
+  <circle
+     cx="330.4494"
+     cy="298.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle91" />
+  <circle
+     cx="366.4494"
+     cy="298.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle92" />
+  <circle
+     cx="402.4494"
+     cy="298.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle93" />
+  <circle
+     cx="114.4494"
+     cy="334.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle97" />
+  <circle
+     cx="150.4494"
+     cy="334.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle98" />
+  <circle
+     cx="186.4494"
+     cy="334.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle99" />
+  <circle
+     cx="222.4494"
+     cy="334.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle100" />
+  <circle
+     cx="258.4494"
+     cy="334.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle101" />
+  <circle
+     cx="294.4494"
+     cy="334.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle102" />
+  <circle
+     cx="330.4494"
+     cy="334.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle103" />
+  <circle
+     cx="366.4494"
+     cy="334.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle104" />
+  <circle
+     cx="402.4494"
+     cy="334.43988"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle105" />
+  <circle
+     cx="114.565"
+     cy="334.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle85-6" />
+  <circle
+     cx="150.56499"
+     cy="334.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle86-1" />
+  <circle
+     cx="186.56499"
+     cy="334.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle87-8" />
+  <circle
+     cx="222.56499"
+     cy="334.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle88-9" />
+  <circle
+     cx="258.565"
+     cy="334.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle89-2" />
+  <circle
+     cx="294.56497"
+     cy="334.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle90-7" />
+  <circle
+     cx="330.56497"
+     cy="334.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle91-9" />
+  <circle
+     cx="366.56497"
+     cy="334.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle92-5" />
+  <circle
+     cx="402.565"
+     cy="334.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle93-4" />
+  <circle
+     cx="114.565"
+     cy="370.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle97-3"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="150.56499"
+     cy="370.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle98-3"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="78.523865"
+     cy="46.276199"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle1-3"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.52386"
+     cy="46.276199"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle2-1" />
+  <circle
+     cx="78.523865"
+     cy="82.276199"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle13-9"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.52386"
+     cy="82.276199"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle14-8" />
+  <circle
+     cx="78.558914"
+     cy="10.248977"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle1-8-6"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="114.5589"
+     cy="10.248977"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle2-8-5"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="78.558914"
+     cy="46.248978"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle13-7-0"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.5589"
+     cy="46.248978"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle14-6-2" />
+  <circle
+     cx="78.523865"
+     cy="118.2762"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle25-8"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.52386"
+     cy="118.2762"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle26-6" />
+  <circle
+     cx="78.523865"
+     cy="154.2762"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle37-0"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.52386"
+     cy="154.2762"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle38-2" />
+  <circle
+     cx="78.523865"
+     cy="190.2762"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle49-4"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.52386"
+     cy="190.2762"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle50-8" />
+  <circle
+     cx="78.523865"
+     cy="226.2762"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle61-6"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.52386"
+     cy="226.2762"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle62-5" />
+  <circle
+     cx="78.523865"
+     cy="262.27618"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle73-0"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.52386"
+     cy="262.27618"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle74-9" />
+  <circle
+     cx="78.523865"
+     cy="298.27618"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle85-0"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.52386"
+     cy="298.27618"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle86-0" />
+  <circle
+     cx="78.523865"
+     cy="334.27618"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle97-6"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.52386"
+     cy="334.27618"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle98-1" />
+  <circle
+     cx="78.639465"
+     cy="334.38947"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle85-6-3"
+     style="fill:#fffefd;fill-opacity:1" />
+  <circle
+     cx="114.63945"
+     cy="334.38947"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle86-1-8" />
+  <circle
+     cx="78.639465"
+     cy="370.3895"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle97-3-9"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="114.63945"
+     cy="370.3895"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle98-3-3"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="186.56499"
+     cy="370.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle99-4"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="222.56499"
+     cy="370.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle100-1"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="258.565"
+     cy="370.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle101-1"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="294.56497"
+     cy="370.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle102-3"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="330.56497"
+     cy="370.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle103-8"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="366.56497"
+     cy="370.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle104-7"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="402.565"
+     cy="370.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle105-4"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="438.565"
+     cy="370.55316"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle106-2"
+     style="fill:#fffcff;fill-opacity:1" />
+  <circle
+     cx="438.42273"
+     cy="46.276199"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle12-6"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.42273"
+     cy="82.276199"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle24-6"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.45776"
+     cy="10.248977"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle12-2-1"
+     style="fill:#fffffe;fill-opacity:1" />
+  <circle
+     cx="438.45776"
+     cy="46.248978"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle24-5-4"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.42273"
+     cy="118.2762"
+     r="5"
+     fill="#aed6f1"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle36-6"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.42273"
+     cy="154.2762"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle48-7"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.42273"
+     cy="190.2762"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle60-8"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.42273"
+     cy="226.2762"
+     r="5"
+     fill="#a9dfbf"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle72-9"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.42273"
+     cy="262.27618"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle84-3"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.42273"
+     cy="298.27618"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle96-9"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.42273"
+     cy="334.27618"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle108-4"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.53833"
+     cy="334.38947"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle96-2-7"
+     style="fill:#ffffff;fill-opacity:1" />
+  <circle
+     cx="438.53833"
+     cy="370.3895"
+     r="5"
+     fill="#f9e79f"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="circle108-7-3"
+     style="fill:#fffcff;fill-opacity:1" />
+  <line
+     x1="76.449402"
+     y1="136.43988"
+     x2="439.85568"
+     y2="136.43988"
+     stroke="#cc0000"
+     stroke-width="2"
+     stroke-dasharray="6, 4"
+     id="line108" />
+  <line
+     x1="78.449402"
+     y1="244.43988"
+     x2="439.48047"
+     y2="244.43988"
+     stroke="#cc0000"
+     stroke-width="1.99999"
+     stroke-dasharray="6, 4"
+     id="line109" />
+  <text
+     x="22.449398"
+     y="304.43988"
+     text-anchor="middle"
+     style="font-weight:bold;font-size:15px;fill:currentColor"
+     id="text109">0</text>
+  <text
+     x="22.449398"
+     y="196.43988"
+     text-anchor="middle"
+     style="font-weight:bold;font-size:15px;fill:currentColor"
+     id="text110">1</text>
+  <text
+     x="22.041782"
+     y="87.737503"
+     text-anchor="middle"
+     style="font-weight:bold;font-size:15px;font-family:sans-serif;fill:currentColor"
+     id="text111-9">2</text>
+  <text
+     x="23.342285"
+     y="11.525558"
+     text-anchor="middle"
+     style="font-size:10px;fill:#666666"
+     id="text112">processor</text>
+  <text
+     x="473.4494"
+     y="116.4399"
+     text-anchor="start"
+     style="font-size:9px;fill:#cc0000"
+     id="text113"><tspan
+       sodipodi:role="line"
+       id="tspan129"
+       x="473.4494"
+       y="116.4399">ghost row</tspan><tspan
+       sodipodi:role="line"
+       id="tspan130"
+       x="473.4494"
+       y="127.6899">for proc 1</tspan></text>
+  <text
+     x="473.4494"
+     y="152.43988"
+     text-anchor="start"
+     style="font-size:9px;fill:#cc0000"
+     id="text114"><tspan
+       sodipodi:role="line"
+       id="tspan131"
+       x="473.4494"
+       y="152.43988">ghost row</tspan><tspan
+       sodipodi:role="line"
+       id="tspan132"
+       x="473.4494"
+       y="163.68988">for proc 2</tspan></text>
+  <text
+     x="471.4494"
+     y="222.43988"
+     text-anchor="start"
+     style="font-size:9px;fill:#cc0000"
+     id="text115"><tspan
+       sodipodi:role="line"
+       id="tspan133"
+       x="471.4494"
+       y="222.43988">ghost row</tspan><tspan
+       sodipodi:role="line"
+       id="tspan134"
+       x="471.4494"
+       y="233.68988">for proc 0</tspan></text>
+  <text
+     x="471.4494"
+     y="258.43988"
+     text-anchor="start"
+     style="font-size:9px;fill:#cc0000"
+     id="text116"><tspan
+       sodipodi:role="line"
+       id="tspan135"
+       x="471.4494"
+       y="258.43988">ghost row</tspan><tspan
+       sodipodi:role="line"
+       id="tspan136"
+       x="471.4494"
+       y="269.68988">for proc 1</tspan></text>
+  <text
+     x="1.4723414"
+     y="399.40262"
+     text-anchor="middle"
+     style="font-size:10.0327px;text-align:start;text-anchor:start;fill:#555555;stroke-width:1"
+     id="text117"
+     transform="scale(1.0032706,0.99674007)"><tspan
+       sodipodi:role="line"
+       id="tspan137"
+       x="1.4723414"
+       y="399.40262"
+       style="stroke-width:1">Partition of a finite difference mesh across 3 processes (1D decomposition). Processor 0's grid (nodes</tspan><tspan
+       sodipodi:role="line"
+       id="tspan138"
+       x="1.4723414"
+       y="411.94348"
+       style="stroke-width:1">inside the yellow dotted line) consists of nodes it &quot;owns&quot;,in solid yellow, and &quot;ghost&quot; rows that form the</tspan><tspan
+       sodipodi:role="line"
+       x="1.4723414"
+       y="424.48438"
+       id="tspan139"
+       style="stroke-width:1">boundary for its grid.The green and blue dotted lines indicate the corresponding grids for processors 1</tspan><tspan
+       sodipodi:role="line"
+       x="1.4723414"
+       y="437.02524"
+       id="tspan140"
+       style="stroke-width:1">and 2.</tspan></text>
+  <rect
+     style="fill:#ffffff;fill-opacity:0;stroke:#003e9d;stroke-width:2.233;stroke-dasharray:2.233, 6.699;stroke-dashoffset:0;stroke-opacity:0.714734"
+     id="rect129"
+     width="407.51648"
+     height="163.5495"
+     x="57.859337"
+     y="1.1165" />
+  <rect
+     style="fill:#ffffff;fill-opacity:0;stroke:#00d18d;stroke-width:2.233;stroke-dasharray:2.233, 6.699;stroke-dashoffset:0;stroke-opacity:0.714734"
+     id="rect129-4"
+     width="383.42517"
+     height="163.5495"
+     x="68.692177"
+     y="108.66548" />
+  <rect
+     style="fill:#ffffff;fill-opacity:0;stroke:#ffe138;stroke-width:2.233;stroke-dasharray:2.233, 6.699;stroke-dashoffset:0;stroke-opacity:0.714734"
+     id="rect129-1"
+     width="406.83786"
+     height="163.5495"
+     x="58.173431"
+     y="217.66547" />
+</svg>

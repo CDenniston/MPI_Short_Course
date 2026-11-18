@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 555.86975 290.97705"
+   width="555.86975"
+   height="290.97705"
+   style="font-size:13px;font-family:sans-serif"
+   version="1.1"
+   id="svg67"
+   sodipodi:docname="chunked-array.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:c2pa="http://c2pa.org/manifest">
+  <defs
+     id="defs67" />
+  <sodipodi:namedview
+     id="namedview67"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="3.89"
+     inkscape:cx="295.50129"
+     inkscape:cy="136.63239"
+     inkscape:window-width="2867"
+     inkscape:window-height="1353"
+     inkscape:window-x="1985"
+     inkscape:window-y="3"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg67" />
+  <metadata
+     id="metadata1">
+    <c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTowZGMzMTFlZi1kYWMzLTQ1MDItYmUwMS04MjY2ZDI4MTRlNjQAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaOMPfM/FKseiRhXBvuPqIo0AAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo4YjJiNmE2NS0zNDFiLTQxNGItOTBmYy1kMmYxNzgxMzE5Y2NscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNohEoGv7f76j9rTX0K9patUgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggy4XR1dMcRty5mOuaL2MZLDySdFtrbh7KqFiBcejUKeqkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaGC6kSmSM2GgmopY08k0raQAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCBNg/j7bbXrzEN5tWzGlH4dZpnlnQ8621zguSBHQsBBi2RuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBjFZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjBkYzMxMWVmLWRhYzMtNDUwMi1iZTAxLTgyNjZkMjgxNGU2NC9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOmUyMWM0MTUzLTYzY2MtNDJlNi1iNmMyLWFlNmZiMzcwZjg2MXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCDLhdHV0xxG3LmY65ovYxksPJJ0W2tuHsqoWIFx6NQp6qJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggGDkbY0CzUEEmryyvAj7PxOmDl0a5eIbbed/LlP81JKSiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFgg2QcDoyLaahfVoiKJ+vuoRqSdWg91Z5FVogRO1YMpUQd0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQG0FICGJYcCyobl4NtBEn3Pwb7XW086s7q8u+S1sO36QwpO/t6MqQDCIN2XAox300FRHJPeSmD8Mj6mHUTeLRjc=</c2pa:manifest>
+  </metadata>
+  <text
+     x="295.46973"
+     y="10.705078"
+     text-anchor="middle"
+     fill="currentColor"
+     font-size="14px"
+     font-weight="bold"
+     id="text1">Sending Row Chunks Instead of Individual Rows</text>
+  <text
+     x="295.46973"
+     y="30.705078"
+     text-anchor="middle"
+     fill="currentColor"
+     font-size="11px"
+     font-weight="normal"
+     id="text2">Contiguous 2D array A (nrows × ncols), divided into p chunks</text>
+  <rect
+     x="75.469727"
+     y="48.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect2" />
+  <rect
+     x="119.46973"
+     y="48.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect3" />
+  <rect
+     x="163.46973"
+     y="48.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect4" />
+  <rect
+     x="207.46973"
+     y="48.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect5" />
+  <rect
+     x="251.46973"
+     y="48.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect6" />
+  <rect
+     x="75.469727"
+     y="70.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect7" />
+  <rect
+     x="119.46973"
+     y="70.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect8" />
+  <rect
+     x="163.46973"
+     y="70.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect9" />
+  <rect
+     x="207.46973"
+     y="70.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect10" />
+  <rect
+     x="251.46973"
+     y="70.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect11" />
+  <rect
+     x="75.469727"
+     y="92.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect12" />
+  <rect
+     x="119.46973"
+     y="92.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect13" />
+  <rect
+     x="163.46973"
+     y="92.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect14" />
+  <rect
+     x="207.46973"
+     y="92.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect15" />
+  <rect
+     x="251.46973"
+     y="92.705078"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#dae8fc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect16" />
+  <rect
+     x="75.469727"
+     y="114.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect17" />
+  <rect
+     x="119.46973"
+     y="114.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect18" />
+  <rect
+     x="163.46973"
+     y="114.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect19" />
+  <rect
+     x="207.46973"
+     y="114.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect20" />
+  <rect
+     x="251.46973"
+     y="114.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect21" />
+  <rect
+     x="75.469727"
+     y="136.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect22" />
+  <rect
+     x="119.46973"
+     y="136.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect23" />
+  <rect
+     x="163.46973"
+     y="136.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect24" />
+  <rect
+     x="207.46973"
+     y="136.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect25" />
+  <rect
+     x="251.46973"
+     y="136.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect26" />
+  <rect
+     x="75.469727"
+     y="158.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect27" />
+  <rect
+     x="119.46973"
+     y="158.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect28" />
+  <rect
+     x="163.46973"
+     y="158.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect29" />
+  <rect
+     x="207.46973"
+     y="158.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect30" />
+  <rect
+     x="251.46973"
+     y="158.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#d5e8d4"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect31" />
+  <rect
+     x="75.469727"
+     y="180.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect32" />
+  <rect
+     x="119.46973"
+     y="180.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect33" />
+  <rect
+     x="163.46973"
+     y="180.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect34" />
+  <rect
+     x="207.46973"
+     y="180.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect35" />
+  <rect
+     x="251.46973"
+     y="180.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect36" />
+  <rect
+     x="75.469727"
+     y="202.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect37" />
+  <rect
+     x="119.46973"
+     y="202.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect38" />
+  <rect
+     x="163.46973"
+     y="202.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect39" />
+  <rect
+     x="207.46973"
+     y="202.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect40" />
+  <rect
+     x="251.46973"
+     y="202.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect41" />
+  <rect
+     x="75.469727"
+     y="224.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect42" />
+  <rect
+     x="119.46973"
+     y="224.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect43" />
+  <rect
+     x="163.46973"
+     y="224.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect44" />
+  <rect
+     x="207.46973"
+     y="224.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect45" />
+  <rect
+     x="251.46973"
+     y="224.70508"
+     width="44"
+     height="22"
+     rx="0"
+     fill="#fff2cc"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect46" />
+  <text
+     x="65.469727"
+     y="86.705078"
+     text-anchor="end"
+     fill="currentColor"
+     font-size="11px"
+     font-weight="normal"
+     id="text46">chunk 0</text>
+  <line
+     x1="69.469727"
+     y1="50.705078"
+     x2="73.469727"
+     y2="50.705078"
+     stroke="currentColor"
+     stroke-width="1.5"
+     id="line46" />
+  <line
+     x1="73.469727"
+     y1="50.705078"
+     x2="73.469727"
+     y2="112.70508"
+     stroke="currentColor"
+     stroke-width="1.5"
+     id="line47" />
+  <line
+     x1="69.469727"
+     y1="112.70508"
+     x2="73.469727"
+     y2="112.70508"
+     stroke="currentColor"
+     stroke-width="1.5"
+     id="line48" />
+  <text
+     x="65.469727"
+     y="152.70508"
+     text-anchor="end"
+     fill="currentColor"
+     font-size="11px"
+     font-weight="normal"
+     id="text48">chunk 1</text>
+  <line
+     x1="69.469727"
+     y1="116.70508"
+     x2="73.469727"
+     y2="116.70508"
+     stroke="currentColor"
+     stroke-width="1.5"
+     id="line49" />
+  <line
+     x1="73.469727"
+     y1="116.70508"
+     x2="73.469727"
+     y2="178.70508"
+     stroke="currentColor"
+     stroke-width="1.5"
+     id="line50" />
+  <line
+     x1="69.469727"
+     y1="178.70508"
+     x2="73.469727"
+     y2="178.70508"
+     stroke="currentColor"
+     stroke-width="1.5"
+     id="line51" />
+  <text
+     x="65.469727"
+     y="218.70508"
+     text-anchor="end"
+     fill="currentColor"
+     font-size="11px"
+     font-weight="normal"
+     id="text51">chunk 2</text>
+  <line
+     x1="69.469727"
+     y1="182.70508"
+     x2="73.469727"
+     y2="182.70508"
+     stroke="currentColor"
+     stroke-width="1.5"
+     id="line52" />
+  <line
+     x1="73.469727"
+     y1="182.70508"
+     x2="73.469727"
+     y2="244.70508"
+     stroke="currentColor"
+     stroke-width="1.5"
+     id="line53" />
+  <line
+     x1="69.469727"
+     y1="244.70508"
+     x2="73.469727"
+     y2="244.70508"
+     stroke="currentColor"
+     stroke-width="1.5"
+     id="line54" />
+  <text
+     x="335.46973"
+     y="60.705078"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="12px"
+     font-weight="bold"
+     id="text56">Distribute with:</text>
+  <rect
+     x="335.46973"
+     y="68.705078"
+     width="220"
+     height="60"
+     rx="4"
+     fill="#f5f5f5"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect56" />
+  <text
+     x="343.46973"
+     y="86.705078"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="10px"
+     font-weight="normal"
+     font-family="monospace"
+     id="text57">MPI_Scatter(&amp;A[0][0],</text>
+  <text
+     x="343.46973"
+     y="102.70508"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="10px"
+     font-weight="normal"
+     font-family="monospace"
+     id="text58">rows_per_proc*ncols,</text>
+  <text
+     x="343.46973"
+     y="118.70508"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="10px"
+     font-weight="normal"
+     font-family="monospace"
+     id="text59">MPI_DOUBLE, ...)</text>
+  <text
+     x="335.46973"
+     y="148.70508"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="12px"
+     font-weight="bold"
+     id="text60">Collect results with:</text>
+  <rect
+     x="335.46973"
+     y="158.70508"
+     width="220"
+     height="46"
+     rx="4"
+     fill="#f5f5f5"
+     stroke="currentColor"
+     stroke-width="0.8"
+     id="rect60" />
+  <text
+     x="343.46973"
+     y="176.70508"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="10px"
+     font-weight="normal"
+     font-family="monospace"
+     id="text61">MPI_Gather(c_local, rows_per_proc,</text>
+  <text
+     x="343.46973"
+     y="192.70508"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="10px"
+     font-weight="normal"
+     font-family="monospace"
+     id="text62">MPI_DOUBLE, c, ...)</text>
+  <text
+     x="335.46973"
+     y="223.70508"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="11px"
+     font-weight="bold"
+     id="text63">Key advantage:</text>
+  <text
+     x="335.46973"
+     y="240.70508"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="11px"
+     font-weight="normal"
+     id="text64">Fewer, larger messages → less</text>
+  <text
+     x="335.46973"
+     y="256.70508"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="11px"
+     font-weight="normal"
+     id="text65">latency overhead (t_s &gt;&gt; t_c)</text>
+  <text
+     x="335.46973"
+     y="272.70508"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="11px"
+     font-weight="normal"
+     id="text66">No dynamic load balancing needed</text>
+  <text
+     x="335.46973"
+     y="288.70508"
+     text-anchor="start"
+     fill="currentColor"
+     font-size="11px"
+     font-weight="normal"
+     id="text67">when procs get exclusive access.</text>
+</svg>
