@@ -11,6 +11,8 @@
         <link rel="canonical" href="https://CDenniston.github.io/MPI_Short_Course/Ch1-Intro/Ch1-Intro_1/">
       
       
+        <link rel="prev" href="../..">
+      
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -18,7 +20,7 @@
     
     
       
-        <title>Intro to Parallel Computing - Using MPI for Scientific Computing - Short Course</title>
+        <title>Introduction - Using MPI for Scientific Computing - Short Course</title>
       
     
     
@@ -99,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Intro to Parallel Computing
+              Introduction
             
           </span>
         </div>
@@ -205,9 +207,29 @@
       
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../Ch-1-Intro/Ch1-Intro_1.md" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -216,6 +238,169 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#announcements" class="md-nav__link">
+    Announcements
+  </a>
+  
+    <nav class="md-nav" aria-label="Announcements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#computer-hardware-evolution" class="md-nav__link">
+    Computer Hardware Evolution
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reasons-to-parallelize" class="md-nav__link">
+    Reasons to Parallelize
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classification-of-parallelization" class="md-nav__link">
+    Classification of Parallelization
+  </a>
+  
+    <nav class="md-nav" aria-label="Classification of Parallelization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#by-data-instruction-schemes" class="md-nav__link">
+    By Data &amp; Instruction Schemes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-1-sisd-single-instruction-same-data-serial" class="md-nav__link">
+    Example ① — SISD: Single Instruction Same Data (Serial)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-simd-single-instruction-multiple-data" class="md-nav__link">
+    Example ② — SIMD: Single Instruction Multiple Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-misd-multiple-instruction-same-data" class="md-nav__link">
+    Example ③ — MISD: Multiple Instruction Same Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-4-mimd-multiple-instruction-multiple-data" class="md-nav__link">
+    Example ④ — MIMD: Multiple Instruction Multiple Data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classification-of-parallel-computing-by-memory" class="md-nav__link">
+    Classification of Parallel Computing by Memory
+  </a>
+  
+    <nav class="md-nav" aria-label="Classification of Parallel Computing by Memory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shared-memory-typical-desktop-today" class="md-nav__link">
+    Shared Memory (typical desktop today)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distributed-memory-classic-beowulf-cluster" class="md-nav__link">
+    Distributed Memory (classic Beowulf cluster)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi" class="md-nav__link">
+    MPI
+  </a>
+  
+    <nav class="md-nav" aria-label="MPI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-hello-world-in-c" class="md-nav__link">
+    Example: "Hello World" in C
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flowchart-of-what-happens" class="md-nav__link">
+    Flowchart of What Happens
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#refactored-c-version" class="md-nav__link">
+    Refactored C Version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-version-raii" class="md-nav__link">
+    C++ Version (RAII)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
