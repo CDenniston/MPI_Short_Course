@@ -11,6 +11,10 @@
         <link rel="canonical" href="https://CDenniston.github.io/MPI_Short_Course/Ch3-MatrixVector%20Operations/Ch3-Matrix-Vector_Operations/">
       
       
+        <link rel="prev" href="../../Ch2-Message%20Passing/Ch2-Message_Passing/">
+      
+      
+        <link rel="next" href="../../Ch4-MeshSolutions/Ch4-MeshSolutions/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -18,7 +22,7 @@
     
     
       
-        <title>Chapter 3: Matrix-Vector Operations - Using MPI for Scientific Computing - Short Course</title>
+        <title>Matrix Vector Operations - Using MPI for Scientific Computing - Short Course</title>
       
     
     
@@ -99,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Chapter 3: Matrix-Vector Operations
+              Matrix Vector Operations
             
           </span>
         </div>
@@ -212,6 +216,389 @@
   
   <span class="md-ellipsis">
     Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Ch2-Message%20Passing/Ch2-Message_Passing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Message Passing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Matrix Vector Operations
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Matrix Vector Operations
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#note-on-storing-large-arrays" class="md-nav__link">
+    Note on Storing Large Arrays
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-style-2d-arrays" class="md-nav__link">
+    C-Style 2D Arrays
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamically-allocated-2d-arrays-in-c" class="md-nav__link">
+    Dynamically Allocated 2D Arrays in C
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamically Allocated 2D Arrays in C">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deallocation" class="md-nav__link">
+    Deallocation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-2d-arrays" class="md-nav__link">
+    C++ 2D Arrays
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#boost-multi-array" class="md-nav__link">
+    Boost Multi-Array
+  </a>
+  
+    <nav class="md-nav" aria-label="Boost Multi-Array">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#boost-example" class="md-nav__link">
+    Boost Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slices" class="md-nav__link">
+    Slices
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resizing" class="md-nav__link">
+    Resizing
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#array-access-and-performance" class="md-nav__link">
+    Array Access and Performance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compiler-optimizations" class="md-nav__link">
+    Compiler Optimizations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#matrix-operations-in-parallel" class="md-nav__link">
+    Matrix Operations in Parallel
+  </a>
+  
+    <nav class="md-nav" aria-label="Matrix Operations in Parallel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-vector-multiplication-code-ab-c" class="md-nav__link">
+    Matrix-Vector Multiplication Code (Ab = c)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#note-variable-scope-and-conditional-allocation" class="md-nav__link">
+    Note: Variable Scope and Conditional Allocation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-analysis-matrix-vector-multiplication" class="md-nav__link">
+    Performance Analysis: Matrix-Vector Multiplication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-matrix-matrix-multiplication" class="md-nav__link">
+    Example: Matrix-Matrix Multiplication
+  </a>
+  
+    <nav class="md-nav" aria-label="Example: Matrix-Matrix Multiplication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-analysis-matrix-matrix-multiplication" class="md-nav__link">
+    Performance Analysis: Matrix-Matrix Multiplication
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#timing-your-own-code" class="md-nav__link">
+    Timing your own code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-considerations-message-latency" class="md-nav__link">
+    Other Considerations: Message Latency
+  </a>
+  
+    <nav class="md-nav" aria-label="Other Considerations: Message Latency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sending-row-chunks" class="md-nav__link">
+    Sending Row Chunks
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi-scatter-gather-and-allgather" class="md-nav__link">
+    MPI Scatter, Gather, and Allgather
+  </a>
+  
+    <nav class="md-nav" aria-label="MPI Scatter, Gather, and Allgather">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mpi_scatter" class="md-nav__link">
+    MPI_Scatter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpi_gather" class="md-nav__link">
+    MPI_Gather
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpi_allgather" class="md-nav__link">
+    MPI_Allgather
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blas-lapack" class="md-nav__link">
+    BLAS &amp; LAPACK
+  </a>
+  
+    <nav class="md-nav" aria-label="BLAS & LAPACK">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blas-basic-linear-algebra-subprograms" class="md-nav__link">
+    BLAS: Basic Linear Algebra Subprograms
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blas-nomenclature" class="md-nav__link">
+    BLAS Nomenclature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blas-calling-conventions" class="md-nav__link">
+    BLAS Calling Conventions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-calling-dgemm-from-c" class="md-nav__link">
+    Example: Calling DGEMM from C
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-blas-implementations" class="md-nav__link">
+    Multiple BLAS Implementations
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lapack-standard-linear-algebra-package" class="md-nav__link">
+    LAPACK: Standard Linear Algebra Package
+  </a>
+  
+    <nav class="md-nav" aria-label="LAPACK: Standard Linear Algebra Package">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linear-equations" class="md-nav__link">
+    Linear Equations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lapack-function-naming" class="md-nav__link">
+    LAPACK Function Naming
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intel-mkl-examples" class="md-nav__link">
+    Intel MKL Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Ch4-MeshSolutions/Ch4-MeshSolutions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mesh Solutions
   </span>
   
 

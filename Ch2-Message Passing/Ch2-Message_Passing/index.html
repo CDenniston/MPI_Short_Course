@@ -11,6 +11,10 @@
         <link rel="canonical" href="https://CDenniston.github.io/MPI_Short_Course/Ch2-Message%20Passing/Ch2-Message_Passing/">
       
       
+        <link rel="prev" href="../../Ch1-Intro/Ch1-Intro_1/">
+      
+      
+        <link rel="next" href="../../Ch3-MatrixVector%20Operations/Ch3-Matrix-Vector_Operations/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -18,7 +22,7 @@
     
     
       
-        <title>Message Passing between Processes - Using MPI for Scientific Computing - Short Course</title>
+        <title>Message Passing - Using MPI for Scientific Computing - Short Course</title>
       
     
     
@@ -99,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Message Passing between Processes
+              Message Passing
             
           </span>
         </div>
@@ -212,6 +216,361 @@
   
   <span class="md-ellipsis">
     Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Message Passing
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Message Passing
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#passing-data" class="md-nav__link">
+    Passing Data
+  </a>
+  
+    <nav class="md-nav" aria-label="Passing Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-computing-ln-2" class="md-nav__link">
+    Example: Computing ln 2
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#boss-worker-model" class="md-nav__link">
+    Boss-Worker Model
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-implementation-ln-2" class="md-nav__link">
+    C++ Implementation: ln 2
+  </a>
+  
+    <nav class="md-nav" aria-label="C++ Implementation: ln 2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flowchart" class="md-nav__link">
+    Flowchart
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpi-function-signatures" class="md-nav__link">
+    MPI Function Signatures
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arrays-in-mpi" class="md-nav__link">
+    Arrays in MPI
+  </a>
+  
+    <nav class="md-nav" aria-label="Arrays in MPI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#c-style-1d-arrays" class="md-nav__link">
+    C-Style 1D Arrays
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpi-data-types" class="md-nav__link">
+    MPI Data Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-stdvector-c" class="md-nav__link">
+    Using std::vector (C++)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#one-to-one-communication-dot-product" class="md-nav__link">
+    One-to-One Communication: Dot Product
+  </a>
+  
+    <nav class="md-nav" aria-label="One-to-One Communication: Dot Product">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flowchart_1" class="md-nav__link">
+    Flowchart
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-implementation-dot-product" class="md-nav__link">
+    C++ Implementation: Dot Product
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpi_send-and-mpi_recv" class="md-nav__link">
+    MPI_Send and MPI_Recv
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#design-comments" class="md-nav__link">
+    Design Comments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-of-mpi-commands-encountered-so-far" class="md-nav__link">
+    Summary of MPI Commands Encountered So Far
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi_allreduce" class="md-nav__link">
+    MPI_Allreduce
+  </a>
+  
+    <nav class="md-nav" aria-label="MPI_Allreduce">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reduction-operations" class="md-nav__link">
+    Reduction Operations
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi_status" class="md-nav__link">
+    MPI_Status
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controlling-synchronisation-blocking-vs-non-blocking-communication" class="md-nav__link">
+    Controlling Synchronisation: Blocking vs Non-Blocking Communication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-task-distribution" class="md-nav__link">
+    Example: Task Distribution
+  </a>
+  
+    <nav class="md-nav" aria-label="Example: Task Distribution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-c-with-mpi_vars-struct" class="md-nav__link">
+    Code (C with mpi_vars struct)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sample-output" class="md-nav__link">
+    Sample Output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flowchart-1st-loop" class="md-nav__link">
+    Flowchart (1st Loop)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mpi_barrier" class="md-nav__link">
+    MPI_Barrier
+  </a>
+  
+    <nav class="md-nav" aria-label="MPI_Barrier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sample-output-with-mpi_barrier-between-loops" class="md-nav__link">
+    Sample Output (with MPI_Barrier between loops)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ordering-with-blocking-mpi_send" class="md-nav__link">
+    Ordering with Blocking MPI_Send
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#non-blocking-communication" class="md-nav__link">
+    Non-Blocking Communication
+  </a>
+  
+    <nav class="md-nav" aria-label="Non-Blocking Communication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#revised-task-loop-non-blocking-mpi_isend" class="md-nav__link">
+    Revised Task Loop (Non-Blocking MPI_Isend)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#separating-send-and-receive-loops-boss-avoids-waiting" class="md-nav__link">
+    Separating Send and Receive Loops (Boss Avoids Waiting)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Ch3-MatrixVector%20Operations/Ch3-Matrix-Vector_Operations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Matrix Vector Operations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Ch4-MeshSolutions/Ch4-MeshSolutions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mesh Solutions
   </span>
   
 

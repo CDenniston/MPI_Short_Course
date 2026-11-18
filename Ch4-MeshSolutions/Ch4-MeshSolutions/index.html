@@ -11,6 +11,8 @@
         <link rel="canonical" href="https://CDenniston.github.io/MPI_Short_Course/Ch4-MeshSolutions/Ch4-MeshSolutions/">
       
       
+        <link rel="prev" href="../../Ch3-MatrixVector%20Operations/Ch3-Matrix-Vector_Operations/">
+      
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -18,7 +20,7 @@
     
     
       
-        <title>Chapter 4: Mesh-based Solutions — Poisson Equation - Using MPI for Scientific Computing - Short Course</title>
+        <title>Mesh Solutions - Using MPI for Scientific Computing - Short Course</title>
       
     
     
@@ -99,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Chapter 4: Mesh-based Solutions — Poisson Equation
+              Mesh Solutions
             
           </span>
         </div>
@@ -216,6 +218,349 @@
   
 
       </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Ch2-Message%20Passing/Ch2-Message_Passing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Message Passing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Ch3-MatrixVector%20Operations/Ch3-Matrix-Vector_Operations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Matrix Vector Operations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Mesh Solutions
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Mesh Solutions
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#finite-difference-schemes-for-the-poisson-equation" class="md-nav__link">
+    Finite Difference Schemes for the Poisson Equation
+  </a>
+  
+    <nav class="md-nav" aria-label="Finite Difference Schemes for the Poisson Equation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#discretisation" class="md-nav__link">
+    Discretisation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure-of-the-matrix-system" class="md-nav__link">
+    Structure of the Matrix System
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#direct-solution-with-lapack-cholesky-factorisation" class="md-nav__link">
+    Direct Solution with LAPACK: Cholesky Factorisation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-code-poissonlapackcpp" class="md-nav__link">
+    C++ Code: PoissonLAPACK.cpp
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jacobi-method" class="md-nav__link">
+    Jacobi Method
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gauss-seidel-method" class="md-nav__link">
+    Gauss-Seidel Method
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#successive-over-relaxation-sor" class="md-nav__link">
+    Successive Over-Relaxation (SOR)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-jacobi-method" class="md-nav__link">
+    Parallel Jacobi Method
+  </a>
+  
+    <nav class="md-nav" aria-label="Parallel Jacobi Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1d-decomposition" class="md-nav__link">
+    1D Decomposition
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flowchart" class="md-nav__link">
+    Flowchart
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-code-poissonjacobi1dmpic" class="md-nav__link">
+    C Code: PoissonJacobi1DMPI.c
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    Results
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2d-decomposition" class="md-nav__link">
+    2D Decomposition
+  </a>
+  
+    <nav class="md-nav" aria-label="2D Decomposition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mpi-cartesian-topology-functions" class="md-nav__link">
+    MPI Cartesian Topology Functions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-column-data-in-2d" class="md-nav__link">
+    Sending Column Data in 2D
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-code-poissonjacobi2dmpic" class="md-nav__link">
+    C Code: PoissonJacobi2DMPI.c
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-writing-to-a-single-global-file" class="md-nav__link">
+    Output: Writing to a Single Global File
+  </a>
+  
+    <nav class="md-nav" aria-label="Output: Writing to a Single Global File">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mpi_type_create_subarray" class="md-nav__link">
+    MPI_Type_create_subarray
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mpiio-overview" class="md-nav__link">
+    MPIIO Overview
+  </a>
+  
+    <nav class="md-nav" aria-label="MPIIO Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-mpiio-functions" class="md-nav__link">
+    Key MPIIO Functions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#final-output-routine" class="md-nav__link">
+    Final Output Routine
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conjugate-gradient-method" class="md-nav__link">
+    Conjugate Gradient Method
+  </a>
+  
+    <nav class="md-nav" aria-label="Conjugate Gradient Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-background" class="md-nav__link">
+    Mathematical Background
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#line-search" class="md-nav__link">
+    Line Search
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choosing-the-search-direction" class="md-nav__link">
+    Choosing the Search Direction
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conjugate-gradient-algorithm" class="md-nav__link">
+    Conjugate Gradient Algorithm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-many-iterations-are-needed" class="md-nav__link">
+    How Many Iterations Are Needed?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-code-cgc" class="md-nav__link">
+    C Code: CG.c
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallelisation-of-the-cg-method" class="md-nav__link">
+    Parallelisation of the CG Method
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
