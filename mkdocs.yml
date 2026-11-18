@@ -7,4 +7,11 @@ nav:
   - Message Passing: "Ch2-Message Passing/Ch2-Message_Passing.md"
   - Matrix Vector Operations: "Ch3-MatrixVector Operations/Ch3-Matrix-Vector_Operations.md"
   - Mesh Solutions: Ch4-MeshSolutions/Ch4-MeshSolutions.md
+  
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
 
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
