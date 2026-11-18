@@ -5,6 +5,6 @@ nav:
   - Home: index.md
   - Introduction: Ch1-Intro/Ch1-Intro_1.md
   - Message Passing: "Ch2-Message Passing/Ch2-Message_Passing.md"
-  - Matrix Vector Operations: "Ch3-Matrix Vector Operations/Ch3-Matrix-Vector_Operations.md"
+  - Matrix Vector Operations: "Ch3-MatrixVector Operations/Ch3-Matrix-Vector_Operations.md"
   - Mesh Solutions: Ch4-MeshSolutions/Ch4-MeshSolutions.md
 
