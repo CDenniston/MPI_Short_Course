@@ -952,9 +952,9 @@
 <p>We think of this as a matrix, but device memory is addressed in a single linear sequence (i.e. 1D). Therefore, to store this 2D array in memory it must first be converted to a 1D sequence.</p>
 <p><img alt="C-style row-major storage of a 2D array" src="../rowmajor.svg" /></p>
 <p>C uses <strong>row-major order</strong>: the elements of each row are stored consecutively in memory. The element <code>array[i][j]</code> is stored at:
-$$\texttt{array[i][j]} \;\longrightarrow\; <em>!\bigl(\&amp;\texttt{array[0][0]} + i \times \texttt{ncols} + j\bigr)$$
+<span class="arithmatex">\(<span class="arithmatex">\(\texttt{array[i][j]} \;\longrightarrow\; *\!\bigl(\&amp;\texttt{array[0][0]} + i \times \texttt{ncols} + j\bigr)\)</span>\)</span>
 where <code>&amp;array[0][0]</code> is the memory address of the beginning of the array, <code>ncols</code> is the number of columns, <code>(&amp;array[0][0]+i*ncols+j)</code> is then the memory address of the element in row <code>i</code> column <code>j</code>, and the <code>*</code> operator placed in front of a memory address 'de-references' this address to give you the value that is stored at the memory address.  This means:
-$$\texttt{array[i][j]} \;\equiv\; \texttt{array[0][i{</em>}4 + j]}$$
+<span class="arithmatex">\(<span class="arithmatex">\(\texttt{array[i][j]} \;\equiv\; \texttt{array[0][i{*}4 + j]}\)</span>\)</span>
 As there is no bounds checking, you can use either form interchangeably in code.</p>
 <p>The compiler actually converts all multidimensional arrays into 1D arrays at compile time, which is why in C you need to pass functions the number of columns in order for the function to decode what you mean by <code>a[i][j]</code>.  Note that C puts a significant burden on the programmer to manage memory precisely and without errors.  The failure of programmers to do this consistently is one of the main drivers for creation of so-called "memory-safe" languages like Rust. You must be <em>extremely</em> careful to avoid coding errors and diligently test and debug.</p>
 <hr />
@@ -1108,10 +1108,10 @@ for (int j=0; j&lt;3; ++j)
 <p><code>-O3</code> means apply aggressive optimization to code. In many cases this can substantially speed up run times.</p>
 <hr />
 <h2 id="matrix-operations-in-parallel">Matrix Operations in Parallel</h2>
-<p>Let's write some code to do $A \cdot b = c$, where $A$ is a matrix and $b$ and $c$ are vectors. We will use a Boss-Worker model where Workers do all computation while Boss directs the work.</p>
-<p>To do this, we divide the task of $A \cdot b = c$ into:
-$$A[i] \cdot b = c[i], \quad i = 0, \ldots, n_\text{rows} - 1$$
-where $A[i]$ is the $i$-th row of $A$ (itself a row vector of length $n_\text{cols}$) and $c[i]$ is the $i$-th element of the result vector. We have different processors work on each of these row tasks until done.</p>
+<p>Let's write some code to do <span class="arithmatex">\(A \cdot b = c\)</span>, where <span class="arithmatex">\(A\)</span> is a matrix and <span class="arithmatex">\(b\)</span> and <span class="arithmatex">\(c\)</span> are vectors. We will use a Boss-Worker model where Workers do all computation while Boss directs the work.</p>
+<p>To do this, we divide the task of <span class="arithmatex">\(A \cdot b = c\)</span> into:
+<span class="arithmatex">\(<span class="arithmatex">\(A[i] \cdot b = c[i], \quad i = 0, \ldots, n_\text{rows} - 1\)</span>\)</span>
+where <span class="arithmatex">\(A[i]\)</span> is the <span class="arithmatex">\(i\)</span>-th row of <span class="arithmatex">\(A\)</span> (itself a row vector of length <span class="arithmatex">\(n_\text{cols}\)</span>) and <span class="arithmatex">\(c[i]\)</span> is the <span class="arithmatex">\(i\)</span>-th element of the result vector. We have different processors work on each of these row tasks until done.</p>
 <p><img alt="Boss-Worker flowchart for matrix-vector multiplication" src="../matvec-flowchart.svg" /></p>
 <h3 id="matrix-vector-multiplication-code-ab-c">Matrix-Vector Multiplication Code (Ab = c)</h3>
 <pre><code class="language-cpp">/////////////////////////////////////////////
@@ -1202,7 +1202,7 @@ int main(int argc, char** argv)
 }
 </code></pre>
 <h3 id="note-variable-scope-and-conditional-allocation">Note: Variable Scope and Conditional Allocation</h3>
-<p>Here we only need the full matrix $A$ on the Boss node. It would be tempting to declare $A$ inside an <code>if (MyID == 0)</code> block, but then $A$ would immediately go out of scope. Instead, create the pointers to $A$ on all nodes and only allocate space on Boss.</p>
+<p>Here we only need the full matrix <span class="arithmatex">\(A\)</span> on the Boss node. It would be tempting to declare <span class="arithmatex">\(A\)</span> inside an <code>if (MyID == 0)</code> block, but then <span class="arithmatex">\(A\)</span> would immediately go out of scope. Instead, create the pointers to <span class="arithmatex">\(A\)</span> on all nodes and only allocate space on Boss.</p>
 <p><strong>In C:</strong></p>
 <pre><code class="language-c">double** A;
 if (the_mpi.MyID == 0) {
@@ -1225,31 +1225,31 @@ if (the_mpi.MyID == 0) {
 <h2 id="performance-analysis-matrix-vector-multiplication">Performance Analysis: Matrix-Vector Multiplication</h2>
 <p>This code is an example of <strong>Dynamic Load Balancing</strong> — if one node is bogged down doing something else, other nodes which finish faster will get more work.</p>
 <p>This seems like a brilliant idea! What could go wrong? To analyze the performance we first need to decide on the hardware model we are going to do the analysis for.  MPI was originally designed for a distributed memory Beowulf cluster-style hardware where the individual CPU cores are distinct and connected via some communications network, such as an ethernet connection.  As such, let's analyze the expected performance on such a system:</p>
-<p>For a square $n \times n$ matrix $A$, the number of floating point operations (defined as one linear operation so multiplication plus add), or <em>flops</em>, is roughly
-$$#\text{flops} = n_\text{rows} \times n_\text{cols} = n^2 \quad (\text{multiplication + add} = 1 \text{ flop})$$
+<p>For a square <span class="arithmatex">\(n \times n\)</span> matrix <span class="arithmatex">\(A\)</span>, the number of floating point operations (defined as one linear operation so multiplication plus add), or <em>flops</em>, is roughly
+<span class="arithmatex">\(<span class="arithmatex">\(\#\text{flops} = n_\text{rows} \times n_\text{cols} = n^2 \quad (\text{multiplication + add} = 1 \text{ flop})\)</span>\)</span>
 which leads to a compute time for a serial code of
-$$\text{compute time (serial)} = n^2 \, T_\text{flop}$$
-where $T_\text{flop}$ is the time required to compute 1 flop.</p>
-<p>If we do this on $p$ processors using the above algorithm we also need to account for the communication between processors.  First we count the number of communication calls needed:
-$$#\text{doubles sent/received} \approx (n+1) \cdot n = n^2 + n$$
-(send $n$ rows of $A$, each of which consists of $n$ doubles, and receive 1 answer back for each case).  If we assume the communication depends only on the amount of information sent, then
-$$\text{communication time} \approx (n^2 + n) \, T_\text{comm}$$
-where $T_{\text{comm}}$ is the time required to send one double.  In the ideal case,
-$$\text{compute time spread over } p \text{ processors} \approx \frac{n^2 T_\text{flop}}{p}$$
-$$\text{total runtime on } p \text{ processors} \approx \frac{n^2}{p} T_\text{flop} + (n^2 + n) T_\text{comm}$$
+<span class="arithmatex">\(<span class="arithmatex">\(\text{compute time (serial)} = n^2 \, T_\text{flop}\)</span>\)</span>
+where <span class="arithmatex">\(T_\text{flop}\)</span> is the time required to compute 1 flop.</p>
+<p>If we do this on <span class="arithmatex">\(p\)</span> processors using the above algorithm we also need to account for the communication between processors.  First we count the number of communication calls needed:
+<span class="arithmatex">\(<span class="arithmatex">\(\#\text{doubles sent/received} \approx (n+1) \cdot n = n^2 + n\)</span>\)</span>
+(send <span class="arithmatex">\(n\)</span> rows of <span class="arithmatex">\(A\)</span>, each of which consists of <span class="arithmatex">\(n\)</span> doubles, and receive 1 answer back for each case).  If we assume the communication depends only on the amount of information sent, then
+<span class="arithmatex">\(<span class="arithmatex">\(\text{communication time} \approx (n^2 + n) \, T_\text{comm}\)</span>\)</span>
+where <span class="arithmatex">\(T_{\text{comm}}\)</span> is the time required to send one double.  In the ideal case,
+<span class="arithmatex">\(<span class="arithmatex">\(\text{compute time spread over } p \text{ processors} \approx \frac{n^2 T_\text{flop}}{p}\)</span>\)</span>
+<span class="arithmatex">\(<span class="arithmatex">\(\text{total runtime on } p \text{ processors} \approx \frac{n^2}{p} T_\text{flop} + (n^2 + n) T_\text{comm}\)</span>\)</span>
 To quantify the gains (or losses) from parallelizing the code, a commonly used simple measure is the speedup, 
-$$S(p) = \text{speedup} \equiv \frac{\text{runtime on 1 processor}}{\text{runtime on } p \text{ processors}}$$
+<span class="arithmatex">\(<span class="arithmatex">\(S(p) = \text{speedup} \equiv \frac{\text{runtime on 1 processor}}{\text{runtime on } p \text{ processors}}\)</span>\)</span>
 One would like to see something like
-$$S(p)\approx a p$$
-for some constant $a$ so that the code runs faster when supplied with more processors.  The ideal case would have $a=1$ and this is referred to as <em>linear</em> scaling.  It is possible in some circumstances to see $a&gt;1$ and this is often referred to as "superlinear" scaling (although mathematically it is still linear).  This fortuitous case is typically an effect due to caching when breaking the problem down into smaller parts results in more (or all) of each part fitting in the processor cache.  It is also possible to get $S(p)&lt;1$, or a <em>slowdown</em> rather than a speedup.</p>
+<span class="arithmatex">\(<span class="arithmatex">\(S(p)\approx a p\)</span>\)</span>
+for some constant <span class="arithmatex">\(a\)</span> so that the code runs faster when supplied with more processors.  The ideal case would have <span class="arithmatex">\(a=1\)</span> and this is referred to as <em>linear</em> scaling.  It is possible in some circumstances to see <span class="arithmatex">\(a&gt;1\)</span> and this is often referred to as "superlinear" scaling (although mathematically it is still linear).  This fortuitous case is typically an effect due to caching when breaking the problem down into smaller parts results in more (or all) of each part fitting in the processor cache.  It is also possible to get <span class="arithmatex">\(S(p)&lt;1\)</span>, or a <em>slowdown</em> rather than a speedup.</p>
 <p>For our problem, we have
-$$S(p) \approx \left[\frac{n^2 T_\text{flop}}{\frac{n^2}{p} T_\text{flop} + (n^2+n) T_\text{comm}}\right] \approx \frac{1}{\frac{1}{p} + \frac{T_\text{comm}}{T_\text{flop}}}=\frac{p}{1+p\frac{T_\text{comm}}{T_\text{flop}}}$$
-Now, $T_\text{flop}$ is of order 1 clock cycle $\approx 0.5\,\text{ns}$ for a 2 GHz core. A Gigabit Ethernet connection takes $\approx 64\,\text{bits} \times 1\,\text{ns} = 64\,\text{ns}$ to transmit a double. So $T_\text{comm} &gt; T_\text{flop}$.⇒ <strong>The program will likely run <em>slower</em> in parallel on a classic Beowulf cluster!</strong> The second term in the denominaor $T_\text{comm}/T_\text{flop}&gt;1$ dominates, dragging the speedup below 1 for any $p$.  </p>
-<p>However, most modern clusters consist of some combination of multicore processors, with memory shared by cores on each processor, and slower communication only occuring between processors.  This is obviously more complicated but one could imagine a similar analysis for a single multicore processor machine with shared memory where it might be that $T_\text{comm} &lt; T_\text{flop}$.  In that case, one might observe speedup greater than 1 for small $p$ and  reaching the limit of $T_\text{flop}/T_\text{comm}$ for really large $p$ where adding more processors would not make much difference for how fast the code runs.</p>
+<span class="arithmatex">\(<span class="arithmatex">\(S(p) \approx \left[\frac{n^2 T_\text{flop}}{\frac{n^2}{p} T_\text{flop} + (n^2+n) T_\text{comm}}\right] \approx \frac{1}{\frac{1}{p} + \frac{T_\text{comm}}{T_\text{flop}}}=\frac{p}{1+p\frac{T_\text{comm}}{T_\text{flop}}}\)</span>\)</span>
+Now, <span class="arithmatex">\(T_\text{flop}\)</span> is of order 1 clock cycle <span class="arithmatex">\(\approx 0.5\,\text{ns}\)</span> for a 2 GHz core. A Gigabit Ethernet connection takes <span class="arithmatex">\(\approx 64\,\text{bits} \times 1\,\text{ns} = 64\,\text{ns}\)</span> to transmit a double. So <span class="arithmatex">\(T_\text{comm} &gt; T_\text{flop}\)</span>.⇒ <strong>The program will likely run <em>slower</em> in parallel on a classic Beowulf cluster!</strong> The second term in the denominaor <span class="arithmatex">\(T_\text{comm}/T_\text{flop}&gt;1\)</span> dominates, dragging the speedup below 1 for any <span class="arithmatex">\(p\)</span>.  </p>
+<p>However, most modern clusters consist of some combination of multicore processors, with memory shared by cores on each processor, and slower communication only occuring between processors.  This is obviously more complicated but one could imagine a similar analysis for a single multicore processor machine with shared memory where it might be that <span class="arithmatex">\(T_\text{comm} &lt; T_\text{flop}\)</span>.  In that case, one might observe speedup greater than 1 for small <span class="arithmatex">\(p\)</span> and  reaching the limit of <span class="arithmatex">\(T_\text{flop}/T_\text{comm}\)</span> for really large <span class="arithmatex">\(p\)</span> where adding more processors would not make much difference for how fast the code runs.</p>
 <hr />
 <h2 id="example-matrix-matrix-multiplication">Example: Matrix-Matrix Multiplication</h2>
 <p>Let's generalize the above code to do Matrix-Matrix multiplication:
-$$A \cdot B = C \quad (\text{all } n \times n \text{ matrices})$$
+<span class="arithmatex">\(<span class="arithmatex">\(A \cdot B = C \quad (\text{all } n \times n \text{ matrices})\)</span>\)</span>
 The changes to the Worker part are:</p>
 <pre><code class="language-cpp">// changes for Matrix-Matrix multiplication code
 {
@@ -1278,14 +1278,14 @@ The changes to the Worker part are:</p>
 }
 </code></pre>
 <h3 id="performance-analysis-matrix-matrix-multiplication">Performance Analysis: Matrix-Matrix Multiplication</h3>
-<p>We can easily generalize our previous analysis for this situation.  In this case, based on our previous analysis, $A$ times one column of $B$ requires roughly $n^2$ flops, so for $n$ columns we should have
-$$#\text{flops for } A \cdot B = n^2 \times n = n^3$$
-$$\text{compute time using } p \text{ processors} \approx \frac{n^3 T_\text{flop}}{p}$$
-$$#\text{doubles sent/received} = (n + n) \times n \approx 2n^2$$
-(send $n$ rows of $A$, each of which consists of $n$ doubles, and receive 1 answer back for each case with each answer now consisting of $n$ doubles).  Note that Bcast of $B$ is also $\mathcal{O}(n^2)$ operations.
-$$\text{total runtime on } p \text{ processors} \approx \frac{n^3}{p} T_\text{flop} + 3n^2 T_\text{comm}$$
-$$S(p) = \left[\frac{\frac{n^3}{p} T_\text{flop} + 3n^2 T_\text{comm}}{n^3 T_\text{flop}}\right]^{-1} = \left[\frac{1}{p} + \frac{3}{n} \cdot \frac{T_\text{comm}}{T_\text{flop}}\right]^{-1} \xrightarrow{n \to \infty} p$$</p>
-<p>So here $S(p) \to p$ as $n \to \infty$ (for fixed $p$) — <strong>the program scales and gives an ideal speedup for large matrices!</strong>  NB: $n$ may need to be very large in order to overcome the case where $T_\text{comm} &gt; T_\text{flop}$.</p>
+<p>We can easily generalize our previous analysis for this situation.  In this case, based on our previous analysis, <span class="arithmatex">\(A\)</span> times one column of <span class="arithmatex">\(B\)</span> requires roughly <span class="arithmatex">\(n^2\)</span> flops, so for <span class="arithmatex">\(n\)</span> columns we should have
+<span class="arithmatex">\(<span class="arithmatex">\(\#\text{flops for } A \cdot B = n^2 \times n = n^3\)</span>\)</span>
+<span class="arithmatex">\(<span class="arithmatex">\(\text{compute time using } p \text{ processors} \approx \frac{n^3 T_\text{flop}}{p}\)</span>\)</span>
+<span class="arithmatex">\(<span class="arithmatex">\(\#\text{doubles sent/received} = (n + n) \times n \approx 2n^2\)</span>\)</span>
+(send <span class="arithmatex">\(n\)</span> rows of <span class="arithmatex">\(A\)</span>, each of which consists of <span class="arithmatex">\(n\)</span> doubles, and receive 1 answer back for each case with each answer now consisting of <span class="arithmatex">\(n\)</span> doubles).  Note that Bcast of <span class="arithmatex">\(B\)</span> is also <span class="arithmatex">\(\mathcal{O}(n^2)\)</span> operations.
+<span class="arithmatex">\(<span class="arithmatex">\(\text{total runtime on } p \text{ processors} \approx \frac{n^3}{p} T_\text{flop} + 3n^2 T_\text{comm}\)</span>\)</span>
+<span class="arithmatex">\(<span class="arithmatex">\(S(p) = \left[\frac{\frac{n^3}{p} T_\text{flop} + 3n^2 T_\text{comm}}{n^3 T_\text{flop}}\right]^{-1} = \left[\frac{1}{p} + \frac{3}{n} \cdot \frac{T_\text{comm}}{T_\text{flop}}\right]^{-1} \xrightarrow{n \to \infty} p\)</span>\)</span></p>
+<p>So here <span class="arithmatex">\(S(p) \to p\)</span> as <span class="arithmatex">\(n \to \infty\)</span> (for fixed <span class="arithmatex">\(p\)</span>) — <strong>the program scales and gives an ideal speedup for large matrices!</strong>  NB: <span class="arithmatex">\(n\)</span> may need to be very large in order to overcome the case where <span class="arithmatex">\(T_\text{comm} &gt; T_\text{flop}\)</span>.</p>
 <hr />
 <h2 id="timing-your-own-code">Timing your own code</h2>
 <p>Timers across cores on different machines may not be syncrionized so using standard timer functions to measure performance in an MPI based code could be problematic. MPI resolves this issue by providing the routine <code>MPI_Wtime()</code> which returns a double precision <em>synchronized</em> time in seconds:</p>
@@ -1295,21 +1295,21 @@ endtime = MPI_Wtime();
 </code></pre>
 <p>To evaluate parallel performance it is often worth timing the computational part separately from the communication part (e.g. by putting a timer around MPI calls).</p>
 <p>In addition to speedup, it is also interesting to consider <strong>efficiency</strong>:
-$$\text{efficiency} = \frac{\text{runtime on 1 processor}}{p \times \text{runtime on } p \text{ processors}}=\frac{S(p)}{p}$$
-Efficiency $= 1$ means "perfect" parallelism.</p>
+<span class="arithmatex">\(<span class="arithmatex">\(\text{efficiency} = \frac{\text{runtime on 1 processor}}{p \times \text{runtime on } p \text{ processors}}=\frac{S(p)}{p}\)</span>\)</span>
+Efficiency <span class="arithmatex">\(= 1\)</span> means "perfect" parallelism.</p>
 <hr />
 <h2 id="other-considerations-message-latency">Other Considerations: Message Latency</h2>
-<p>Typically the time to send a message $T_{\text{message}}$ includes a constant:
-$$T_\text{message} = t_s + k \cdot t_c$$
+<p>Typically the time to send a message <span class="arithmatex">\(T_{\text{message}}\)</span> includes a constant:
+<span class="arithmatex">\(<span class="arithmatex">\(T_\text{message} = t_s + k \cdot t_c\)</span>\)</span>
 where:
-- $t_s$ = constant time to send one message (setup / "latency" time)
-- $k$ = number of units of data in the message
-- $t_c$ = time to communicate one unit of data</p>
+- <span class="arithmatex">\(t_s\)</span> = constant time to send one message (setup / "latency" time)
+- <span class="arithmatex">\(k\)</span> = number of units of data in the message
+- <span class="arithmatex">\(t_c\)</span> = time to communicate one unit of data</p>
 <ul>
-<li>$t_s$ and $t_c$ vary enormously among different hardware/implementations.</li>
-<li>Typically you cannot ignore $t_s$ (i.e. $t_s \gg t_c$), so you should <strong>send data in the largest possible chunks</strong>.</li>
+<li><span class="arithmatex">\(t_s\)</span> and <span class="arithmatex">\(t_c\)</span> vary enormously among different hardware/implementations.</li>
+<li>Typically you cannot ignore <span class="arithmatex">\(t_s\)</span> (i.e. <span class="arithmatex">\(t_s \gg t_c\)</span>), so you should <strong>send data in the largest possible chunks</strong>.</li>
 </ul>
-<p>These considerations suggest dividing up Matrix operations differently for systems where dynamic load balancing is not necessary (but you can still do <em>static</em> load balancing). For example, SharcNet gives $n$-processor MPI jobs exclusive use of $n$-processors, so dynamic balancing is often not really necessary.</p>
+<p>These considerations suggest dividing up Matrix operations differently for systems where dynamic load balancing is not necessary (but you can still do <em>static</em> load balancing). For example, SharcNet gives <span class="arithmatex">\(n\)</span>-processor MPI jobs exclusive use of <span class="arithmatex">\(n\)</span>-processors, so dynamic balancing is often not really necessary.</p>
 <h3 id="sending-row-chunks">Sending Row Chunks</h3>
 <p>Consider an array in C/C++ declared as a contiguous block of memory. Rather than sending each row individually, we can send a chunk of rows at once:</p>
 <p><img alt="Sending row chunks rather than individual rows" src="../chunked-array.svg" /></p>
@@ -1346,14 +1346,14 @@ where:
 <p>Let's discuss the Basic Linear Algebra Subprograms first. These are standards over which all supercomputers (and regular computers) are tested. There are several implementations tuned for specific architectures.</p>
 <p>There are 3 levels of routines:</p>
 <ul>
-<li><strong>BLAS1:</strong> vector operations, e.g. dot products, norms, $\vec{y} \leftarrow \alpha \vec{z} + \vec{y}$</li>
-<li><strong>BLAS2:</strong> matrix-vector operations, e.g. $\vec{y} \leftarrow \alpha A \vec{z} + \beta \vec{y}$; also solve $T\vec{x} = \vec{y}$ for $T$ triangular</li>
-<li><strong>BLAS3:</strong> matrix-matrix operations, e.g. $C \leftarrow \alpha AB + \beta C$ ($A$, $B$ and $C$ are matrices; routine to do this is <code>dgemm</code>)</li>
+<li><strong>BLAS1:</strong> vector operations, e.g. dot products, norms, <span class="arithmatex">\(\vec{y} \leftarrow \alpha \vec{z} + \vec{y}\)</span></li>
+<li><strong>BLAS2:</strong> matrix-vector operations, e.g. <span class="arithmatex">\(\vec{y} \leftarrow \alpha A \vec{z} + \beta \vec{y}\)</span>; also solve <span class="arithmatex">\(T\vec{x} = \vec{y}\)</span> for <span class="arithmatex">\(T\)</span> triangular</li>
+<li><strong>BLAS3:</strong> matrix-matrix operations, e.g. <span class="arithmatex">\(C \leftarrow \alpha AB + \beta C\)</span> (<span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(B\)</span> and <span class="arithmatex">\(C\)</span> are matrices; routine to do this is <code>dgemm</code>)</li>
 </ul>
 <p>and the Greek letters above are scalars.</p>
 <h3 id="blas-nomenclature">BLAS Nomenclature</h3>
 <p>How would I know to look for something as weirdly named as <code>dgemm()</code>? The BLAS have a (mostly) systematic naming convention.</p>
-<p>For almost all BLAS, the <strong>first letter</strong> is one from the set <code>{S, D, C, Z}</code>, indicating single precision (<code>float</code>), double precision (<code>double</code>), complex, and double complex, respectively. Exception: <code>i#amax(n,x,incx)</code> where $#$ is from the set <code>{S, D, C, Z}</code>.</p>
+<p>For almost all BLAS, the <strong>first letter</strong> is one from the set <code>{S, D, C, Z}</code>, indicating single precision (<code>float</code>), double precision (<code>double</code>), complex, and double complex, respectively. Exception: <code>i#amax(n,x,incx)</code> where <span class="arithmatex">\(\#\)</span> is from the set <code>{S, D, C, Z}</code>.</p>
 <p>For BLAS2/BLAS3, the <strong>second and third letters</strong> give the type of matrix:
 - <code>GE</code> = general matrix
 - <code>GB</code> = general banded matrix
@@ -1366,7 +1366,7 @@ where:
 - <code>SV</code> = solve (for triangular matrices only)
 - <code>MM</code> = matrix-matrix product
 - <code>R*</code> = low rank update (R1, R2)</p>
-<p>Vector operations will have an "increment" associated with each vector (normally you would pick one, but you could do a vector operation on a column of a 2D array by picking an increment equal to the number of columns in a row). For example, the <code>daxpy</code> call is <code>daxpy(n, alpha, x, incx, y, incy)</code>. This is a BLAS1 routine and the name means: D for double precision and <code>axpy</code> indicates the operation $\alpha \vec{x} + \vec{y}$ (<code>a</code> for $\alpha$, <code>x</code> for $\vec{x}$, <code>p</code> for <code>+</code>, and <code>y</code> for $\vec{y}$).</p>
+<p>Vector operations will have an "increment" associated with each vector (normally you would pick one, but you could do a vector operation on a column of a 2D array by picking an increment equal to the number of columns in a row). For example, the <code>daxpy</code> call is <code>daxpy(n, alpha, x, incx, y, incy)</code>. This is a BLAS1 routine and the name means: D for double precision and <code>axpy</code> indicates the operation <span class="arithmatex">\(\alpha \vec{x} + \vec{y}\)</span> (<code>a</code> for <span class="arithmatex">\(\alpha\)</span>, <code>x</code> for <span class="arithmatex">\(\vec{x}\)</span>, <code>p</code> for <code>+</code>, and <code>y</code> for <span class="arithmatex">\(\vec{y}\)</span>).</p>
 <h3 id="blas-calling-conventions">BLAS Calling Conventions</h3>
 <p>When using the BLAS, beware that:</p>
 <ul>
@@ -1380,13 +1380,13 @@ where:
 <p><strong>THIS IS A VERY IMPORTANT POINT:</strong> C/C++ stores arrays in row-major order, but BLAS/LAPACK expect column-major. You must account for this when calling BLAS from C.</p>
 <p><img alt="Column-major vs row-major memory layout" src="../storage-order.svg" /></p>
 <p>With row-major order (C-style), the last array index changes most quickly and the first one changes most slowly when traversing the memory segment. With Fortran column-major order, the last index changes most slowly and the first index changes most quickly.</p>
-<p>For example, if a two-dimensional matrix $A$ of size $m \times n$ is stored densely in a one-dimensional array $B$:
-$$A[i][j] = B[i{<em>}n + j] \quad \text{in C} \quad (i = 0, \ldots, m-1; \; j = 0, \ldots, n-1)$$
-$$A(i,j) = B[(j-1){</em>}m + i] \quad \text{in Fortran} \quad (i = 1, \ldots, m; \; j = 1, \ldots, n)$$
+<p>For example, if a two-dimensional matrix <span class="arithmatex">\(A\)</span> of size <span class="arithmatex">\(m \times n\)</span> is stored densely in a one-dimensional array <span class="arithmatex">\(B\)</span>:
+<span class="arithmatex">\(<span class="arithmatex">\(A[i][j] = B[i{*}n + j] \quad \text{in C} \quad (i = 0, \ldots, m-1; \; j = 0, \ldots, n-1)\)</span>\)</span>
+<span class="arithmatex">\(<span class="arithmatex">\(A(i,j) = B[(j-1){*}m + i] \quad \text{in Fortran} \quad (i = 1, \ldots, m; \; j = 1, \ldots, n)\)</span>\)</span>
 When calling LAPACK or BLAS routines from C, be aware that because Fortran is case-insensitive, routine names can be upper or lower case, with or without the trailing underscore. For example, the following are equivalent:
 - LAPACK: <code>dgetrf</code>, <code>DGETRF</code>, <code>dgetrf_</code>, and <code>DGETRF_</code>
 - BLAS: <code>dgemm</code>, <code>DGEMM</code>, <code>dgemm_</code>, and <code>DGEMM_</code></p>
-<p>The <strong>leading dimension</strong> (<code>lda</code>) of each 2D array needs to be passed in, usually in an integer variable <code>lda</code>. Mapping matrix coordinates $(i,j)$ into singly-indexed computer memory coordinates requires the array's declared leading dimension, as well as the sizes of the matrix stored in the 2D array.</p>
+<p>The <strong>leading dimension</strong> (<code>lda</code>) of each 2D array needs to be passed in, usually in an integer variable <code>lda</code>. Mapping matrix coordinates <span class="arithmatex">\((i,j)\)</span> into singly-indexed computer memory coordinates requires the array's declared leading dimension, as well as the sizes of the matrix stored in the 2D array.</p>
 <p>When calling Fortran-based BLAS from a C routine, the invoked BLAS function must be declared as <code>extern</code>:</p>
 <pre><code class="language-c">extern void dgemv_(char *trans, int *m, int *n,
                    double *alpha, double *a, int *lda, double *x, int *incx,
@@ -1406,10 +1406,10 @@ When calling LAPACK or BLAS routines from C, be aware that because Fortran is ca
 - Since the BLAS are compiled using <strong><code>-dalign</code></strong>, you will need to do the same for your functions/routines in any language.
 - When calling the standard BLAS from C/C++, most machines require appending an underscore to the name of the BLAS routine. So a call is to <code>daxpy_()</code> instead of <code>daxpy()</code>. IBM machines do not follow this "underscore convention".</p>
 <h3 id="example-calling-dgemm-from-c">Example: Calling DGEMM from C</h3>
-<p><code>DGEMM</code> does the operation $C \leftarrow \alpha \cdot \text{op}(A) \cdot \text{op}(B) + \beta C$, where $C$ comes out in <strong>column-major</strong> form:</p>
-<p>$$\text{op}(A) = A \quad \text{or} \quad A^T \quad \text{or} \quad A^H$$</p>
+<p><code>DGEMM</code> does the operation <span class="arithmatex">\(C \leftarrow \alpha \cdot \text{op}(A) \cdot \text{op}(B) + \beta C\)</span>, where <span class="arithmatex">\(C\)</span> comes out in <strong>column-major</strong> form:</p>
+<div class="arithmatex">\[\text{op}(A) = A \quad \text{or} \quad A^T \quad \text{or} \quad A^H\]</div>
 <p>A good way to figure out the function arguments is from the netlib LAPACK website: <a href="https://netlib.org/lapack/explore-html/index.html">https://netlib.org/lapack/explore-html/index.html</a> — then search for <code>dgemm</code> (take the first option, not the actual .f file).</p>
-<p>Below is an example showing 4 methods to compute $A \cdot B = C$ where $A$ is 2×3, $B$ is 3×2, and $C$ is 2×2. This illustrates the key point about row-major vs column-major storage.</p>
+<p>Below is an example showing 4 methods to compute <span class="arithmatex">\(A \cdot B = C\)</span> where <span class="arithmatex">\(A\)</span> is 2×3, <span class="arithmatex">\(B\)</span> is 3×2, and <span class="arithmatex">\(C\)</span> is 2×2. This illustrates the key point about row-major vs column-major storage.</p>
 <pre><code class="language-c">#include &lt;stdio.h&gt;
 
 // compile with: gcc Blas_dgemm.c -lblas
@@ -1621,38 +1621,38 @@ int main (void)
 <h3 id="linear-equations">Linear Equations</h3>
 <p>Two types of driver routines are provided for solving systems of linear equations:</p>
 <ul>
-<li>A <strong>simple</strong> driver (name ending <code>-SV</code>), which solves the system $AX = B$ by factorizing $A$ and overwriting $B$ with the solution $X$.</li>
+<li>A <strong>simple</strong> driver (name ending <code>-SV</code>), which solves the system <span class="arithmatex">\(AX = B\)</span> by factorizing <span class="arithmatex">\(A\)</span> and overwriting <span class="arithmatex">\(B\)</span> with the solution <span class="arithmatex">\(X\)</span>.</li>
 <li>An <strong>expert</strong> driver (name ending <code>-SVX</code>), which can also perform the following functions (some of them optionally):</li>
-<li>Solve $A^TX = B$ or $A^HX = B$ (unless $A$ is symmetric or Hermitian)</li>
-<li>Estimate the condition number of $A$, check for near-singularity, and check for pivot growth</li>
+<li>Solve <span class="arithmatex">\(A^TX = B\)</span> or <span class="arithmatex">\(A^HX = B\)</span> (unless <span class="arithmatex">\(A\)</span> is symmetric or Hermitian)</li>
+<li>Estimate the condition number of <span class="arithmatex">\(A\)</span>, check for near-singularity, and check for pivot growth</li>
 <li>Refine the solution and compute forward and backward error bounds</li>
-<li>Equilibrate the system if $A$ is poorly scaled</li>
+<li>Equilibrate the system if <span class="arithmatex">\(A\)</span> is poorly scaled</li>
 </ul>
-<p>Both types of driver routines can handle multiple right-hand sides (the columns of $B$).</p>
-<p>LAPACK provides specialized routines that take advantage of special properties or storage schemes of the matrix $A$ and uses appropriate matrix factorizations based on the type of matrix.  For example:</p>
+<p>Both types of driver routines can handle multiple right-hand sides (the columns of <span class="arithmatex">\(B\)</span>).</p>
+<p>LAPACK provides specialized routines that take advantage of special properties or storage schemes of the matrix <span class="arithmatex">\(A\)</span> and uses appropriate matrix factorizations based on the type of matrix.  For example:</p>
 <ul>
-<li><strong>General matrices</strong> ($LU$ factorization with partial pivoting): $A = PLU$, where $P$ is a permutation matrix, $L$ is lower triangular with unit diagonal, and $U$ is upper triangular.</li>
+<li><strong>General matrices</strong> (<span class="arithmatex">\(LU\)</span> factorization with partial pivoting): <span class="arithmatex">\(A = PLU\)</span>, where <span class="arithmatex">\(P\)</span> is a permutation matrix, <span class="arithmatex">\(L\)</span> is lower triangular with unit diagonal, and <span class="arithmatex">\(U\)</span> is upper triangular.</li>
 <li><strong>Symmetric/Hermitian positive definite matrices</strong> (Cholesky factorization):
-$$A = U^T U \quad \text{or} \quad A = L L^T \quad (\text{symmetric})$$
-$$A = U^H U \quad \text{or} \quad A = L L^H \quad (\text{Hermitian})$$</li>
-<li><strong>Symmetric/Hermitian positive definite tridiagonal matrices</strong> ($LDL^T$ factorization):
-$$A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})$$
-$$A = U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})$$</li>
+<span class="arithmatex">\(<span class="arithmatex">\(A = U^T U \quad \text{or} \quad A = L L^T \quad (\text{symmetric})\)</span>\)</span>
+<span class="arithmatex">\(<span class="arithmatex">\(A = U^H U \quad \text{or} \quad A = L L^H \quad (\text{Hermitian})\)</span>\)</span></li>
+<li><strong>Symmetric/Hermitian positive definite tridiagonal matrices</strong> (<span class="arithmatex">\(LDL^T\)</span> factorization):
+<span class="arithmatex">\(<span class="arithmatex">\(A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})\)</span>\)</span>
+<span class="arithmatex">\(<span class="arithmatex">\(A = U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})\)</span>\)</span></li>
 <li><strong>Symmetric/Hermitian indefinite matrices</strong> (symmetric indefinite factorization):
-$$A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})$$
-$$A \approx U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})$$
-where $U$ (or $L$) is a product of permutation and unit upper (lower) triangular matrices, and $D$ is symmetric and block diagonal with diagonal blocks of order 1 or 2.</li>
+<span class="arithmatex">\(<span class="arithmatex">\(A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})\)</span>\)</span>
+<span class="arithmatex">\(<span class="arithmatex">\(A \approx U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})\)</span>\)</span>
+where <span class="arithmatex">\(U\)</span> (or <span class="arithmatex">\(L\)</span>) is a product of permutation and unit upper (lower) triangular matrices, and <span class="arithmatex">\(D\)</span> is symmetric and block diagonal with diagonal blocks of order 1 or 2.</li>
 </ul>
 <p>See <a href="https://netlib.org/lapack/lug/node26.html">Linear Equations</a>  for more varieties of linear solvers and and <a href="https://netlib.org/lapack/lug/node38.html">Linear Equations</a> for factorizations.</p>
 <h3 id="lapack-function-naming">LAPACK Function Naming</h3>
 <p>The following list relates tasks to the last 3 characters of the name of the corresponding computational routine:</p>
 <ul>
 <li><strong>xyyTRF</strong>: factorize (obviously not needed for triangular matrices)</li>
-<li><strong>xyyTRS</strong>: use the factorization (or the matrix $A$ itself if triangular) to solve $(2.5)$ by forward or backward substitution</li>
-<li><strong>xyyCON</strong>: estimate the reciprocal of the condition number $\kappa(A) = |A||A^{-1}|$</li>
+<li><strong>xyyTRS</strong>: use the factorization (or the matrix <span class="arithmatex">\(A\)</span> itself if triangular) to solve <span class="arithmatex">\((2.5)\)</span> by forward or backward substitution</li>
+<li><strong>xyyCON</strong>: estimate the reciprocal of the condition number <span class="arithmatex">\(\kappa(A) = \|A\|\|A^{-1}\|\)</span></li>
 <li><strong>xyyRFS</strong>: compute bounds on the error in the computed solution, and refine the solution to reduce the backward error</li>
-<li><strong>xyyTRI</strong>: use the factorization to compute $A^{-1}$ (not provided for band matrices)</li>
-<li><strong>xyyEQU</strong>: compute scaling factors to equilibrate $A$</li>
+<li><strong>xyyTRI</strong>: use the factorization to compute <span class="arithmatex">\(A^{-1}\)</span> (not provided for band matrices)</li>
+<li><strong>xyyEQU</strong>: compute scaling factors to equilibrate <span class="arithmatex">\(A\)</span></li>
 </ul>
 <p>Banded matrices arise very often in Scientific Computing and LAPACK has an efficient method of storing them (see <a href="https://netlib.org/lapack/lug/node124.html">Band Storage</a>) that you should definitely take advantage if you have such a matrix.</p>
 <h3 id="intel-mkl-examples">Intel MKL Examples</h3>
@@ -1738,6 +1738,10 @@ int main()
     
     
       <script src="../../assets/javascripts/bundle.4e0fa4ba.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

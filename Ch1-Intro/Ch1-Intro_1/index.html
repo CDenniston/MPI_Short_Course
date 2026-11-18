@@ -742,20 +742,20 @@ The steering wheel is to play Mario Chariot  — (<em>not really…</em>)</p>
 </blockquote>
 <hr />
 <h3 id="example-1-sisd-single-instruction-same-data-serial">Example ① — SISD: Single Instruction Same Data (Serial)</h3>
-<p>Compute $\displaystyle F_1 = \sum_{n=1}^N f_n$</p>
+<p>Compute <span class="arithmatex">\(\displaystyle F_1 = \sum_{n=1}^N f_n\)</span></p>
 <p><strong>Algorithm</strong> (sequential in time ↓):</p>
-<p>$$
+<div class="arithmatex">\[
 \begin{aligned}
-F_1 &amp;= f_1 \
-F_1 &amp;\mathrel{+}= f_2 \
-F_1 &amp;\mathrel{+}= f_3 \
-&amp;\;\vdots \
+F_1 &amp;= f_1 \\
+F_1 &amp;\mathrel{+}= f_2 \\
+F_1 &amp;\mathrel{+}= f_3 \\
+&amp;\;\vdots \\
 F_1 &amp;\mathrel{+}= f_N
 \end{aligned}
-$$</p>
+\]</div>
 <hr />
 <h3 id="example-2-simd-single-instruction-multiple-data">Example ② — SIMD: Single Instruction Multiple Data</h3>
-<p>Compute $A = 4 \cdot B$ where $A$, $B$ are arrays of length $n$, with $n$ divisible by 3.</p>
+<p>Compute <span class="arithmatex">\(A = 4 \cdot B\)</span> where <span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(B\)</span> are arrays of length <span class="arithmatex">\(n\)</span>, with <span class="arithmatex">\(n\)</span> divisible by 3.</p>
 <p><strong>Algorithm</strong> — three CPUs work in parallel (time ↓):</p>
 <table>
 <thead>
@@ -791,47 +791,47 @@ $$</p>
 <p><em>The division of data is clearly not unique. Different divisions may result in faster/slower code.</em></p>
 <hr />
 <h3 id="example-3-misd-multiple-instruction-same-data">Example ③ — MISD: Multiple Instruction Same Data</h3>
-<p>Moments Problem: Compute $\displaystyle F_\mu = \dfrac{1}{N} \sum_{n=1}^N f_n^\mu$ for $\mu=1,2,...,M$</p>
-<p><strong>Algorithm</strong> — $M$ CPUs, each computing a different power sum (time ↓):</p>
+<p>Moments Problem: Compute <span class="arithmatex">\(\displaystyle F_\mu = \dfrac{1}{N} \sum_{n=1}^N f_n^\mu\)</span> for <span class="arithmatex">\(\mu=1,2,...,M\)</span></p>
+<p><strong>Algorithm</strong> — <span class="arithmatex">\(M\)</span> CPUs, each computing a different power sum (time ↓):</p>
 <table>
 <thead>
 <tr>
 <th>CPU 1</th>
 <th>CPU 2</th>
-<th>$\cdots$</th>
+<th><span class="arithmatex">\(\cdots\)</span></th>
 <th>CPU M</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>$F_1 = f_1$</td>
-<td>$F_2 = f_1^2$</td>
-<td>$\cdots$</td>
-<td>$F_M = f_1^M$</td>
+<td><span class="arithmatex">\(F_1 = f_1\)</span></td>
+<td><span class="arithmatex">\(F_2 = f_1^2\)</span></td>
+<td><span class="arithmatex">\(\cdots\)</span></td>
+<td><span class="arithmatex">\(F_M = f_1^M\)</span></td>
 </tr>
 <tr>
-<td>$F_1 \mathrel{+}= f_2$</td>
-<td>$F_2 \mathrel{+}= f_2^2$</td>
-<td>$\cdots$</td>
-<td>$F_M \mathrel{+}= f_2^M$</td>
+<td><span class="arithmatex">\(F_1 \mathrel{+}= f_2\)</span></td>
+<td><span class="arithmatex">\(F_2 \mathrel{+}= f_2^2\)</span></td>
+<td><span class="arithmatex">\(\cdots\)</span></td>
+<td><span class="arithmatex">\(F_M \mathrel{+}= f_2^M\)</span></td>
 </tr>
 <tr>
-<td>$F_1 \mathrel{+}= f_3$</td>
-<td>$F_2 \mathrel{+}= f_3^2$</td>
-<td>$\cdots$</td>
-<td>$F_M \mathrel{+}= f_3^M$</td>
+<td><span class="arithmatex">\(F_1 \mathrel{+}= f_3\)</span></td>
+<td><span class="arithmatex">\(F_2 \mathrel{+}= f_3^2\)</span></td>
+<td><span class="arithmatex">\(\cdots\)</span></td>
+<td><span class="arithmatex">\(F_M \mathrel{+}= f_3^M\)</span></td>
 </tr>
 <tr>
-<td>$\vdots$</td>
-<td>$\vdots$</td>
-<td>$\cdots$</td>
-<td>$\vdots$</td>
+<td><span class="arithmatex">\(\vdots\)</span></td>
+<td><span class="arithmatex">\(\vdots\)</span></td>
+<td><span class="arithmatex">\(\cdots\)</span></td>
+<td><span class="arithmatex">\(\vdots\)</span></td>
 </tr>
 <tr>
-<td>$F_1 \mathrel{+}= f_N$</td>
-<td>$F_2 \mathrel{+}= f_N^2$</td>
-<td>$\cdots$</td>
-<td>$F_M \mathrel{+}= f_N^M$</td>
+<td><span class="arithmatex">\(F_1 \mathrel{+}= f_N\)</span></td>
+<td><span class="arithmatex">\(F_2 \mathrel{+}= f_N^2\)</span></td>
+<td><span class="arithmatex">\(\cdots\)</span></td>
+<td><span class="arithmatex">\(F_M \mathrel{+}= f_N^M\)</span></td>
 </tr>
 </tbody>
 </table>
@@ -860,9 +860,9 @@ $$</p>
 <p><img alt="Distributed memory architecture: CPU 1, CPU 2, and CPU 3 connected by bidirectional arrows, each with its own local memory block below." src="../distributed-memory.svg" /></p>
 <p>In practice, most systems today are some combination. However, it is useful to develop algorithms based on a single paradigm in order to make portable code.</p>
 <p>MPI is based on a distributed memory paradigm. It provides a library of functions to facilitate communication between processors.</p>
-<p>$$
-\text{MPI} = \left{ \begin{array}{l} \text{Message} \ \text{Passing} \ \text{Interface} \end{array} \right.
-$$</p>
+<div class="arithmatex">\[
+\text{MPI} = \left\{ \begin{array}{l} \text{Message} \\ \text{Passing} \\ \text{Interface} \end{array} \right.
+\]</div>
 <hr />
 <h2 id="mpi">MPI</h2>
 <p>The MPI Library consists of more than 100 functions.  Of these, 6 functions are really important:
@@ -896,7 +896,7 @@ main(int argc, char** argv)
 <li><code>MPI_Init</code> must be called <strong>exactly once</strong> before all other MPI commands.</li>
 <li><code>MPI_Finalize</code> should be called after all other MPI commands.</li>
 <li><code>MPI_Comm_size</code> finds out the number of processors (stored in <code>noprocs</code>).</li>
-<li><code>MPI_Comm_rank</code> finds out which process I am; $nid \in {0, \ldots, nprocs - 1}$.</li>
+<li><code>MPI_Comm_rank</code> finds out which process I am; <span class="arithmatex">\(nid \in \{0, \ldots, nprocs - 1\}\)</span>.</li>
 <li><code>MPI_COMM_WORLD</code> is an MPI "communicator".</li>
 </ul>
 <h3 id="flowchart-of-what-happens">Flowchart of What Happens</h3>
@@ -1053,6 +1053,10 @@ int main(int argc, char** argv)
     
     
       <script src="../../assets/javascripts/bundle.4e0fa4ba.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
