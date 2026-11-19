@@ -17,7 +17,7 @@ document.addEventListener("MathJax.typesetReady", function() {
 
     // load LateX package
     MathJax.texConfig({
-	packages: ['[tx]amsmath', '[tx]amsfonts', '[tx]amssymb', `[tx]xcolor`]
+	packages: ['[tx]amsmath', '[tx]amsfonts', '[tx]amssymb', '[tx]xcolor']
     });
 
     // Re-typeset after packages load
