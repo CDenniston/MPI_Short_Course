@@ -865,13 +865,15 @@ F_1 &amp;\mathrel{+}= f_N
 \]</div>
 <hr />
 <h2 id="mpi">MPI</h2>
-<p>The MPI Library consists of more than 100 functions.  Of these, 6 functions are really important:
-1. Initialize MPI
-2. Find # of processes (specified when program submitted)
-3. Find out which process I am
-4. Send a message → <em>main point of library</em>
-5. Receive a message ← <em>main point of library</em>
-6. Terminate MPI.  This is <em>essential — <strong>always</strong> do this! MPI is C-based, not C++</em></p>
+<p>The MPI Library consists of more than 100 functions.  Of these, 6 functions are really important:</p>
+<ol>
+<li>Initialize MPI</li>
+<li>Find # of processes (specified when program submitted)</li>
+<li>Find out which process I am</li>
+<li>Send a message → <em>main point of library</em></li>
+<li>Receive a message ← <em>main point of library</em></li>
+<li>Terminate MPI.  This is <em>essential — <strong>always</strong> do this! MPI is C-based, not C++</em></li>
+</ol>
 <h3 id="example-hello-world-in-c">Example: "Hello World" in C</h3>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mpi.h&quot;</span><span class="c1">        /* MPI header files — always need this */</span>
