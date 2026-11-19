@@ -1168,7 +1168,7 @@ The Jacobi method is a nice illustration of how to parallize a problem defined o
 Suppose $\mathcal{A}$ is positive definite. Consider the scalar quadratic function with vector arguments:
 
 $$
-f(\bm{x}) = \frac{1}{2} \bm{x}^T \mathcal{A} \bm{x} - \bm{b}^T \bm{x} + \bm{c} = \frac{1}{2} x_\alpha A_{\alpha\beta} x_\beta - b_\alpha x_\alpha + c
+f({\bf x}) = \frac{1}{2} {\bf x}^T \mathcal{A} {\bf x} - {\bf b}^T {\bf x} + {\bf c} = \frac{1}{2} x_\alpha A_{\alpha\beta} x_\beta - b_\alpha x_\alpha + c
 $$
 
 where tensor notation with summation convention assumed is used after the 2nd equality sign.  Here $x_\alpha$ is a component of $\bm{x}$, and $A_{\alpha\beta}$ is a matrix element of the matrix $\mathcal{A}$.  Taking the derivative with respect to $x_\gamma$ gives:
