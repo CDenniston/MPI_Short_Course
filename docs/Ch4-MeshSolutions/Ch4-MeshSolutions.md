@@ -1168,18 +1168,18 @@ The Jacobi method is a nice illustration of how to parallize a problem defined o
 Suppose $\mathcal{A}$ is positive definite. Consider the scalar quadratic function with vector arguments:
 
 $$
-f({\bf x}) = \frac{1}{2} {\bf x}^T \mathcal{A} {\bf x} - {\bf b}^T {\bf x} + {\bf c} = \frac{1}{2} x_\alpha A_{\alpha\beta} x_\beta - b_\alpha x_\alpha + c
+f({\bf x}) = \frac{1}{2} {\bf x}^T \mathcal{A} {\bf x} - {\bf b}^T {\bf x} + c = \frac{1}{2} x_\alpha A_{\alpha\beta} x_\beta - b_\alpha x_\alpha + c
 $$
 
-where tensor notation with summation convention assumed is used after the 2nd equality sign.  Here $x_\alpha$ is a component of $\bm{x}$, and $A_{\alpha\beta}$ is a matrix element of the matrix $\mathcal{A}$.  Taking the derivative with respect to $x_\gamma$ gives:
+where tensor notation with summation convention assumed is used after the 2nd equality sign.  Here $x_\alpha$ is a component of ${\bf x}$, and $A_{\alpha\beta}$ is a matrix element of the matrix $\mathcal{A}$.  Taking the derivative with respect to $x_\gamma$ gives:
 
 $$
 \frac{\partial f}{x_\gamma} = \frac{1}{2} \delta_{\gamma\alpha} A_{\alpha\beta} x_\beta + \frac{1}{2} x_\alpha A_{\alpha\beta} \delta_{\beta\gamma} - b_\gamma \delta_{\gamma\gamma}
 = A_{\gamma\beta} x_\beta - b_\gamma
-= (Ax - b)_\gamma
+= (\mathcal{A}{\bf x} - {\bf b})_\gamma
 $$
 
-so that $\nabla f = Ax - b$.  Minimizing $f$ is equivalent to solving $\partial f/\partial x_\gamma = 0$ for all $\gamma$ and is therefore equivalent to solving $Ax = b.$  (The fact that there is a minimum is guaranteed by the fact that $\mathcal{A}$ is positive definite.)
+so that $\nabla f = \mathcal{A}{\bf x} - {\bf b}$.  Minimizing $f$ is equivalent to solving $\partial f/\partial x_\gamma = 0$ for all $\gamma$ and is therefore equivalent to solving $\mathcal{A}{\bf x} = {\bf b}.$  (The fact that there is a minimum is guaranteed by the fact that $\mathcal{A}$ is positive definite.)
 
 ### Line Search
 
@@ -1189,15 +1189,15 @@ $$
 x_\alpha^{(m+1)} = x_\alpha^{(m)} + \lambda_m d_\alpha^{(m)}
 $$
 
-where $m$ is the iteration label and $\alpha$ is the vector coordinate index.  The idea will be to pick the scalar $\lambda_m$ to minimise $f$ along the line determined by some vector $\bm{d}^{(m)}$ (the search direction).
+where $m$ is the iteration label and $\alpha$ is the vector coordinate index.  The idea will be to pick the scalar $\lambda_m$ to minimise $f$ along the line determined by some vector ${\bf d}^{(m)}$ (the search direction).
 
 $$
-f(\bm{x}^{(m)} + \lambda \bm{d}^{(m)}) = \frac{1}{2}(x_\alpha + \lambda d_\alpha) A_{\alpha\beta}(x_\beta + \lambda d_\beta) - b_\alpha(x_\alpha + \lambda d_\alpha) + c \\ \qquad\qquad = f(\bm{x}^{(m)}) + \lambda^2\!\left(\frac{1}{2} d_\alpha A_{\alpha\beta} d_\beta\right) + \lambda\, d_\alpha\bigl(A_{\alpha\beta} x_\beta - b_\alpha\bigr)
+f({\bf x}^{(m)} + \lambda {\bf d}^{(m)}) = \frac{1}{2}(x_\alpha + \lambda d_\alpha) A_{\alpha\beta}(x_\beta + \lambda d_\beta) - b_\alpha(x_\alpha + \lambda d_\alpha) + c \\ \qquad\qquad = f({\bf x}^{(m)}) + \lambda^2\!\left(\frac{1}{2} d_\alpha A_{\alpha\beta} d_\beta\right) + \lambda\, d_\alpha\bigl(A_{\alpha\beta} x_\beta - b_\alpha\bigr)
 $$
 
-where we have used the fact that $\mathcal{A}$ is symmetric so $d_\alpha A_{\alpha\beta} x_\beta = x_\alpha A_{\alpha\beta} d_\beta$.  Note that the first term is just a number and the second term is greater than zero due to the fact that $\mathcal{A}$ is positive definite so this defines an upward parabola if plotted as a function of $\lambda$.  We define the **residual** (the gradient of $f$ at $\bm{x}^{(m)}$) as 
+where we have used the fact that $\mathcal{A}$ is symmetric so $d_\alpha A_{\alpha\beta} x_\beta = x_\alpha A_{\alpha\beta} d_\beta$.  Note that the first term is just a number and the second term is greater than zero due to the fact that $\mathcal{A}$ is positive definite so this defines an upward parabola if plotted as a function of $\lambda$.  We define the **residual** (the gradient of $f$ at ${\bf x}^{(m)}$) as 
 
-$$\bm{r}^{(m)} = \mathcal{A}\bm{x}^{(m)} - \bm{b}.$$
+$${\bf r}^{(m)} = \mathcal{A}{\bf x}^{(m)} - {\bf b}.$$
 
 Minimizing $f$ along our search direction is then at $\partial f / \partial \lambda = 0$:
 
@@ -1211,20 +1211,20 @@ to get to the minimum along our line.
 
 ### Choosing the Search Direction
 
-What direction should we search in? It makes sense to take $\bm{d}^{(0)}$ along the gradient $\nabla f({\bm x}^{(0)}) = -\bm{r}^{(0)}$, i.e. in the downhill direction. Subsequent searches are along:
+What direction should we search in? It makes sense to take ${\bf d}^{(0)}$ along the gradient $\nabla f({\bf x}^{(0)}) = -{\bf r}^{(0)}$, i.e. in the downhill direction. Subsequent searches are along:
 
 $$
-\bm{d}^{(m+1)} = -\bm{r}^{(m+1)} + \alpha_m \bm{d}^{(m)}
+{\bf d}^{(m+1)} = -{\bf r}^{(m+1)} + \alpha_m {\bf d}^{(m)}
 $$
 
-where $-\bm{r}^{(m+1)}$ is the gradient at the current minimum and $\alpha_m \bm{d}^{(m)}$ removes directions we have just searched.
-**How?** Choose $\bm{d}^{(m+1)}$ to be **$\mathcal{A}$-conjugate** to $\bm{d}^{(m)}$, i.e. so that
+where $-{\bf r}^{(m+1)}$ is the gradient at the current minimum and $\alpha_m {\bf d}^{(m)}$ removes directions we have just searched.
+**How?** Choose ${\bf d}^{(m+1)}$ to be **$\mathcal{A}$-conjugate** to ${\bf d}^{(m)}$, i.e. so that
 
 $$
 d_\alpha^{(m+1)} A_{\alpha\beta} d_\beta^{(m)} = 0.
 $$
 
-You can think of this as choosing $\bm{d}^{(m+1)}$ to be orthogonal to $\bm{d}^{(m)}$ in a space where $\mathcal{A}$ is a metric.
+You can think of this as choosing ${\bf d}^{(m+1)}$ to be orthogonal to ${\bf d}^{(m)}$ in a space where $\mathcal{A}$ is a metric.
 Substituting:
 
 $$
@@ -1247,36 +1247,36 @@ $$
 \lambda_m = \frac{r_\alpha^{(m)} r_\alpha^{(m)}}{d_\alpha^{(m)} A_{\alpha\beta} d_\beta^{(m)}}, \qquad \alpha_m = \frac{r_\alpha^{(m+1)} r_\alpha^{(m+1)}}{r_\beta^{(m)} r_\beta^{(m)}}
 $$
 
-To save repeating work,  $\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}$ should be saved for the next step (where it will be used as $\delta^{(m)}$), and since $\bf{r}^{(m+1)} = \bm{r}^{(m)} + \lambda_m \bm{u}$ (where $\bm{u} = \mathcal{A}\bm{d}^{(m)}$, the same matrix-vector product already computed for $\lambda_m$), we can avoid re-computing $\mathcal{A}\bm{d}^{(m+1)}-\bm{b}$ from scratch.
+To save repeating work,  $\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}$ should be saved for the next step (where it will be used as $\delta^{(m)}$), and since ${\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u}$ (where $\bm{u} = \mathcal{A}\bm{d}^{(m)}$, the same matrix-vector product already computed for $\lambda_m$), we can avoid re-computing $\mathcal{A}{\bf d}^{(m+1)}-{\bf b}$ from scratch.
 
 The full algorithm then becomes:
 
 ---
-$\bm{r}^{(0)} = \mathcal{A}\bm{x}^{(0)} - \bm{b}; \quad \bm{d}^{(0)} = -\bm{r}^{(0)}; \quad \delta^{(0)} = \bm{r}^{(0)T} \bm{r}^{(0)};$
+$\bf{r}^{(0)} = \mathcal{A}\bf{x}^{(0)} - \bf{b}; \quad \bf{d}^{(0)} = -\bf{r}^{(0)}; \quad \delta^{(0)} = \bf{r}^{(0)T} \bf{r}^{(0)};$
 $\text{for } m = 0, 1, 2, \ldots$
- $\qquad \bm{u} = \mathcal{A}\bm{d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}$
- $\qquad \lambda_m = \frac{\delta^{(m)}}{\bm{d}^{(m)T} \bm{u}}; \quad \leftarrow \text{do locally then AllReduce}$
- $\qquad \bm{x}^{(m+1)} = \bm{x}^{(m)} + \lambda_m \bm{d}^{(m)}$;
- $\qquad \bm{r}^{(m+1)} = \bm{r}^{(m)} + \lambda_m \bm{u}$;
- $\qquad \delta^{(m+1)} = \bm{r}^{(m+1)T} \bm{r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}$
- $\qquad \text{if } \sqrt{\delta^{(m+1)}} < \text{tol}: \text{ output } \bm{x}^{(m+1)}, \text{ stop}$;
+ $\qquad \bf{u} = \mathcal{A}\bf{d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}$
+ $\qquad \lambda_m = \frac{\delta^{(m)}}{\bf{d}^{(m)T} \bf{u}}; \quad \leftarrow \text{do locally then AllReduce}$
+ $\qquad \bf{x}^{(m+1)} = \bf{x}^{(m)} + \lambda_m \bf{d}^{(m)}$;
+ $\qquad \bf{r}^{(m+1)} = \bf{r}^{(m)} + \lambda_m \bf{u}$;
+ $\qquad \delta^{(m+1)} = \bf{r}^{(m+1)T} \bf{r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}$
+ $\qquad \text{if } \sqrt{\delta^{(m+1)}} < \text{tol}: \text{ output } \bf{x}^{(m+1)}, \text{ stop}$;
  $\qquad \alpha_m = \frac{\delta^{(m+1)}}{\delta^{(m)}}$;
- $\qquad \bm{d}^{(m+1)} = -\bm{r}^{(m+1)} + \alpha_m \bm{d}^{(m)}; \quad \leftarrow \text{local}$
+ $\qquad \bf{d}^{(m+1)} = -\bf{r}^{(m+1)} + \alpha_m \bf{d}^{(m)}; \quad \leftarrow \text{local}$
 
 ---
 
 ### How Many Iterations Are Needed?
 
-**Not many!** Suppose the initial guess is $\bm{x}^{(0)} = \mathbf{0}$, then:
+**Not many!** Suppose the initial guess is $\bf{x}^{(0)} = \mathbf{0}$, then:
 
 $$
-\bm{x}^{(m)} = \sum_{k=0}^{m} c_k \bm{d}^{(k)}
+\bf{x}^{(m)} = \sum_{k=0}^{m} c_k \bf{d}^{(k)}
 $$
 
-But all $\bm{d}^{(k)}$ are linearly dependent, by construction. If $\mathcal{A}$ is $n \times n$, then we can need at most $n$ iterations, and then should terminate. For well-conditioned problems, much fewer iterations are needed.
+But all $\bf{d}^{(k)}$ are linearly dependent, by construction. If $\mathcal{A}$ is $n \times n$, then we can need at most $n$ iterations, and then should terminate. For well-conditioned problems, much fewer iterations are needed.
 
 ### C Code: CG.c
-A serial code for the conjugate gradient algorithm in C is given here for solving Laplace's equation.  Note that in this case $\mathcal{A}$ is very sparse so you should not store it explicitly.  As $\mathcal{A}$ is only used in computing $\mathcal{A}\bm{d^{(m)}}$ we can do this multiplication explictly using the five nonzero elements in a row of $\mathcal{A}$ associated with the 5-point stencil discussed above.  Also, for this problem $\bm{x}$ is our solution vector $\bm{v}$ on the mesh, stored in row-major ordering.
+A serial code for the conjugate gradient algorithm in C is given here for solving Laplace's equation.  Note that in this case $\mathcal{A}$ is very sparse so you should not store it explicitly.  As $\mathcal{A}$ is only used in computing $\mathcal{A}\bf{d^{(m)}}$ we can do this multiplication explictly using the five nonzero elements in a row of $\mathcal{A}$ associated with the 5-point stencil discussed above.  Also, for this problem $\bf{x}$ is our solution vector $\bf{v}$ on the mesh, stored in row-major ordering.
 
 ```c
 /* Compile line: */
