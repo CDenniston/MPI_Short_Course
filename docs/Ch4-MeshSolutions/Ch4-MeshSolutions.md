@@ -62,8 +62,8 @@ A = \left(\begin{array}{cccccc|cccccc|cccccc}
 0 & 1 & -4 & 1 & \ddots & \vdots &             \vdots & 0 & 1  & 0 & & & & & & & &\\
 \vdots & \ddots  & \ddots & \ddots & \ddots & 0 &    & & \ddots & \ddots & \ddots & \vdots   & & & & & &\\
 \vdots &   &  \ddots      & 1 & -4 & 1 &            \vdots & & & 0 & 1 & 0\\
-0 & \dots  &   \dots     &  0 & 1  & -4 &           {\color{red}{0}}  & \dots & & \dots & 0 & 1\\\hline
-1  & 0 & \dots & & \dots & {\color{red}{0}} &                  -4 & 1 & 0 & & &                  & \ddots & & & & &\\
+0 & \dots  &   \dots     &  0 & 1  & -4 &           {\mathcolor{red}{0}}  & \dots & & \dots & 0 & 1\\\hline
+1  & 0 & \dots & & \dots & {\mathcolor{red}{0}} &                  -4 & 1 & 0 & & &                  & \ddots & & & & &\\
 0  & 1 & 0 & & & \vdots &                       1 & \ddots & \ddots & & &\\ 
 \vdots & 0 & 1  & 0 & & &                       0 & \ddots & \ddots & \ddots & & \\
 & & \ddots & \ddots & \ddots & \vdots &    \\
