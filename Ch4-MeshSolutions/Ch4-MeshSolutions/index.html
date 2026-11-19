@@ -1954,16 +1954,20 @@ Substituting:</p>
 <p>To save repeating work,  <span class="arithmatex">\(\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}\)</span> should be saved for the next step (where it will be used as <span class="arithmatex">\(\delta^{(m)}\)</span>), and since <span class="arithmatex">\({\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u}\)</span> (where <span class="arithmatex">\({\bf u} = \mathcal{A}{\bf d}^{(m)}\)</span>, the same matrix-vector product already computed for <span class="arithmatex">\(\lambda_m\)</span>), we can avoid re-computing <span class="arithmatex">\(\mathcal{A}{\bf d}^{(m+1)}-{\bf b}\)</span> from scratch.</p>
 <p>The full algorithm then becomes:</p>
 <hr />
-<p><span class="arithmatex">\({\bf r}^{(0)} = \mathcal{A}{\bf x}^{(0)} - {\bf b}; \quad {\bf d}^{(0)} = -{\bf r}^{(0)}; \quad \delta^{(0)} = {\bf r}^{(0)T} {\bf r}^{(0)};\)</span>
-<span class="arithmatex">\(\text{for } m = 0, 1, 2, \ldots\)</span>
- <span class="arithmatex">\(\qquad {\bf u} = \mathcal{A}{\bf d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}\)</span>
- <span class="arithmatex">\(\qquad \lambda_m = \frac{\delta^{(m)}}{{\bf d}^{(m)T} {\bf u}}; \quad \leftarrow \text{do locally then AllReduce}\)</span>
- <span class="arithmatex">\(\qquad {\bf x}^{(m+1)} = {\bf x}^{(m)} + \lambda_m {\bf d}^{(m)}\)</span>;
- <span class="arithmatex">\(\qquad {\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u}\)</span>;
- <span class="arithmatex">\(\qquad \delta^{(m+1)} = {\bf r}^{(m+1)T} {\bf r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}\)</span>
- <span class="arithmatex">\(\qquad \text{if } \sqrt{\delta^{(m+1)}} &lt; \text{tol}: \text{ output } {\bf x}^{(m+1)}, \text{ stop}\)</span>;
- <span class="arithmatex">\(\qquad \alpha_m = \frac{\delta^{(m+1)}}{\delta^{(m)}}\)</span>;
- <span class="arithmatex">\(\qquad {\bf d}^{(m+1)} = -{\bf r}^{(m+1)} + \alpha_m {\bf d}^{(m)}; \quad \leftarrow \text{local}\)</span></p>
+<div class="arithmatex">\[
+\begin{align}
+&amp;{\bf r}^{(0)} = \mathcal{A}{\bf x}^{(0)} - {\bf b}; \quad {\bf d}^{(0)} = -{\bf r}^{(0)}; \quad \delta^{(0)} = {\bf r}^{(0)T} {\bf r}^{(0)};\\
+&amp;\text{for } m = 0, 1, 2, \ldots\\
+&amp;\qquad {\bf u} = \mathcal{A}{\bf d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}\\
+&amp;\qquad \lambda_m = \frac{\delta^{(m)}}{{\bf d}^{(m)T} {\bf u}}; \quad \leftarrow \text{do locally then AllReduce}\\
+&amp;\qquad {\bf x}^{(m+1)} = {\bf x}^{(m)} + \lambda_m {\bf d}^{(m)};\\
+&amp;\qquad {\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u};\\
+&amp;\qquad \delta^{(m+1)} = {\bf r}^{(m+1)T} {\bf r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}\\
+&amp;\qquad \text{if } \sqrt{\delta^{(m+1)}} &lt; \text{tol}: \text{ output } {\bf x}^{(m+1)}, \text{ stop};\\
+&amp;\qquad \alpha_m = \frac{\delta^{(m+1)}}{\delta^{(m)}};\\
+&amp;\qquad {\bf d}^{(m+1)} = -{\bf r}^{(m+1)} + \alpha_m {\bf d}^{(m)}; \quad \leftarrow \text{local}
+\end{align}
+\]</div>
 <hr />
 <h3 id="how-many-iterations-are-needed">How Many Iterations Are Needed?</h3>
 <p><strong>Not many!</strong> Suppose the initial guess is <span class="arithmatex">\({\bf x}^{(0)} = \mathbf{0}\)</span>, then:</p>
