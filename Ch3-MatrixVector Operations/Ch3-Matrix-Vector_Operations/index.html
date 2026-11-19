@@ -1649,11 +1649,15 @@ As LAPACK uses BLAS, this should install both.</p>
 <li><strong>Symmetric/Hermitian positive definite matrices</strong> (Cholesky factorization):</li>
 </ul>
 <div class="arithmatex">\[A = U^T U \quad \text{or} \quad A = L L^T \quad (\text{symmetric})\]</div>
-<p><span class="arithmatex">\(<span class="arithmatex">\(A = U^H U \quad \text{or} \quad A = L L^H \quad (\text{Hermitian})\)</span>\)</span>
-- <strong>Symmetric/Hermitian positive definite tridiagonal matrices</strong> (<span class="arithmatex">\(LDL^T\)</span> factorization):</p>
+<div class="arithmatex">\[A = U^H U \quad \text{or} \quad A = L L^H \quad (\text{Hermitian})\]</div>
+<ul>
+<li><strong>Symmetric/Hermitian positive definite tridiagonal matrices</strong> (<span class="arithmatex">\(LDL^T\)</span> factorization):</li>
+</ul>
 <div class="arithmatex">\[A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})\]</div>
-<p><span class="arithmatex">\(<span class="arithmatex">\(A = U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})\)</span>\)</span>
-- <strong>Symmetric/Hermitian indefinite matrices</strong> (symmetric indefinite factorization):</p>
+<div class="arithmatex">\[A = U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})\]</div>
+<ul>
+<li><strong>Symmetric/Hermitian indefinite matrices</strong> (symmetric indefinite factorization):</li>
+</ul>
 <div class="arithmatex">\[A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})\]</div>
 <div class="arithmatex">\[A \approx U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})\]</div>
 <p>where <span class="arithmatex">\(U\)</span> (or <span class="arithmatex">\(L\)</span>) is a product of permutation and unit upper (lower) triangular matrices, and <span class="arithmatex">\(D\)</span> is symmetric and block diagonal with diagonal blocks of order 1 or 2.</p>

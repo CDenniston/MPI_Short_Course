@@ -449,6 +449,16 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#10-21-22-10-11-12-00-01-02" class="md-nav__link">
+    10  21  22
+10  11  12
+00  01  02
+
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#output-writing-to-a-single-global-file" class="md-nav__link">
     Output: Writing to a Single Global File
   </a>
@@ -729,6 +739,16 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#10-21-22-10-11-12-00-01-02" class="md-nav__link">
+    10  21  22
+10  11  12
+00  01  02
+
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#output-writing-to-a-single-global-file" class="md-nav__link">
     Output: Writing to a Single Global File
   </a>
@@ -855,84 +875,84 @@
 <h1 id="chapter-4-mesh-based-solutions-poisson-equation">Chapter 4: Mesh-based Solutions — Poisson Equation</h1>
 <p>Many scientific problems can be formulated numerically on a regular lattice, or mesh.  These problems are regular targets for reduced runtimes using parallel programming techniques.  The methodology to parallize these algorithms is largely similar.  To illustrate this methodology we will focus on a specific example, namely solving Poisson's equation on a mesh using a finite difference scheme.</p>
 <h2 id="finite-difference-schemes-for-the-poisson-equation">Finite Difference Schemes for the Poisson Equation</h2>
-<p>We want to solve the <strong>2D Poisson equation</strong> on a rectangular domain with Dirichlet boundary conditions:
-$$
+<p>We want to solve the <strong>2D Poisson equation</strong> on a rectangular domain with Dirichlet boundary conditions:</p>
+<div class="arithmatex">\[
 \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = f, \qquad \text{B.C.: } u = \text{const on boundary}
-$$
-where <span class="arithmatex">\(f(x,y)\)</span> is a given function and the problem is to determine <span class="arithmatex">\(u(x,y)\)</span>.</p>
+\]</div>
+<p>where <span class="arithmatex">\(f(x,y)\)</span> is a given function and the problem is to determine <span class="arithmatex">\(u(x,y)\)</span>.</p>
 <h3 id="discretisation">Discretisation</h3>
 <p>Introduce a uniform mesh with spacing <span class="arithmatex">\(h\)</span> in both directions:</p>
 <p><img alt="2D Mesh" src="../mesh.svg" /></p>
-<p>Use the standard <strong>second-order centered finite difference approximation</strong> to derivatives:
-$$
+<p>Use the standard <strong>second-order centered finite difference approximation</strong> to derivatives:</p>
+<div class="arithmatex">\[
 \frac{\partial^2 u}{\partial x^2}=\frac{\delta_x^2 u}{h^2} + \mathcal{O}(h^2)= \frac{u(x_{\ell+1}, y_m) - 2u(x_\ell, y_m) + u(x_{\ell-1}, y_m)}{h^2} + \mathcal{O}(h^2)
-$$
-As the boundary condition provides the solution on boundary, we work on interior mesh points only and label <span class="arithmatex">\(u(x_\ell, y_m) \equiv v_{\ell,m}\)</span>. This gives the discrete equation:
-$$
+\]</div>
+<p>As the boundary condition provides the solution on boundary, we work on interior mesh points only and label <span class="arithmatex">\(u(x_\ell, y_m) \equiv v_{\ell,m}\)</span>. This gives the discrete equation:</p>
+<div class="arithmatex">\[
 \delta_x^2 u + \delta_y^2 u = h^2 f
-$$
-Assuming <span class="arithmatex">\(h_x = h_y = h\)</span>, the equations we need to solve are: 
-$$
+\]</div>
+<p>Assuming <span class="arithmatex">\(h_x = h_y = h\)</span>, the equations we need to solve are: </p>
+<div class="arithmatex">\[
 v_{\ell+1,m} + v_{\ell-1,m} + v_{\ell,m+1} + v_{\ell,m-1} - 4v_{\ell,m} = h^2 f_{\ell,m}
-$$
-This is often referred to as a <strong>5-point stencil</strong>:
-<img alt="5-point stencil" src="../stencil5pt.svg" /></p>
+\]</div>
+<p>This is often referred to as a <strong>5-point stencil</strong>:</p>
+<p><img alt="5-point stencil" src="../stencil5pt.svg" /></p>
 <p>The corresponding matrix <span class="arithmatex">\(A\)</span> is a banded matrix equation <span class="arithmatex">\(Av = F\)</span> with bandwidth <span class="arithmatex">\(2L-1\)</span> (or <span class="arithmatex">\(2M-1\)</span>).</p>
 <h3 id="structure-of-the-matrix-system">Structure of the Matrix System</h3>
-<p>The solution vector <span class="arithmatex">\(v\)</span> and right-hand side <span class="arithmatex">\(F\)</span> are assembled by ordering the interior grid points, say row by row (i.e. row-major ordering):
-$$
-v = \begin{pmatrix} v_{1,1} \ v_{1,2} \ \vdots \ v_{1,M-2} \ v_{1,M-1} \ v_{2,1} \ v_{2,2} \ v_{2,3} \ \vdots \ v_{2,M-1} \ v_{3,1} \ \vdots \ v_{L-1,M-1} \end{pmatrix}, \qquad
-F = \begin{pmatrix} h^2 f_{1,1} - v_{0,1} - v_{1,0} \ h^2 f_{1,2} - v_{0,2} \ \vdots \h^2 f_{1,M-2}-v_{0,M-2}\ h^2 f_{1,M-1}-v_{0,M-1}-v_{1,M}\ h^2 f_{2,1} - v_{2,0} \ h^2 f_{2,2} \ h^2 f_{2,3} \ \vdots \ h^2 f_{2,M-1} -v_{2,M} \ h^2 f_{3,1} - v_{3,0} \ \vdots \ h^2 f_{L-1,M-1} -v_{L-1,M}-v_{L,M-1}\end{pmatrix}
-$$
-Note that while most entries in <span class="arithmatex">\(F\)</span> are of the form <span class="arithmatex">\(h^2 f_{\ell,m}\)</span>, any sites adjacent to the boundary pick up values of <span class="arithmatex">\(-v_{\ell\pm 1,m\pm 1}\)</span> that are known (assuming Dirichlet B.C.s) as these are moved to the right-hand side of the equation (i.e. into <span class="arithmatex">\(F\)</span>).  Correspondingly, the bands in <span class="arithmatex">\(A\)</span> closest to the diagonal that would couple interior points to boundary points have zero entries.</p>
-<p>The matrix <span class="arithmatex">\(A\)</span> is <strong>block tridiagonal</strong>:
-$$
+<p>The solution vector <span class="arithmatex">\(v\)</span> and right-hand side <span class="arithmatex">\(F\)</span> are assembled by ordering the interior grid points, say row by row (i.e. row-major ordering):</p>
+<div class="arithmatex">\[
+v = \begin{pmatrix} v_{1,1} \\ v_{1,2} \\ \vdots \\ v_{1,M-2} \\ v_{1,M-1} \\ v_{2,1} \\ v_{2,2} \\ v_{2,3} \\ \vdots \\ v_{2,M-1} \\ v_{3,1} \\ \vdots \\ v_{L-1,M-1} \end{pmatrix}, \qquad
+F = \begin{pmatrix} h^2 f_{1,1} - v_{0,1} - v_{1,0} \\ h^2 f_{1,2} - v_{0,2} \\ \vdots \\h^2 f_{1,M-2}-v_{0,M-2}\\ h^2 f_{1,M-1}-v_{0,M-1}-v_{1,M}\\ h^2 f_{2,1} - v_{2,0} \\ h^2 f_{2,2} \\ h^2 f_{2,3} \\ \vdots \\ h^2 f_{2,M-1} -v_{2,M} \\ h^2 f_{3,1} - v_{3,0} \\ \vdots \\ h^2 f_{L-1,M-1} -v_{L-1,M}-v_{L,M-1}\end{pmatrix}
+\]</div>
+<p>Note that while most entries in <span class="arithmatex">\(F\)</span> are of the form <span class="arithmatex">\(h^2 f_{\ell,m}\)</span>, any sites adjacent to the boundary pick up values of <span class="arithmatex">\(-v_{\ell\pm 1,m\pm 1}\)</span> that are known (assuming Dirichlet B.C.s) as these are moved to the right-hand side of the equation (i.e. into <span class="arithmatex">\(F\)</span>).  Correspondingly, the bands in <span class="arithmatex">\(A\)</span> closest to the diagonal that would couple interior points to boundary points have zero entries.</p>
+<p>The matrix <span class="arithmatex">\(A\)</span> is <strong>block tridiagonal</strong>:</p>
+<div class="arithmatex">\[
 A = \left(\begin{array}{cccccc|cccccc|cccccc}
--4 &amp; 1 &amp; 0 &amp; \dots &amp; \dots &amp; 0 &amp;                   1  &amp; 0 &amp; \dots &amp; &amp; \dots &amp; 0     &amp; 0 &amp; \dots &amp; &amp; &amp; &amp;\
-1 &amp; -4 &amp; 1 &amp; \ddots &amp; &amp; \vdots &amp;                   0  &amp; 1 &amp; 0 &amp; &amp; &amp; \vdots &amp; \vdots &amp; &amp; &amp; &amp; &amp;\
-0 &amp; 1 &amp; -4 &amp; 1 &amp; \ddots &amp; \vdots &amp;             \vdots &amp; 0 &amp; 1  &amp; 0 &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp;\
-\vdots &amp; \ddots  &amp; \ddots &amp; \ddots &amp; \ddots &amp; 0 &amp;    &amp; &amp; \ddots &amp; \ddots &amp; \ddots &amp; \vdots   &amp; &amp; &amp; &amp; &amp; &amp;\
-\vdots &amp;   &amp;  \ddots      &amp; 1 &amp; -4 &amp; 1 &amp;            \vdots &amp; &amp; &amp; 0 &amp; 1 &amp; 0\
-0 &amp; \dots  &amp;   \dots     &amp;  0 &amp; 1  &amp; -4 &amp;           {\red 0}  &amp; \dots &amp; &amp; \dots &amp; 0 &amp; 1\\hline
-1  &amp; 0 &amp; \dots &amp; &amp; \dots &amp; {\red 0} &amp;                  -4 &amp; 1 &amp; 0 &amp; &amp; &amp;                  &amp; \ddots &amp; &amp; &amp; &amp; &amp;\
-0  &amp; 1 &amp; 0 &amp; &amp; &amp; \vdots &amp;                       1 &amp; \ddots &amp; \ddots &amp; &amp; &amp;\ 
-\vdots &amp; 0 &amp; 1  &amp; 0 &amp; &amp; &amp;                       0 &amp; \ddots &amp; \ddots &amp; \ddots &amp; &amp; \
-&amp; &amp; \ddots &amp; \ddots &amp; \ddots &amp; \vdots &amp;    \
-\vdots &amp; &amp; &amp; 0 &amp; 1 &amp; 0\
-0 &amp; \dots &amp; &amp; \dots &amp; 0 &amp; 1\\hline
-0 &amp; \dots &amp; &amp; &amp; &amp; &amp; \ddots &amp; &amp; &amp; &amp; &amp; &amp; \ddots\
-\vdots &amp; \
-\
-\
-\
-\
+-4 &amp; 1 &amp; 0 &amp; \dots &amp; \dots &amp; 0 &amp;                   1  &amp; 0 &amp; \dots &amp; &amp; \dots &amp; 0     &amp; 0 &amp; \dots &amp; &amp; &amp; &amp;\\
+1 &amp; -4 &amp; 1 &amp; \ddots &amp; &amp; \vdots &amp;                   0  &amp; 1 &amp; 0 &amp; &amp; &amp; \vdots &amp; \vdots &amp; &amp; &amp; &amp; &amp;\\
+0 &amp; 1 &amp; -4 &amp; 1 &amp; \ddots &amp; \vdots &amp;             \vdots &amp; 0 &amp; 1  &amp; 0 &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp;\\
+\vdots &amp; \ddots  &amp; \ddots &amp; \ddots &amp; \ddots &amp; 0 &amp;    &amp; &amp; \ddots &amp; \ddots &amp; \ddots &amp; \vdots   &amp; &amp; &amp; &amp; &amp; &amp;\\
+\vdots &amp;   &amp;  \ddots      &amp; 1 &amp; -4 &amp; 1 &amp;            \vdots &amp; &amp; &amp; 0 &amp; 1 &amp; 0\\
+0 &amp; \dots  &amp;   \dots     &amp;  0 &amp; 1  &amp; -4 &amp;           {\red 0}  &amp; \dots &amp; &amp; \dots &amp; 0 &amp; 1\\\hline
+1  &amp; 0 &amp; \dots &amp; &amp; \dots &amp; {\red 0} &amp;                  -4 &amp; 1 &amp; 0 &amp; &amp; &amp;                  &amp; \ddots &amp; &amp; &amp; &amp; &amp;\\
+0  &amp; 1 &amp; 0 &amp; &amp; &amp; \vdots &amp;                       1 &amp; \ddots &amp; \ddots &amp; &amp; &amp;\\ 
+\vdots &amp; 0 &amp; 1  &amp; 0 &amp; &amp; &amp;                       0 &amp; \ddots &amp; \ddots &amp; \ddots &amp; &amp; \\
+&amp; &amp; \ddots &amp; \ddots &amp; \ddots &amp; \vdots &amp;    \\
+\vdots &amp; &amp; &amp; 0 &amp; 1 &amp; 0\\
+0 &amp; \dots &amp; &amp; \dots &amp; 0 &amp; 1\\\hline
+0 &amp; \dots &amp; &amp; &amp; &amp; &amp; \ddots &amp; &amp; &amp; &amp; &amp; &amp; \ddots\\
+\vdots &amp; \\
+\\
+\\
+\\
+\\
 \end{array}\right)
-$$
-where the <span class="arithmatex">\(1\)</span>s on off-diagonals connect same-row neighbours, and the <span class="arithmatex">\(1\)</span>s at distance <span class="arithmatex">\(L-1\)</span> connect vertically adjacent rows. The red <span class="arithmatex">\({\red 0}\)</span> entries in the block corners that interupt the 1s just off the main diagonal are where boundary terms were moved to the RHS (i.e. into <span class="arithmatex">\(F\)</span>).</p>
+\]</div>
+<p>where the <span class="arithmatex">\(1\)</span>s on off-diagonals connect same-row neighbours, and the <span class="arithmatex">\(1\)</span>s at distance <span class="arithmatex">\(L-1\)</span> connect vertically adjacent rows. The red <span class="arithmatex">\({\red 0}\)</span> entries in the block corners that interupt the 1s just off the main diagonal are where boundary terms were moved to the RHS (i.e. into <span class="arithmatex">\(F\)</span>).</p>
 <h3 id="direct-solution-with-lapack-cholesky-factorisation">Direct Solution with LAPACK: Cholesky Factorisation</h3>
-<p>The matrix <span class="arithmatex">\(A\)</span> is <strong>negative definite</strong>. In order to use LAPACK routines (which have specialised routines for positive definite matrices), we instead solve:
-$$
+<p>The matrix <span class="arithmatex">\(A\)</span> is <strong>negative definite</strong>. In order to use LAPACK routines (which have specialised routines for positive definite matrices), we instead solve:</p>
+<div class="arithmatex">\[
 (-A)\, v = (-F)
-$$
-since <span class="arithmatex">\(-A\)</span> will be <strong>positive definite</strong>. Positive definite matrices are symmetric, so we only need to store the upper triangular part. We can factor <span class="arithmatex">\(-A\)</span> using <strong>Cholesky factorisation</strong>:
-$$
+\]</div>
+<p>since <span class="arithmatex">\(-A\)</span> will be <strong>positive definite</strong>. Positive definite matrices are symmetric, so we only need to store the upper triangular part. We can factor <span class="arithmatex">\(-A\)</span> using <strong>Cholesky factorisation</strong>:</p>
+<div class="arithmatex">\[
 -A = U^T U = L L^T
-$$
-where <span class="arithmatex">\(U\)</span>, <span class="arithmatex">\(L\)</span> are upper/lower triangular matrices.  The factorisation can then be used to solve the system of equations. This is a special form of LU factorisation for positive definite matrices.</p>
+\]</div>
+<p>where <span class="arithmatex">\(U\)</span>, <span class="arithmatex">\(L\)</span> are upper/lower triangular matrices.  The factorisation can then be used to solve the system of equations. This is a special form of LU factorisation for positive definite matrices.</p>
 <p><strong>Note:</strong> Most of the work is in the factorisation. Once the factorisation is done you can solve for multiple right-hand sides without much extra effort — just change <span class="arithmatex">\(F\)</span> and use the same factorisation each time (we can call <code>dpbtrs</code> each time for this).</p>
 <p>The relevant LAPACK routines are:</p>
 <ul>
 <li><code>dpbtrf</code> — <code>d</code> for <strong>double</strong>, <code>p</code> for <strong>positive definite</strong>, <code>b</code> for <strong>band</strong>, and <code>trf</code> for <strong>factorize</strong> the band matrix;</li>
 <li><code>dpbtrs</code> — <code>d</code> for <strong>double</strong>, <code>p</code> for <strong>positive definite</strong>, <code>b</code> for <strong>band</strong>, and <code>trs</code> for <strong>solve</strong> using the (previously obtained) factorisation</li>
 </ul>
-<p>The matrix <span class="arithmatex">\(-A\)</span> is stored in <strong>band form</strong> and only requires the upper triangular region. It looks like:
+<p>The matrix <span class="arithmatex">\(-A\)</span> is stored in <strong>band form</strong> and only requires the upper triangular region. It looks like:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a> x  x -1 -1 - - ...      (upper corner marked with x x is ignored, just fill with -1s to fill the band)
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a> 0  0 - -
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a> 0  0 - -
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a> :
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a> 0  0 - - -1  0 -1 -1 - - ...
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a> 4  4 - - - - 4  4  4 - - -
-</span></code></pre></div></p>
+</span></code></pre></div>
 <p>where the last row is the main diagonal (all 4s from the <span class="arithmatex">\(-4\)</span>'s in <span class="arithmatex">\(A\)</span>), and the upper rows are the off-diagonal bands.</p>
 <h3 id="c-code-poissonlapackcpp">C++ Code: PoissonLAPACK.cpp</h3>
 <p>For this code we assume <span class="arithmatex">\(L=M=N\)</span> and for <span class="arithmatex">\(f\)</span> we place two "charges" of opposite sign equally spaced from the centre of the box.
@@ -1037,35 +1057,35 @@ The resulting solution, plotted with Mathematica, looks like:</p>
 <p>As you will see in the homework, this direct solution becomes increasingly impractical as the system size gets larger and larger. We need to consider something else.</p>
 <hr />
 <h2 id="jacobi-method">Jacobi Method</h2>
-<p>Rather than a direct solution, we can try to solve the (large) system of equations iteratively.  One way to do this is to solve the 5-point stencil equation for <span class="arithmatex">\(v_{\ell,m}\)</span> and iterate:
-$$
+<p>Rather than a direct solution, we can try to solve the (large) system of equations iteratively.  One way to do this is to solve the 5-point stencil equation for <span class="arithmatex">\(v_{\ell,m}\)</span> and iterate:</p>
+<div class="arithmatex">\[
 v_{\ell,m}^{k+1} = \frac{1}{4}\bigl(v_{\ell+1,m}^k + v_{\ell-1,m}^k + v_{\ell,m+1}^k + v_{\ell,m-1}^k\bigr)
-$$
-for the case were <span class="arithmatex">\(f=0\)</span>.  This is called the Jacobi method and is equivalent to solving <span class="arithmatex">\(\partial_t u = \nabla^2 u\)</span> using forward-time central-space with <span class="arithmatex">\(\Delta t = \frac{1}{4}h^2\)</span> and then iterating to steady state.  Note that this is <em>not</em> generally the method you would want to use to solve this problem, but it is easy to understand and implement.  As such, we can focus on the details of how to parallize a code to solve the problem using this method without getting bogged down on details of the method itself.  The parallization technique used is, however, very generalizable to a wide range of problems that can be solved on a regular mesh (or lattice). </p>
+\]</div>
+<p>for the case were <span class="arithmatex">\(f=0\)</span>.  This is called the Jacobi method and is equivalent to solving <span class="arithmatex">\(\partial_t u = \nabla^2 u\)</span> using forward-time central-space with <span class="arithmatex">\(\Delta t = \frac{1}{4}h^2\)</span> and then iterating to steady state.  Note that this is <em>not</em> generally the method you would want to use to solve this problem, but it is easy to understand and implement.  As such, we can focus on the details of how to parallize a code to solve the problem using this method without getting bogged down on details of the method itself.  The parallization technique used is, however, very generalizable to a wide range of problems that can be solved on a regular mesh (or lattice). </p>
 <p>We stop the interations when <span class="arithmatex">\(|v_{\ell,m}^{k+1} - v_{\ell,m}^k| &lt; \text{tol}\)</span> for <strong>all</strong> sites (referred to as <span class="arithmatex">\(L_\infty\)</span> or infinity norm for the change in the solution matrix/vector).  We use the <span class="arithmatex">\(L_\infty\)</span> rather than something like the root mean square error, or <span class="arithmatex">\(L_2\)</span> norm of the change as the solution converges from the boundaries inward (the boundary values are fixed by the B.C.s).  As such, if you were to start your initial guess with a constant on the domain that is different from the boundary values, in the first sweep over the lattice only the sites adjacent from the boundary will change.  In fact, for an <span class="arithmatex">\(N\times N\)</span> system it will take <span class="arithmatex">\(N/2\)</span> iterations for a change near the boundary to propogate all the way to the centre.  As such, convergence is not that fast for this method (which is why if you are really interested in solving this problem you should actually parallize a more sophisticated method such as conjugate gradient which we will discuss towards the end of the chapter).  There are a few simple improvements one can make the the basic Jacobi method that do improve the convergence.</p>
 <hr />
 <h2 id="gauss-seidel-method">Gauss-Seidel Method</h2>
-<p>If we go through the mesh in <strong>lexicographic order</strong> (left-to-right, bottom-to-top), then when we come to update <span class="arithmatex">\(v_{\ell,m}\)</span> in the Jacobi method, we will have already updated <span class="arithmatex">\(v_{\ell-1,m}\)</span> and <span class="arithmatex">\(v_{\ell,m-1}\)</span>. If we use an <strong>immediate replacement</strong> (i.e. use the updated values as soon as they are available), convergence tends to be faster (by about a factor of 2) and we don't need to keep "old" and "new" values:
-$$
+<p>If we go through the mesh in <strong>lexicographic order</strong> (left-to-right, bottom-to-top), then when we come to update <span class="arithmatex">\(v_{\ell,m}\)</span> in the Jacobi method, we will have already updated <span class="arithmatex">\(v_{\ell-1,m}\)</span> and <span class="arithmatex">\(v_{\ell,m-1}\)</span>. If we use an <strong>immediate replacement</strong> (i.e. use the updated values as soon as they are available), convergence tends to be faster (by about a factor of 2) and we don't need to keep "old" and "new" values:</p>
+<div class="arithmatex">\[
 v_{\ell,m}^{k+1} = \frac{1}{4}\bigl(v_{\ell+1,m}^k + v_{\ell-1,m}^{k+1} + v_{\ell,m+1}^k + v_{\ell,m-1}^{k+1}\bigr)
-$$
-This can also be parallized, but usually with rows near processor boundaries still using a Jacobi update (this will be clearer later).</p>
+\]</div>
+<p>This can also be parallized, but usually with rows near processor boundaries still using a Jacobi update (this will be clearer later).</p>
 <hr />
 <h2 id="successive-over-relaxation-sor">Successive Over-Relaxation (SOR)</h2>
-<p>Another way to speed things up is to take a "bigger" step towards the solution:
-$$
+<p>Another way to speed things up is to take a "bigger" step towards the solution:</p>
+<div class="arithmatex">\[
 v_{\ell,m}^{k+1} = v_{\ell,m}^k + w\left[\frac{1}{4}\bigl(v_{\ell+1,m}^k + v_{\ell-1,m}^{k+1} + v_{\ell,m+1}^k + v_{\ell,m-1}^{k+1}\bigr) - v_{\ell,m}^k\right]
-$$
-<strong>Note:</strong> <span class="arithmatex">\(w = 1 \Rightarrow\)</span> SOR = Gauss-Seidel. Generally we will take <span class="arithmatex">\(w &gt; 1\)</span> to converge faster.</p>
+\]</div>
+<p><strong>Note:</strong> <span class="arithmatex">\(w = 1 \Rightarrow\)</span> SOR = Gauss-Seidel. Generally we will take <span class="arithmatex">\(w &gt; 1\)</span> to converge faster.</p>
 <p><strong>How do we pick <span class="arithmatex">\(w\)</span> for fastest convergence?</strong></p>
 <ul>
 <li>Typically <span class="arithmatex">\(1 \leq w \leq 2\)</span> works, so pick something in this range</li>
-<li>It is known that the optimal value (in the sense of fastest convergence) for <span class="arithmatex">\(w\)</span> for Laplace-like problems generally follows a relation: 
-$$
-w^* \approx \frac{2}{1 + Ch}
-$$
-where <span class="arithmatex">\(C\)</span> is a constant.  To determine <span class="arithmatex">\(C\)</span> we can use a search algorithm for a small system (large <span class="arithmatex">\(h\)</span>), to find a value of <span class="arithmatex">\(w\in(1,2)\)</span> for the small system that optimises the convergence (i.e. converges to set error bound in the smallest number of steps.)  Then use the formula and the <span class="arithmatex">\(h\)</span> to determine the corresponding <span class="arithmatex">\(C\)</span>.  You then use that value for <span class="arithmatex">\(C\)</span> to determine a value of <span class="arithmatex">\(w^*\)</span> for the larger system (with smaller <span class="arithmatex">\(h\)</span>).</li>
+<li>It is known that the optimal value (in the sense of fastest convergence) for <span class="arithmatex">\(w\)</span> for Laplace-like problems generally follows a relation: </li>
 </ul>
+<div class="arithmatex">\[
+w^* \approx \frac{2}{1 + Ch}
+\]</div>
+<p>where <span class="arithmatex">\(C\)</span> is a constant.  To determine <span class="arithmatex">\(C\)</span> we can use a search algorithm for a small system (large <span class="arithmatex">\(h\)</span>), to find a value of <span class="arithmatex">\(w\in(1,2)\)</span> for the small system that optimises the convergence (i.e. converges to set error bound in the smallest number of steps.)  Then use the formula and the <span class="arithmatex">\(h\)</span> to determine the corresponding <span class="arithmatex">\(C\)</span>.  You then use that value for <span class="arithmatex">\(C\)</span> to determine a value of <span class="arithmatex">\(w^*\)</span> for the larger system (with smaller <span class="arithmatex">\(h\)</span>).</p>
 <p><strong>NB:</strong> It is better to <strong>overestimate</strong> <span class="arithmatex">\(w\)</span> than to underestimate.
 <strong>NB:</strong> Taking <span class="arithmatex">\(w\)</span> too large can cause problems in a parallel implementation where "boundary" processors are forced to use Gauss-Seidel.</p>
 <p>We could even divide the system into small blocks and solve the small blocks exactly. As the boundary values will be from the previous iteration, we will still need to iterate to convergence. In general, we will end up using some Jacobi/Gauss-Seidel hybrid scheme.</p>
@@ -1268,10 +1288,12 @@ where <span class="arithmatex">\(C\)</span> is a constant.  To determine <span c
 </span></code></pre></div>
 <h3 id="results">Results</h3>
 <p>The solution (using Mathematica's plotting functions) looks like:</p>
-<p><img alt="1D Grid Solution" src="../Solution_1DGrid.png" />
-Note that the exact solution here is <span class="arithmatex">\(u=1\)</span> everywhere.  From the plots we see that
-- The solution converges progressively from the boundary inward
-- The error <span class="arithmatex">\(\approx 0.001\)</span> is considerably larger than the change in one iteration (our stopping criteria was a change in one iteration to less than/equal to  <code>Tol = 0.000001</code> ).</p>
+<p><img alt="1D Grid Solution" src="../Solution_1DGrid.png" /></p>
+<p>Note that the exact solution here is <span class="arithmatex">\(u=1\)</span> everywhere.  From the plots we see that</p>
+<ul>
+<li>The solution converges progressively from the boundary inward</li>
+<li>The error <span class="arithmatex">\(\approx 0.001\)</span> is considerably larger than the change in one iteration (our stopping criteria was a change in one iteration to less than/equal to  <code>Tol = 0.000001</code> ).</li>
+</ul>
 <p>Note: If we had solved with a direct method (LAPACK), the solution would be exact to machine precision in one step — but that is not practical for large systems.</p>
 <hr />
 <h2 id="2d-decomposition">2D Decomposition</h2>
@@ -1286,14 +1308,15 @@ Note that the exact solution here is <span class="arithmatex">\(u=1\)</span> eve
 <p>MPI provides built-in functions for Cartesian decomposition:</p>
 <p><strong><code>MPI_Cart_create</code></strong> (<code>MPI_Comm</code> comm_old, <code>int</code> ndims, <code>int</code> *dims, <code>int</code> *periods, <code>int</code> reorder, <code>MPI_Comm</code> *comm_cart)</p>
 <blockquote>
-<p>Makes a new communicator to which topology information has been attached. <code>MPI_Cart_create</code> creates a Cartesian decomposition of the processes.
--<code>comm_old</code>: input communicator (handle)
+<p>Makes a new communicator to which topology information has been attached. <code>MPI_Cart_create</code> creates a Cartesian decomposition of the processes.</p>
+<p>-<code>comm_old</code>: input communicator (handle)
 - <code>ndims</code>: number of dimensions of Cartesian grid (integer)
 - <code>dims</code>: integer array of size ndims specifying the number of processes in each dimension
 - <code>periods</code>: logical array of size ndims specifying whether the grid is periodic (1 = true) or not (0 = false) in each dimension
 - <code>reorder</code>: ranking may be reordered (1 = true) or not (0 = false) (logical)
-- <code>comm_cart</code>: output communicator to which the new Cartesian topology has been attached.
-```c// e.g. creates 3×3 decomposition like above:
+- <code>comm_cart</code>: output communicator to which the new Cartesian topology has been attached.</p>
+</blockquote>
+<p>```c// e.g. creates 3×3 decomposition like above:
 int dims[2] = {3,3};
 int isperiodic[2] = {0,0};
 MPI_Comm comm2d;
@@ -1303,62 +1326,71 @@ MPI_Cart_create(MPI_COMM_WORLD, 2, dims, isperiodic, 1, &amp;comm2d);
 // reorder=1 to take advantage of any system topology,
 // our new communicator
 <div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>&gt; **Important:**
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>&gt;1. `MPI_Comm_rank` should be called **after** the create command, as rank could change with reorder.
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>&gt;2. The new communicator `comm2d` should now replace `MPI_COMM_WORLD` in MPI commands.
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>**`MPI_Cart_coords`** (`MPI_Comm` comm, `int` rank, `int` maxdims, `int` \*coords)
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>&gt; Determines process coords in Cartesian topology given rank in group. `MPI_Cart_coords` takes input as a rank in a communicator and returns the coordinates of the process with that rank. `MPI_Cart_coords` is the inverse to `MPI_Cart_rank`; it returns the coordinates of the process with rank `rank` in the Cartesian communicator comm. Note that both of these functions are local.
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>&gt; 
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>&gt;1. `MPI_Comm_rank` should be called **after** the create command, as rank could change with reorder.
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>&gt;2. The new communicator `comm2d` should now replace `MPI_COMM_WORLD` in MPI commands.
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>**`MPI_Cart_coords`** (`MPI_Comm` comm, `int` rank, `int` maxdims, `int` \*coords)
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>**`MPI_Cart_rank`** (`MPI_Comm` comm, `int` \*coords, `int` \*rank)
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>&gt; Determines process rank in communicator given Cartesian location. `MPI_Cart_rank` returns the rank in the Cartesian communicator comm of the process with Cartesian coordinates. So coordinates is an array with order equal to the number of dimensions in the Cartesian topology associated with comm.
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>**`MPI_Cart_get`** (`MPI_Comm` comm, `int` maxdims, `int` \*dims, `int` \*periods, `int` \*coords)
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>&gt; Retrieves Cartesian topology information associated with a communicator. `MPI_Cart_get` retrieves the coordinates of the calling process in communicator.
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>&gt; Determines process coords in Cartesian topology given rank in group. `MPI_Cart_coords` takes input as a rank in a communicator and returns the coordinates of the process with that rank. `MPI_Cart_coords` is the inverse to `MPI_Cart_rank`; it returns the coordinates of the process with rank `rank` in the Cartesian communicator comm. Note that both of these functions are local.
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>**`MPI_Cart_rank`** (`MPI_Comm` comm, `int` \*coords, `int` \*rank)
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>&gt; Determines process rank in communicator given Cartesian location. `MPI_Cart_rank` returns the rank in the Cartesian communicator comm of the process with Cartesian coordinates. So coordinates is an array with order equal to the number of dimensions in the Cartesian topology associated with comm.
 </span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>**`MPI_Cart_shift`** (`MPI_Comm` comm, `int` direction, `int` disp, `int` \*rank_source, `int` \*rank_dest)
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>&gt; Returns the shifted source and destination ranks given a shift direction and amount. `MPI_Cart_shift` returns rank of source and destination processes in arguments rank_source and rank_dest respectively.
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>```c
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>// e.g.
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>MPI_Cart_shift(comm2d, 0, 1, &amp;nbrleft, &amp;nbrright);
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>// arguments are: A cartesian communicator, x-direction is 0, step=1,
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>// processor to left of me (this is the output),
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>// processor to right of me (also output of this routine)
-</span></code></pre></div>
-This allows you to find out who the neighbouring processors are in the topology.</p>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>**`MPI_Cart_get`** (`MPI_Comm` comm, `int` maxdims, `int` \*dims, `int` \*periods, `int` \*coords)
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>&gt; Retrieves Cartesian topology information associated with a communicator. `MPI_Cart_get` retrieves the coordinates of the calling process in communicator.
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>**`MPI_Cart_shift`** (`MPI_Comm` comm, `int` direction, `int` disp, `int` \*rank_source, `int` \*rank_dest)
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>&gt; Returns the shifted source and destination ranks given a shift direction and amount. `MPI_Cart_shift` returns rank of source and destination processes in arguments rank_source and rank_dest respectively.
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>```c
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>// e.g.
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>MPI_Cart_shift(comm2d, 0, 1, &amp;nbrleft, &amp;nbrright);
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>// arguments are: A cartesian communicator, x-direction is 0, step=1,
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>// processor to left of me (this is the output),
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>// processor to right of me (also output of this routine)
+</span></code></pre></div></p>
+<blockquote>
+<p>This allows you to find out who the neighbouring processors are in the topology.</p>
 </blockquote>
 <h3 id="sending-column-data-in-2d">Sending Column Data in 2D</h3>
 <p>In the 1D decomposition, we sent boundary <strong>rows</strong> to neighbouring processors. In 2D we will need to send both rows (to upper/lower neighbour) and boundary <strong>columns</strong> to neighbours to right and left.</p>
-<p>Sending a row is easy: elements of a row are in consecutive memory locations. This is <strong>not</strong> true of a column.
+<p>Sending a row is easy: elements of a row are in consecutive memory locations. This is <strong>not</strong> true of a column.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// e.g. sending a row:</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">MPI_Isend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">old</span><span class="p">[</span><span class="n">size</span><span class="mi">-1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">N</span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_FLOAT</span><span class="p">,</span><span class="w"> </span><span class="n">nid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">req_send10</span><span class="p">);</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1">// beginning of boundary row, N elements in the row</span>
-</span></code></pre></div></p>
+</span></code></pre></div>
 <p>We resolve the problem of sending a column by creating a new <strong>derived data type</strong>:</p>
 <p><strong><code>MPI_Type_vector</code></strong> (<code>int</code> count, <code>int</code> blocklength, <code>int</code> stride, <code>MPI_Datatype</code> oldtype, <code>MPI_Datatype</code> *newtype)
-For inputs we have:
-- <code>count</code>: number of blocks (nonnegative integer)
-- <code>blocklength</code>: number of elements in each block (nonnegative integer)
-- <code>stride</code>: number of elements between start of each block (integer)
-- <code>oldtype</code>: old datatype (handle)
-while the output of the routine is
-- <code>newtype</code>: new datatype (handle)</p>
+For inputs we have:</p>
+<ul>
+<li><code>count</code>: number of blocks (nonnegative integer)</li>
+<li><code>blocklength</code>: number of elements in each block (nonnegative integer)</li>
+<li><code>stride</code>: number of elements between start of each block (integer)</li>
+<li><code>oldtype</code>: old datatype (handle)
+while the output of the routine is</li>
+<li><code>newtype</code>: new datatype (handle)</li>
+</ul>
 <p>Once we create a new data type we must <strong>commit</strong> it: 
 <strong><code>MPI_Type_commit</code></strong>(\&amp;newtype) — Tell the system about our new type and optimize for communication.</p>
-<p><strong>Example:</strong> Suppose we have data in a 2D array declared as <code>double dat[5][7]</code>. 
-<img alt="DataArrayWithColumnMarked" src="../strideEg.svg" />
-To send a column, say the one indicated in yellow (column index 4), we first define a new type "stridetype" via:
+<p><strong>Example:</strong> Suppose we have data in a 2D array declared as <code>double dat[5][7]</code>. </p>
+<p><img alt="DataArrayWithColumnMarked" src="../strideEg.svg" /></p>
+<p>To send a column, say the one indicated in yellow (column index 4), we first define a new type "stridetype" via:</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">MPI_Type_vector</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">stridetype</span><span class="p">);</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1">// 5 blocks, 1 element each, stride=7 (row width), MPI_DOUBLE base type</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">MPI_Type_commit</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stridetype</span><span class="p">);</span>
 </span></code></pre></div>
-Now when you want to send the column, you could:
+<p>Now when you want to send the column, you could:</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">MPI_Isend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">stridetype</span><span class="p">,</span><span class="w"> </span><span class="n">partnercs</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">commie</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">req</span><span class="p">);</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1">// This is just 1 of this type, and that type gets the whole column</span>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1">// Note: dat is reinterpreted as of type stridetype</span>
 </span></code></pre></div>
-<strong>Note the implications of being allowed to do this: there is NO checking you are not overstepping the array bounds.</strong>  Errors from going out of bounds of the array can vary from a program crash to just getting results that are wrong. You are responsible for the memory management here and you need to be <em>very</em> careful with verifying that things are actually working as intended.</p>
+<p><strong>Note the implications of being allowed to do this: there is NO checking you are not overstepping the array bounds.</strong>  Errors from going out of bounds of the array can vary from a program crash to just getting results that are wrong. You are responsible for the memory management here and you need to be <em>very</em> careful with verifying that things are actually working as intended.</p>
 <h3 id="c-code-poissonjacobi2dmpic">C Code: PoissonJacobi2DMPI.c</h3>
-<p>Note that in this example, <span class="arithmatex">\(N\times N\)</span> is the size of the interior grid, which is slightly different from what we did before.
+<p>Note that in this example, <span class="arithmatex">\(N\times N\)</span> is the size of the interior grid, which is slightly different from what we did before.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Solve Poisson&#39;s equations using the Jacobi method, with MPI parallelization</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1">// dividing the grid into a 2D array of processors</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1">// Compile line:</span>
@@ -1648,36 +1680,41 @@ Now when you want to send the column, you could:
 </span><span id="__span-7-287"><a id="__codelineno-7-287" name="__codelineno-7-287" href="#__codelineno-7-287"></a><span class="w">  </span><span class="n">MPI_Finalize</span><span class="p">();</span>
 </span><span id="__span-7-288"><a id="__codelineno-7-288" name="__codelineno-7-288" href="#__codelineno-7-288"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 </span><span id="__span-7-289"><a id="__codelineno-7-289" name="__codelineno-7-289" href="#__codelineno-7-289"></a><span class="p">}</span>
-</span></code></pre></div></p>
-<p>The results can be read in and plotted (here using Mathematica). Note: the data must be transposed when plotting because this program expects opposite ordering of rows/columns.
-<img alt="Solution from 2D grid of processors" src="../Solution_2DGrid.png" /></p>
-<p><strong>3×3 grid note on ordering:</strong>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>10  21  22
+</span></code></pre></div>
+<p>The results can be read in and plotted (here using Mathematica). Note: the data must be transposed when plotting because this program expects opposite ordering of rows/columns.</p>
+<p><img alt="Solution from 2D grid of processors" src="../Solution_2DGrid.png" /></p>
+<p><strong>3×3 grid note on ordering:</strong></p>
+<h2 id="10-21-22-10-11-12-00-01-02"><div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>10  21  22
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>10  11  12
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>00  01  02
-</span></code></pre></div></p>
-<hr />
+</span></code></pre></div></h2>
 <h2 id="output-writing-to-a-single-global-file">Output: Writing to a Single Global File</h2>
-<p>Our output routines are still fairly inadequate. Rather than output each local grid to a separate file, it would be much better to get the complete global grid into a single output file.  There are a couple of issues with doing this:
-a) We don't actually want the entire local grid, just its interior (i.e. excluding ghost/halo/boundary layers)
-b) The local grids may be of unequal size
-It usually turns out to be easier to adjust the lattice spacing (<span class="arithmatex">\(\Delta x\)</span> or <span class="arithmatex">\(h\)</span>) to ensure all local grids are the same size than to have to deal with different sizes, so we will assume they are all the same.</p>
-<p>You actually have two very distinct <strong>masks</strong> to consider:
-1. The mask for the local data, excluding the halo layers
-2. The mask for the global data, as it should be once collated into the file</p>
-<p>The former corresponds to the <strong>local grid on a single processor</strong> (the interior cells in dark, the ghost layer in light).
-<img alt="local mask" src="../LocalMask.png" />
-The start of the interior data is at index <code>[1,1]</code>,  which if interpreted as a location in physical space is in the lower left.  Here, the data you want to output is in dark blue, and the ghost layer that should not be written is in ligher blue.  The latter corresponds to how the <strong>global mesh is assembled from a 2D grid of processors</strong> (each colour corresponds to the local data from a different process). For example for a <span class="arithmatex">\(2\times 2\)</span> processor grid:
-<img alt="GlobalMask" src="../GlobalMask.png" />
-Here, each colour represents local data coming from a different process, as organized onto a 2D Cartesion grid.</p>
-<p>To understand what you need to create, you have to think backwards:
-1. Your final call to the I/O routine will be:
+<p>Our output routines are still fairly inadequate. Rather than output each local grid to a separate file, it would be much better to get the complete global grid into a single output file.  There are a couple of issues with doing this:</p>
+<ul>
+<li>We don't actually want the entire local grid, just its interior (i.e. excluding ghost/halo/boundary layers)</li>
+<li>The local grids may be of unequal size</li>
+</ul>
+<p>It usually turns out to be easier to adjust the lattice spacing (<span class="arithmatex">\(\Delta x\)</span> or <span class="arithmatex">\(h\)</span>) to ensure all local grids are the same size than to have to deal with different sizes, so we will assume they are all the same.</p>
+<p>You actually have two very distinct <strong>masks</strong> to consider:</p>
+<ol>
+<li>The mask for the local data, excluding the halo layers</li>
+<li>The mask for the global data, as it should be once collated into the file</li>
+</ol>
+<p>The former corresponds to the <strong>local grid on a single processor</strong> (the interior cells in dark, the ghost layer in light).</p>
+<p><img alt="local mask" src="../LocalMask.png" /></p>
+<p>The start of the interior data is at index <code>[1,1]</code>,  which if interpreted as a location in physical space is in the lower left.  Here, the data you want to output is in dark blue, and the ghost layer that should not be written is in ligher blue.  The latter corresponds to how the <strong>global mesh is assembled from a 2D grid of processors</strong> (each colour corresponds to the local data from a different process). For example for a <span class="arithmatex">\(2\times 2\)</span> processor grid:</p>
+<p><img alt="GlobalMask" src="../GlobalMask.png" /></p>
+<p>Here, each colour represents local data coming from a different process, as organized onto a 2D Cartesion grid.</p>
+<p>To understand what you need to create, you have to think backwards:</p>
+<ol>
+<li>Your final call to the I/O routine will be:
    <div class="language-c highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">MPI_File_write_all</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">interior</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_STATUS_IGNORE</span><span class="p">);</span>
 </span></code></pre></div>
-   So you need the interior type defined to exclude the halo boundary. We will define an MPI type grid to do this. File functions will be discussed below.
-2. But now you have to have the view on the file to allow for this <code>MPI_File_write_all</code> call. So the view must be as described in the second picture. We will therefore create a new MPI type representing it. For that, <code>MPI_Type_create_subarray</code> is what we need.</p>
+   So you need the interior type defined to exclude the halo boundary. We will define an MPI type grid to do this. File functions will be discussed below.</li>
+<li>But now you have to have the view on the file to allow for this <code>MPI_File_write_all</code> call. So the view must be as described in the second picture. We will therefore create a new MPI type representing it. For that, <code>MPI_Type_create_subarray</code> is what we need.</li>
+</ol>
 <h3 id="mpi_type_create_subarray"><code>MPI_Type_create_subarray</code></h3>
-<p>This routine creates a datatype for a subarray of a regular, multidimensional array.
+<p>This routine creates a datatype for a subarray of a regular, multidimensional array.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">MPI_Type_create_subarray</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">ndims</span><span class="p">,</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">                              </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">array_of_sizes</span><span class="p">[],</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">                              </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">array_of_subsizes</span><span class="p">[],</span>
@@ -1686,15 +1723,19 @@ Here, each colour represents local data coming from a different process, as orga
 </span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">                              </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">oldtype</span><span class="p">,</span>
 </span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">                              </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="o">*</span><span class="n">newtype</span><span class="p">)</span>
 </span></code></pre></div>
-<strong>Input Parameters:</strong>
-- <code>ndims</code> — number of array dimensions (positive integer)
-- <code>array_of_sizes</code> — number of elements of type oldtype in each dimension of the full array (array of positive integers)
-- <code>array_of_subsizes</code> — number of elements of type oldtype in each dimension of the subarray (array of positive integers)
-- <code>array_of_starts</code> — starting coordinates of the subarray in each dimension (array of nonnegative integers)
-- <code>order</code> — array storage order flag (state)
-- <code>oldtype</code> — array element datatype (handle)
-<strong>Output Parameters:</strong>
-- <code>newtype</code> — new datatype (handle)</p>
+<p><strong>Input Parameters:</strong></p>
+<ul>
+<li><code>ndims</code> — number of array dimensions (positive integer)</li>
+<li><code>array_of_sizes</code> — number of elements of type oldtype in each dimension of the full array (array of positive integers)</li>
+<li><code>array_of_subsizes</code> — number of elements of type oldtype in each dimension of the subarray (array of positive integers)</li>
+<li><code>array_of_starts</code> — starting coordinates of the subarray in each dimension (array of nonnegative integers)</li>
+<li><code>order</code> — array storage order flag (state)</li>
+<li><code>oldtype</code> — array element datatype (handle)</li>
+</ul>
+<p><strong>Output Parameters:</strong></p>
+<ul>
+<li><code>newtype</code> — new datatype (handle)</li>
+</ul>
 <p><strong>Weaknesses of <code>MPI_Type_create_subarray</code>:</strong></p>
 <ul>
 <li>At first sight, <code>MPI_Type_create_subarray</code> looks like it solves all problems, but it has problems all of its own</li>
@@ -1704,7 +1745,7 @@ Here, each colour represents local data coming from a different process, as orga
 <li>In fact, its main purpose is in MPIIO, where it is used to represent the subsection of a global array held by each processor</li>
 <li>It does still work in communication, although it's not quite as useful as it might be.</li>
 </ul>
-<p>For our Jacobi solver using a 2D array of processors, the <strong>local subarray type</strong> is defined by:
+<p>For our Jacobi solver using a 2D array of processors, the <strong>local subarray type</strong> is defined by:</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="cm">/* Create derived datatype for local interior grid (output grid) */</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">grid</span><span class="p">;</span>
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kt">int</span><span class="w"> </span><span class="n">start</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span><span class="w">  </span><span class="c1">// indices of interior &quot;origin&quot;</span>
@@ -1715,8 +1756,8 @@ Here, each colour represents local data coming from a different process, as orga
 </span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">                          </span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_ORDER_FORTRAN</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">grid</span><span class="p">);</span>
 </span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="n">MPI_Type_commit</span><span class="p">(</span><span class="o">&amp;</span><span class="n">grid</span><span class="p">);</span>
 </span></code></pre></div>
-<strong>Note:</strong> We picked <code>MPI_ORDER_FORTRAN</code> rather than <code>MPI_ORDER_C</code>. This is because we pick our indices as <code>A[y-index][x-index]</code> which is consistent with <code>A[row-index][column-index]</code> for a matrix (except that row-index=0 is at the top and y-index=0 is at the bottom). However, when interpreted as spatial indices, C-order is assumed to be <code>A[x][y]</code>, so our order is actually the Fortran equivalent.</p>
-<p>For our global array we also need a subarray type describing how the local grids fit into the global grid:
+<p><strong>Note:</strong> We picked <code>MPI_ORDER_FORTRAN</code> rather than <code>MPI_ORDER_C</code>. This is because we pick our indices as <code>A[y-index][x-index]</code> which is consistent with <code>A[row-index][column-index]</code> for a matrix (except that row-index=0 is at the top and y-index=0 is at the bottom). However, when interpreted as spatial indices, C-order is assumed to be <code>A[x][y]</code>, so our order is actually the Fortran equivalent.</p>
+<p>For our global array we also need a subarray type describing how the local grids fit into the global grid:</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="cm">/* Create derived type for file view, how local interior fits into global system */</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">view</span><span class="p">;</span>
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="kt">int</span><span class="w"> </span><span class="n">nnx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xsize</span><span class="o">+</span><span class="mi">1-2</span><span class="p">,</span><span class="w"> </span><span class="n">nny</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ysize</span><span class="o">+</span><span class="mi">1-2</span><span class="p">;</span>
@@ -1727,43 +1768,53 @@ Here, each colour represents local data coming from a different process, as orga
 </span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="n">MPI_Type_create_subarray</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">arrsizeV</span><span class="p">,</span><span class="w"> </span><span class="n">gridsizeV</span><span class="p">,</span>
 </span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">                          </span><span class="n">startV</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_ORDER_FORTRAN</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">view</span><span class="p">);</span>
 </span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="n">MPI_Type_commit</span><span class="p">(</span><span class="o">&amp;</span><span class="n">view</span><span class="p">);</span>
-</span></code></pre></div></p>
-<p>We will use this type for the "file view", applied simply with:
+</span></code></pre></div>
+<p>We will use this type for the "file view", applied simply with:</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">MPI_File_set_view</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="n">view</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;native&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INFO_NULL</span><span class="p">);</span>
 </span></code></pre></div>
-and the magic is done.</p>
+<p>and the magic is done.</p>
 <h3 id="mpiio-overview">MPIIO Overview</h3>
-<p><strong>MPIIO Advantages:</strong>
-- Improved output speed in large parallel environments
-- Output to a single file for any number of processors (easily)</p>
-<p><strong>MPIIO Disadvantages:</strong>
-- Syntax is not exactly like either C or FORTRAN IO (although similar in concept)
-- Can be slower on desktop machines
-- Produces C type binary output</p>
-<p><strong>MPIIO Concepts:</strong>
-- In most senses MPIIO is the same as conventional binary IO
-- There are commands to open and close files, read and write data and move file pointers
-- There are things called file views which describe the layout of data across processors
-- There are some commands to help with writing simple data layouts more easily than using file views, but they will not be covered here
-- File views are described using MPI_types</p>
+<p><strong>MPIIO Advantages:</strong></p>
+<ul>
+<li>Improved output speed in large parallel environments</li>
+<li>Output to a single file for any number of processors (easily)</li>
+</ul>
+<p><strong>MPIIO Disadvantages:</strong></p>
+<ul>
+<li>Syntax is not exactly like either C or FORTRAN IO (although similar in concept)</li>
+<li>Can be slower on desktop machines</li>
+<li>Produces C type binary output</li>
+</ul>
+<p><strong>MPIIO Concepts:</strong></p>
+<ul>
+<li>In most senses MPIIO is the same as conventional binary IO</li>
+<li>There are commands to open and close files, read and write data and move file pointers</li>
+<li>There are things called file views which describe the layout of data across processors</li>
+<li>There are some commands to help with writing simple data layouts more easily than using file views, but they will not be covered here</li>
+<li>File views are described using MPI_types</li>
+</ul>
 <h4 id="key-mpiio-functions">Key MPIIO Functions</h4>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">MPI_File_open</span><span class="p">(</span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">Comm</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">filename</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">amode</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Info</span><span class="w"> </span><span class="n">info</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_File</span><span class="w"> </span><span class="o">*</span><span class="n">mpi_fh</span><span class="p">)</span>
 </span></code></pre></div>
 <blockquote>
-<p><strong>Description:</strong> Opens a file using MPIIO and returns a file handle mpi_fh.
-- This is a <strong>collective</strong> operation. All processes must have the same <code>amode</code> and the <code>filename</code> must reference the same file (does not have to be the same filename)
-- Choosing whether opening the file for reading or writing is via constants passed as part of <code>amode</code> as normal
-- <code>info</code> is used to pass additional parameter, which will generally vary from system to system. You create MPI Info objects using the MPI Info commands. Most generally, you can use <code>MPI_INFO_NULL</code> to open the file generically.</p>
-<p><strong>MPI File open modes:</strong>
-- <code>MPI_MODE_RDONLY</code> — Open for reading
-- <code>MPI_MODE_RDWR</code> — Open for reading and writing
-- <code>MPI_MODE_WRONLY</code> — Open for writing
-- <code>MPI_MODE_CREATE</code> — Create the file if it does not exist
-- <code>MPI_MODE_EXCL</code> — Throw error if file exists
-- <code>MPI_MODE_DELETE_ON_CLOSE</code> — Delete the file when it's closed
-- <code>MPI_MODE_UNIQUE_OPEN</code> — Throw error if file opened anywhere else
-- <code>MPI_MODE_SEQUENTIAL</code> — Sequential mode (tapes etc.)
-- <code>MPI_MODE_APPEND</code> — Set initial position of all file pointers to end of file</p>
+<p><strong>Description:</strong> Opens a file using MPIIO and returns a file handle mpi_fh.</p>
+<ul>
+<li>This is a <strong>collective</strong> operation. All processes must have the same <code>amode</code> and the <code>filename</code> must reference the same file (does not have to be the same filename)</li>
+<li>Choosing whether opening the file for reading or writing is via constants passed as part of <code>amode</code> as normal</li>
+<li><code>info</code> is used to pass additional parameter, which will generally vary from system to system. You create MPI Info objects using the MPI Info commands. Most generally, you can use <code>MPI_INFO_NULL</code> to open the file generically.</li>
+</ul>
+<p><strong>MPI File open modes:</strong></p>
+<ul>
+<li><code>MPI_MODE_RDONLY</code> — Open for reading</li>
+<li><code>MPI_MODE_RDWR</code> — Open for reading and writing</li>
+<li><code>MPI_MODE_WRONLY</code> — Open for writing</li>
+<li><code>MPI_MODE_CREATE</code> — Create the file if it does not exist</li>
+<li><code>MPI_MODE_EXCL</code> — Throw error if file exists</li>
+<li><code>MPI_MODE_DELETE_ON_CLOSE</code> — Delete the file when it's closed</li>
+<li><code>MPI_MODE_UNIQUE_OPEN</code> — Throw error if file opened anywhere else</li>
+<li><code>MPI_MODE_SEQUENTIAL</code> — Sequential mode (tapes etc.)</li>
+<li><code>MPI_MODE_APPEND</code> — Set initial position of all file pointers to end of file</li>
+</ul>
 </blockquote>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">MPI_File_close</span><span class="p">(</span><span class="n">MPI_File</span><span class="w"> </span><span class="o">*</span><span class="n">mpi_fh</span><span class="p">)</span>
 </span></code></pre></div>
@@ -1773,25 +1824,31 @@ and the magic is done.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">MPI_File_write_all</span><span class="p">(</span><span class="n">MPI_File</span><span class="w"> </span><span class="n">mpi_fh</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">datatype</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Status</span><span class="w"> </span><span class="o">*</span><span class="n">status</span><span class="p">)</span>
 </span></code></pre></div>
 <blockquote>
-<p><strong>Description:</strong> Writes to the file pointed to by the handle mpi_fh using the individual file pointer.
-- This is a <strong>collective</strong> operation and all the processors in the MPI_Comm given to MPI_File_open must call MPI_File_write_all or the code will lock (i.e. this is a blocking operation).</p>
+<p><strong>Description:</strong> Writes to the file pointed to by the handle mpi_fh using the individual file pointer.</p>
+<ul>
+<li>This is a <strong>collective</strong> operation and all the processors in the MPI_Comm given to MPI_File_open must call MPI_File_write_all or the code will lock (i.e. this is a blocking operation).</li>
+</ul>
 </blockquote>
-<p><strong>What are file views?</strong>
-- If you wish to have more control over where a given processor will write its data then you have to use file views
-- File views use MPI types to describe the section of the global data that the current processor has, and its location in the final file on disk
-- Makes it easier to write multidimensional arrays into a single file
+<p><strong>What are file views?</strong></p>
+<ul>
+<li>If you wish to have more control over where a given processor will write its data then you have to use file views</li>
+<li>File views use MPI types to describe the section of the global data that the current processor has, and its location in the final file on disk</li>
+<li>Makes it easier to write multidimensional arrays into a single file
 <div class="language-c highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">MPI_File_set_view</span><span class="p">(</span><span class="n">MPI_File</span><span class="w"> </span><span class="n">mpi_fh</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Offset</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">etype</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">filetype</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Datatype</span><span class="w"> </span><span class="n">datarep</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Info</span><span class="w"> </span><span class="n">info</span><span class="p">)</span>
-</span></code></pre></div></p>
-<blockquote>
-<p><strong>Description:</strong> Sets the file view on file handle mpi_fh.
-- <code>offset</code> is the offset from the start of the file at which to apply the file view
-- <code>datarep</code> is a string describing the data representation, usually <code>"native"</code>
-- <code>info</code> contains additional information, will usually be <code>MPI_INFO_NULL</code>
-- <code>etype</code> is the basic datatype being written to the file
-- <code>filetype</code> is (normally) a derived datatype which describes the layout of the data for the current processor on the disk</p>
+</span></code></pre></div><blockquote>
+<p><strong>Description:</strong> Sets the file view on file handle mpi_fh.</p>
+<ul>
+<li><code>offset</code> is the offset from the start of the file at which to apply the file view</li>
+<li><code>datarep</code> is a string describing the data representation, usually <code>"native"</code></li>
+<li><code>info</code> contains additional information, will usually be <code>MPI_INFO_NULL</code></li>
+<li><code>etype</code> is the basic datatype being written to the file</li>
+<li><code>filetype</code> is (normally) a derived datatype which describes the layout of the data for the current processor on the disk</li>
+</ul>
 </blockquote>
+</li>
+</ul>
 <h3 id="final-output-routine">Final Output Routine</h3>
-<p>So our final output routine will be:
+<p>So our final output routine will be:</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">output_onefile</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="o">**</span><span class="n">new</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">xsize</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ysize</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">mpi_vars</span><span class="w"> </span><span class="n">mpi</span><span class="p">)</span>
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="p">{</span>
 </span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="cm">/* Create derived datatype for local interior grid (output grid) */</span>
@@ -1824,7 +1881,7 @@ and the magic is done.</p>
 </span><span id="__span-18-30"><a id="__codelineno-18-30" name="__codelineno-18-30" href="#__codelineno-18-30"></a><span class="w">  </span><span class="n">MPI_File_write_all</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">new</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_STATUS_IGNORE</span><span class="p">);</span>
 </span><span id="__span-18-31"><a id="__codelineno-18-31" name="__codelineno-18-31" href="#__codelineno-18-31"></a><span class="w">  </span><span class="n">MPI_File_close</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fp</span><span class="p">);</span>
 </span><span id="__span-18-32"><a id="__codelineno-18-32" name="__codelineno-18-32" href="#__codelineno-18-32"></a><span class="p">}</span>
-</span></code></pre></div></p>
+</span></code></pre></div>
 <p><strong>Note:</strong> This should only be used when all local grids are the same size. With <code>xremainder = yremainder = 0</code> in Jacobi 2D, this gives a single binary output file that can be read and plotted directly as illustrated below.</p>
 <p><strong>Note:</strong> Output is now in <strong>binary</strong>, not text.</p>
 <p><img alt="MPIIO Solution Output" src="../MPIIO_Solution.png" /></p>
@@ -1832,46 +1889,46 @@ and the magic is done.</p>
 <h2 id="conjugate-gradient-method">Conjugate Gradient Method</h2>
 <p>The Jacobi method is a nice illustration of how to parallize a problem defined on a computational mesh.  It is NOT, however, an algorithm that is terribly efficient for actually solving Poission's equation.  We now turn to a much better iterative algorithm for solving this problem, namely the <strong>Conjugate Gradient (CG) Method</strong>.  This requires more background in order to understand the algorithm, but parallizing the algorithm requires very similar steps to what was used to parallize the Jacobi algorithm.</p>
 <h3 id="mathematical-background">Mathematical Background</h3>
-<p>Suppose <span class="arithmatex">\(\mathcal{A}\)</span> is positive definite. Consider the scalar quadratic function with vector arguments:
-$$
+<p>Suppose <span class="arithmatex">\(\mathcal{A}\)</span> is positive definite. Consider the scalar quadratic function with vector arguments:</p>
+<div class="arithmatex">\[
 f(\bm{x}) = \frac{1}{2} \bm{x}^T \mathcal{A} \bm{x} - \bm{b}^T \bm{x} + \bm{c} = \frac{1}{2} x_\alpha A_{\alpha\beta} x_\beta - b_\alpha x_\alpha + c
-$$
-where tensor notation with summation convention assumed is used after the 2nd equality sign.  Here <span class="arithmatex">\(x_\alpha\)</span> is a component of <span class="arithmatex">\(\bm{x}\)</span>, and <span class="arithmatex">\(A_{\alpha\beta}\)</span> is a matrix element of the matrix <span class="arithmatex">\(\mathcal{A}\)</span>.  Taking the derivative with respect to <span class="arithmatex">\(x_\gamma\)</span> gives:
-$$
+\]</div>
+<p>where tensor notation with summation convention assumed is used after the 2nd equality sign.  Here <span class="arithmatex">\(x_\alpha\)</span> is a component of <span class="arithmatex">\(\bm{x}\)</span>, and <span class="arithmatex">\(A_{\alpha\beta}\)</span> is a matrix element of the matrix <span class="arithmatex">\(\mathcal{A}\)</span>.  Taking the derivative with respect to <span class="arithmatex">\(x_\gamma\)</span> gives:</p>
+<div class="arithmatex">\[
 \frac{\partial f}{x_\gamma} = \frac{1}{2} \delta_{\gamma\alpha} A_{\alpha\beta} x_\beta + \frac{1}{2} x_\alpha A_{\alpha\beta} \delta_{\beta\gamma} - b_\gamma \delta_{\gamma\gamma}
 = A_{\gamma\beta} x_\beta - b_\gamma
 = (Ax - b)_\gamma
-$$
-so that <span class="arithmatex">\(\nabla f = Ax - b\)</span>.  Minimizing <span class="arithmatex">\(f\)</span> is equivalent to solving <span class="arithmatex">\(\partial f/\partial x_\gamma = 0\)</span> for all <span class="arithmatex">\(\gamma\)</span> and is therefore equivalent to solving <span class="arithmatex">\(Ax = b.\)</span>  (The fact that there is a minimum is guaranteed by the fact that <span class="arithmatex">\(\mathcal{A}\)</span> is positive definite.)</p>
+\]</div>
+<p>so that <span class="arithmatex">\(\nabla f = Ax - b\)</span>.  Minimizing <span class="arithmatex">\(f\)</span> is equivalent to solving <span class="arithmatex">\(\partial f/\partial x_\gamma = 0\)</span> for all <span class="arithmatex">\(\gamma\)</span> and is therefore equivalent to solving <span class="arithmatex">\(Ax = b.\)</span>  (The fact that there is a minimum is guaranteed by the fact that <span class="arithmatex">\(\mathcal{A}\)</span> is positive definite.)</p>
 <h3 id="line-search">Line Search</h3>
-<p>We try to find approximate ways to minimise <span class="arithmatex">\(f\)</span> via an iteration scheme:
-$$
+<p>We try to find approximate ways to minimise <span class="arithmatex">\(f\)</span> via an iteration scheme:</p>
+<div class="arithmatex">\[
 x_\alpha^{(m+1)} = x_\alpha^{(m)} + \lambda_m d_\alpha^{(m)}
-$$
-where <span class="arithmatex">\(m\)</span> is the iteration label and <span class="arithmatex">\(\alpha\)</span> is the vector coordinate index.  The idea will be to pick the scalar <span class="arithmatex">\(\lambda_m\)</span> to minimise <span class="arithmatex">\(f\)</span> along the line determined by some vector <span class="arithmatex">\(\bm{d}^{(m)}\)</span> (the search direction).
-$$
-f(\bm{x}^{(m)} + \lambda \bm{d}^{(m)}) = \frac{1}{2}(x_\alpha + \lambda d_\alpha) A_{\alpha\beta}(x_\beta + \lambda d_\beta) - b_\alpha(x_\alpha + \lambda d_\alpha) + c \ \qquad\qquad = f(\bm{x}^{(m)}) + \lambda^2!\left(\frac{1}{2} d_\alpha A_{\alpha\beta} d_\beta\right) + \lambda\, d_\alpha\bigl(A_{\alpha\beta} x_\beta - b_\alpha\bigr)
-$$
-where we have used the fact that <span class="arithmatex">\(\mathcal{A}\)</span> is symmetric so <span class="arithmatex">\(d_\alpha A_{\alpha\beta} x_\beta = x_\alpha A_{\alpha\beta} d_\beta\)</span>.  Note that the first term is just a number and the second term is greater than zero due to the fact that <span class="arithmatex">\(\mathcal{A}\)</span> is positive definite so this defines an upward parabola if plotted as a function of <span class="arithmatex">\(\lambda\)</span>.  We define the <strong>residual</strong> (the gradient of <span class="arithmatex">\(f\)</span> at <span class="arithmatex">\(\bm{x}^{(m)}\)</span>) as 
-<span class="arithmatex">\(<span class="arithmatex">\(\bm{r}^{(m)} = \mathcal{A}\bm{x}^{(m)} - \bm{b}.\)</span>\)</span></p>
-<p>Minimizing <span class="arithmatex">\(f\)</span> along our search direction is then at <span class="arithmatex">\(\partial f / \partial \lambda = 0\)</span>:
-$$
+\]</div>
+<p>where <span class="arithmatex">\(m\)</span> is the iteration label and <span class="arithmatex">\(\alpha\)</span> is the vector coordinate index.  The idea will be to pick the scalar <span class="arithmatex">\(\lambda_m\)</span> to minimise <span class="arithmatex">\(f\)</span> along the line determined by some vector <span class="arithmatex">\(\bm{d}^{(m)}\)</span> (the search direction).</p>
+<div class="arithmatex">\[
+f(\bm{x}^{(m)} + \lambda \bm{d}^{(m)}) = \frac{1}{2}(x_\alpha + \lambda d_\alpha) A_{\alpha\beta}(x_\beta + \lambda d_\beta) - b_\alpha(x_\alpha + \lambda d_\alpha) + c \\ \qquad\qquad = f(\bm{x}^{(m)}) + \lambda^2\!\left(\frac{1}{2} d_\alpha A_{\alpha\beta} d_\beta\right) + \lambda\, d_\alpha\bigl(A_{\alpha\beta} x_\beta - b_\alpha\bigr)
+\]</div>
+<p>where we have used the fact that <span class="arithmatex">\(\mathcal{A}\)</span> is symmetric so <span class="arithmatex">\(d_\alpha A_{\alpha\beta} x_\beta = x_\alpha A_{\alpha\beta} d_\beta\)</span>.  Note that the first term is just a number and the second term is greater than zero due to the fact that <span class="arithmatex">\(\mathcal{A}\)</span> is positive definite so this defines an upward parabola if plotted as a function of <span class="arithmatex">\(\lambda\)</span>.  We define the <strong>residual</strong> (the gradient of <span class="arithmatex">\(f\)</span> at <span class="arithmatex">\(\bm{x}^{(m)}\)</span>) as </p>
+<div class="arithmatex">\[\bm{r}^{(m)} = \mathcal{A}\bm{x}^{(m)} - \bm{b}.\]</div>
+<p>Minimizing <span class="arithmatex">\(f\)</span> along our search direction is then at <span class="arithmatex">\(\partial f / \partial \lambda = 0\)</span>:</p>
+<div class="arithmatex">\[
 \lambda\, d_\alpha A_{\alpha\beta} d_\beta + d_\alpha r_\alpha^{(m)} = 0
 \quad \Rightarrow \quad
 \lambda_{min} = -\frac{d_\alpha^{(m)} r_\alpha^{(m)}}{d_\alpha^{(m)} A_{\alpha\beta} d_\beta^{(m)}}
-$$
-to get to the minimum along our line.</p>
+\]</div>
+<p>to get to the minimum along our line.</p>
 <h3 id="choosing-the-search-direction">Choosing the Search Direction</h3>
-<p>What direction should we search in? It makes sense to take <span class="arithmatex">\(\bm{d}^{(0)}\)</span> along the gradient <span class="arithmatex">\(\nabla f({\bm x}^{(0)}) = -\bm{r}^{(0)}\)</span>, i.e. in the downhill direction. Subsequent searches are along:
-$$
+<p>What direction should we search in? It makes sense to take <span class="arithmatex">\(\bm{d}^{(0)}\)</span> along the gradient <span class="arithmatex">\(\nabla f({\bm x}^{(0)}) = -\bm{r}^{(0)}\)</span>, i.e. in the downhill direction. Subsequent searches are along:</p>
+<div class="arithmatex">\[
 \bm{d}^{(m+1)} = -\bm{r}^{(m+1)} + \alpha_m \bm{d}^{(m)}
-$$
-where <span class="arithmatex">\(-\bm{r}^{(m+1)}\)</span> is the gradient at the current minimum and <span class="arithmatex">\(\alpha_m \bm{d}^{(m)}\)</span> removes directions we have just searched.
-<strong>How?</strong> Choose <span class="arithmatex">\(\bm{d}^{(m+1)}\)</span> to be <strong><span class="arithmatex">\(\mathcal{A}\)</span>-conjugate</strong> to <span class="arithmatex">\(\bm{d}^{(m)}\)</span>, i.e. so that
-$$
+\]</div>
+<p>where <span class="arithmatex">\(-\bm{r}^{(m+1)}\)</span> is the gradient at the current minimum and <span class="arithmatex">\(\alpha_m \bm{d}^{(m)}\)</span> removes directions we have just searched.
+<strong>How?</strong> Choose <span class="arithmatex">\(\bm{d}^{(m+1)}\)</span> to be <strong><span class="arithmatex">\(\mathcal{A}\)</span>-conjugate</strong> to <span class="arithmatex">\(\bm{d}^{(m)}\)</span>, i.e. so that</p>
+<div class="arithmatex">\[
 d_\alpha^{(m+1)} A_{\alpha\beta} d_\beta^{(m)} = 0.
-$$
-You can think of this as choosing <span class="arithmatex">\(\bm{d}^{(m+1)}\)</span> to be orthogonal to <span class="arithmatex">\(\bm{d}^{(m)}\)</span> in a space where <span class="arithmatex">\(\mathcal{A}\)</span> is a metric.
+\]</div>
+<p>You can think of this as choosing <span class="arithmatex">\(\bm{d}^{(m+1)}\)</span> to be orthogonal to <span class="arithmatex">\(\bm{d}^{(m)}\)</span> in a space where <span class="arithmatex">\(\mathcal{A}\)</span> is a metric.
 Substituting:</p>
 <div class="arithmatex">\[
 \bigl(-r_\alpha^{(m+1)} + \alpha_m d_\alpha^{(m)}\bigr) A_{\alpha\beta} d_\beta^{(m)} = 0
@@ -1882,11 +1939,11 @@ Substituting:</p>
 <p>Before writing down the full algorithm, a few simplifications are possible by noting that it is not too hard to show that</p>
 <p>i) <span class="arithmatex">\(d_\alpha^{(m)} r_\alpha^{(m+1)} = 0\)</span>  — i.e. previous search direction and new residual are orthogonal</p>
 <p>ii) <span class="arithmatex">\(r_\alpha^{(m)} r_\alpha^{(\ell)} = 0\)</span> for <span class="arithmatex">\(m \neq \ell\)</span>  — i.e. all residuals are orthogonal (we are eliminating residuals along a new specific direction at every step)</p>
-<p>iii) With i) and ii), it is possible to show:
-$$
+<p>iii) With i) and ii), it is possible to show:</p>
+<div class="arithmatex">\[
 \lambda_m = \frac{r_\alpha^{(m)} r_\alpha^{(m)}}{d_\alpha^{(m)} A_{\alpha\beta} d_\beta^{(m)}}, \qquad \alpha_m = \frac{r_\alpha^{(m+1)} r_\alpha^{(m+1)}}{r_\beta^{(m)} r_\beta^{(m)}}
-$$
-To save repeating work,  <span class="arithmatex">\(\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}\)</span> should be saved for the next step (where it will be used as <span class="arithmatex">\(\delta^{(m)}\)</span>), and since <span class="arithmatex">\(\bf{r}^{(m+1)} = \bm{r}^{(m)} + \lambda_m \bm{u}\)</span> (where <span class="arithmatex">\(\bm{u} = \mathcal{A}\bm{d}^{(m)}\)</span>, the same matrix-vector product already computed for <span class="arithmatex">\(\lambda_m\)</span>), we can avoid re-computing <span class="arithmatex">\(\mathcal{A}\bm{d}^{(m+1)}-\bm{b}\)</span> from scratch.</p>
+\]</div>
+<p>To save repeating work,  <span class="arithmatex">\(\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}\)</span> should be saved for the next step (where it will be used as <span class="arithmatex">\(\delta^{(m)}\)</span>), and since <span class="arithmatex">\(\bf{r}^{(m+1)} = \bm{r}^{(m)} + \lambda_m \bm{u}\)</span> (where <span class="arithmatex">\(\bm{u} = \mathcal{A}\bm{d}^{(m)}\)</span>, the same matrix-vector product already computed for <span class="arithmatex">\(\lambda_m\)</span>), we can avoid re-computing <span class="arithmatex">\(\mathcal{A}\bm{d}^{(m+1)}-\bm{b}\)</span> from scratch.</p>
 <p>The full algorithm then becomes:</p>
 <hr />
 <p><span class="arithmatex">\(\bm{r}^{(0)} = \mathcal{A}\bm{x}^{(0)} - \bm{b}; \quad \bm{d}^{(0)} = -\bm{r}^{(0)}; \quad \delta^{(0)} = \bm{r}^{(0)T} \bm{r}^{(0)};\)</span>
@@ -1901,13 +1958,13 @@ To save repeating work,  <span class="arithmatex">\(\delta^{(m+1)} = r_\alpha^{(
  <span class="arithmatex">\(\qquad \bm{d}^{(m+1)} = -\bm{r}^{(m+1)} + \alpha_m \bm{d}^{(m)}; \quad \leftarrow \text{local}\)</span></p>
 <hr />
 <h3 id="how-many-iterations-are-needed">How Many Iterations Are Needed?</h3>
-<p><strong>Not many!</strong> Suppose the initial guess is <span class="arithmatex">\(\bm{x}^{(0)} = \mathbf{0}\)</span>, then:
-$$
+<p><strong>Not many!</strong> Suppose the initial guess is <span class="arithmatex">\(\bm{x}^{(0)} = \mathbf{0}\)</span>, then:</p>
+<div class="arithmatex">\[
 \bm{x}^{(m)} = \sum_{k=0}^{m} c_k \bm{d}^{(k)}
-$$
-But all <span class="arithmatex">\(\bm{d}^{(k)}\)</span> are linearly dependent, by construction. If <span class="arithmatex">\(\mathcal{A}\)</span> is <span class="arithmatex">\(n \times n\)</span>, then we can need at most <span class="arithmatex">\(n\)</span> iterations, and then should terminate. For well-conditioned problems, much fewer iterations are needed.</p>
+\]</div>
+<p>But all <span class="arithmatex">\(\bm{d}^{(k)}\)</span> are linearly dependent, by construction. If <span class="arithmatex">\(\mathcal{A}\)</span> is <span class="arithmatex">\(n \times n\)</span>, then we can need at most <span class="arithmatex">\(n\)</span> iterations, and then should terminate. For well-conditioned problems, much fewer iterations are needed.</p>
 <h3 id="c-code-cgc">C Code: CG.c</h3>
-<p>A serial code for the conjugate gradient algorithm in C is given here for solving Laplace's equation.  Note that in this case <span class="arithmatex">\(\mathcal{A}\)</span> is very sparse so you should not store it explicitly.  As <span class="arithmatex">\(\mathcal{A}\)</span> is only used in computing <span class="arithmatex">\(\mathcal{A}\bm{d^{(m)}}\)</span> we can do this multiplication explictly using the five nonzero elements in a row of <span class="arithmatex">\(\mathcal{A}\)</span> associated with the 5-point stencil discussed above.  Also, for this problem <span class="arithmatex">\(\bm{x}\)</span> is our solution vector <span class="arithmatex">\(\bm{v}\)</span> on the mesh, stored in row-major ordering.
+<p>A serial code for the conjugate gradient algorithm in C is given here for solving Laplace's equation.  Note that in this case <span class="arithmatex">\(\mathcal{A}\)</span> is very sparse so you should not store it explicitly.  As <span class="arithmatex">\(\mathcal{A}\)</span> is only used in computing <span class="arithmatex">\(\mathcal{A}\bm{d^{(m)}}\)</span> we can do this multiplication explictly using the five nonzero elements in a row of <span class="arithmatex">\(\mathcal{A}\)</span> associated with the 5-point stencil discussed above.  Also, for this problem <span class="arithmatex">\(\bm{x}\)</span> is our solution vector <span class="arithmatex">\(\bm{v}\)</span> on the mesh, stored in row-major ordering.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="cm">/* Compile line: */</span>
 </span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="cm">/*   gcc -O3 CG.c -lm   */</span>
 </span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
@@ -2055,7 +2112,7 @@ But all <span class="arithmatex">\(\bm{d}^{(k)}\)</span> are linearly dependent,
 </span><span id="__span-19-145"><a id="__codelineno-19-145" name="__codelineno-19-145" href="#__codelineno-19-145"></a><span class="w">  </span><span class="n">free</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w"> </span><span class="n">free</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
 </span><span id="__span-19-146"><a id="__codelineno-19-146" name="__codelineno-19-146" href="#__codelineno-19-146"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 </span><span id="__span-19-147"><a id="__codelineno-19-147" name="__codelineno-19-147" href="#__codelineno-19-147"></a><span class="p">}</span>
-</span></code></pre></div></p>
+</span></code></pre></div>
 <h3 id="parallelisation-of-the-cg-method">Parallelisation of the CG Method</h3>
 <p>Parallelisation of this code is very similar to what we did before:</p>
 <ol>
