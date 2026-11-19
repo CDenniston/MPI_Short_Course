@@ -29,9 +29,13 @@ We think of this as a matrix, but device memory is addressed in a single linear 
 ![C-style row-major storage of a 2D array](rowmajor.svg)
 
 C uses **row-major order**: the elements of each row are stored consecutively in memory. The element `array[i][j]` is stored at:
+
 $$\texttt{array[i][j]} \;\longrightarrow\; *\!\bigl(\&\texttt{array[0][0]} + i \times \texttt{ncols} + j\bigr)$$
+
 where `&array[0][0]` is the memory address of the beginning of the array, `ncols` is the number of columns, `(&array[0][0]+i*ncols+j)` is then the memory address of the element in row `i` column `j`, and the `*` operator placed in front of a memory address 'de-references' this address to give you the value that is stored at the memory address.  This means:
+
 $$\texttt{array[i][j]} \;\equiv\; \texttt{array[0][i{*}4 + j]}$$
+
 As there is no bounds checking, you can use either form interchangeably in code.
 
 The compiler actually converts all multidimensional arrays into 1D arrays at compile time, which is why in C you need to pass functions the number of columns in order for the function to decode what you mean by `a[i][j]`.  Note that C puts a significant burden on the programmer to manage memory precisely and without errors.  The failure of programmers to do this consistently is one of the main drivers for creation of so-called "memory-safe" languages like Rust. You must be _extremely_ careful to avoid coding errors and diligently test and debug.
@@ -48,19 +52,19 @@ For example:
 ```c
 int rows = 5, cols = 3;
 double** A;
-A = (double**) calloc(rows, sizeof(double*));       // allocate array of row pointers
-A[0] = (double*) calloc(rows*cols, sizeof(double)); // allocate entire data block
+A = (double**) calloc(rows, sizeof(double*));    // allocate array of row pointers
+A[0] = (double*) calloc(rows*cols, sizeof(double));  // allocate entire data block
 for (int i=1; i<rows; i++)
-    A[i] = A[i-1] + cols;                           // make A[i] point to start of row i
+    A[i] = A[i-1] + cols;                     // make A[i] point to start of row i
 ```
 
 ![Dynamic 2D array memory layout](dynamic2d.svg)
 
 Notes on the pictorial layout:
+
 1. Each `A[i]` is a pointer that points to `A[i][0]`.
-2. `A` is a pointer that points to `A[0]`, which is itself a pointer pointing to `A[0][0]`.
-As such, `A` is a pointer to an array of pointers, each of which points to the beginning of a new row.
-Note that the actual array data is stored sequentially (all `rows*cols` doubles in one contiguous block), just like a fixed array.
+2. `A` is a pointer that points to `A[0]`, which is itself a pointer pointing to `A[0][0]`. As such, `A` is a pointer to an array of pointers, each of which points to the beginning of a new row.
+3. Note that the actual array data is stored sequentially (all `rows*cols` doubles in one contiguous block), just like a fixed array.
 
 ### Deallocation
 
@@ -98,8 +102,10 @@ However, this is obviously less than ideal and makes bounds checking very messy.
 **Boost** is a set of libraries that are similar to, and often expand on, the STL. They are close enough to the standard that different parts of Boost have been incorporated into C++11  and later standards (btw, if the code you are working with is not compliant with a version of C++ from 2011 or newer, you should probably start by updating the code to a newer standard).
 
 To use the Boost libraries, we must first install them on our machine using the command line:
+
 - On **Linux/WSL** (Windows Subsytem for Linux (WSL) bash shell): `sudo apt-get install libboost-all-dev`
 - On a **Mac**, first install MacPorts from [www.macports.org](http://www.macports.org), then: `sudo port install boost-devel`
+
 You will typically be prompted for a password and then it will install Boost _plus_ anything else you many need to use it on your machine.
 
 On Linux/WSL you should not need to do anything else. In some systems you may have to link when you compile using something like `-lboost_xx` where `xx` is one of the Boost sublibrary names.
@@ -113,9 +119,11 @@ On Linux/WSL you should not need to do anything else. In some systems you may ha
 #include <cassert>
 
 int main () {
-    // Create a 3D array that is 3 x 4 x 2
-    typedef boost::multi_array<double, 3> array_type; // <> args: element type, number of indices
-    array_type A(boost::extents[3][4][2]);     // declares A with size 3 in 1st dim, 4 in 2nd, 2 in 3rd
+    // Create a 3D array that is 3 x 4 x 2. 
+    // First define the type.  <> args: element type, number of indices
+    typedef boost::multi_array<double, 3> array_type;
+    // now declare A with size 3 in 1st dim, 4 in 2nd, 2 in 3rd
+    array_type A(boost::extents[3][4][2]);     
 
     // Assign values to the elements
     typedef array_type::index index;  // index type for our array
@@ -123,7 +131,7 @@ int main () {
     for(index i = 0; i != 3; ++i)
         for(index j = 0; j != 4; ++j)
             for(index k = 0; k != 2; ++k)
-                A[i][j][k] = values++;  // access elements just like a simple array
+                A[i][j][k] = values++; // access elements just like a simple array
 
     // Verify values
     int verify = 0;
@@ -164,19 +172,20 @@ for (array_type::index i = 0; i != 2; ++i)
 	        assert(myview[i][j][k] == myarray[i][j+1][k*2]);
 
 ```
-from: https://www.boost.org/doc/libs/latest/libs/multi_array/doc/user.html 
+[Example Source](https://www.boost.org/doc/libs/latest/libs/multi_array/doc/user.html)
 
 ### Resizing
 
 We can also resize the array using the `resize()` function:
+
 ```cpp
-typedef boost::multi_array<int, 3> array_type;    // define 3D array type
-array_type::extent_gen extents;                    // define member variable to hold extents
-array_type A(extents[3][3][3]);                    // define A as 3x3x3
+typedef boost::multi_array<int, 3> array_type; // define 3D array type
+array_type::extent_gen extents;          // define member variable to hold extents
+array_type A(extents[3][3][3]);          // define A as 3x3x3
 A[0][0][0] = 4;
-A[2][2][2] = 5;                                   // set some elements
-A.resize(extents[2][3][4]);                        // resize the array to 2x3x4
-assert(A[0][0][0] == 4);                           // this should still be valid
+A[2][2][2] = 5;                          // set some elements
+A.resize(extents[2][3][4]);              // resize the array to 2x3x4
+assert(A[0][0][0] == 4);                 // this should still be valid
 // A[2][2][2] is no longer valid.
 ```
 
@@ -237,7 +246,9 @@ mpiCC -O3 program.cpp -o prog
 Let's write some code to do $A \cdot b = c$, where $A$ is a matrix and $b$ and $c$ are vectors. We will use a Boss-Worker model where Workers do all computation while Boss directs the work.
 
 To do this, we divide the task of $A \cdot b = c$ into:
+
 $$A[i] \cdot b = c[i], \quad i = 0, \ldots, n_\text{rows} - 1$$
+
 where $A[i]$ is the $i$-th row of $A$ (itself a row vector of length $n_\text{cols}$) and $c[i]$ is the $i$-th element of the result vector. We have different processors work on each of these row tasks until done.
 
 ![Boss-Worker flowchart for matrix-vector multiplication](matvec-flowchart.svg)
@@ -271,8 +282,8 @@ int main(int argc, char** argv)
     // Allocate and initialize A and b here on the Boss node and space for c
     // Workers need space for b and a row of A, Arow
     // Assume A will have rows 0,nrows-1 and columns 0,ncols-1, so b is 0,ncols-1
-    // so c must be 0,nrows-1.  Note declarations need to be outside of an if block to
-    // avoid going out of scope.  Boss should initialize A and only Boss needs this whole
+    // so c must be 0,nrows-1.  Declarations need to be outside of an if block to
+    // avoid going out of scope. Boss should initialize A and only Boss needs entire
     // matrix.  Workers need only space for a row of A which we will call Arow
     // ...
 
@@ -282,7 +293,8 @@ int main(int argc, char** argv)
     MPI_Status status;
     // Boss part
     if (the_mpi.MyID == 0) {
-        // Send one row to each worker tagged with row number+1 (+1 as we reserve 0 for done signal)
+        // Send one row to each worker tagged with row number+1 
+        //  The +1 here is because we reserve 0 for done signal
         // Assume nprocs<nrows
         int rowsent=0;
         for (int i=1; i< the_mpi.NProcs; i++) {
@@ -298,7 +310,7 @@ int main(int argc, char** argv)
             int sender = status.MPI_SOURCE;     // who sent
             int anstype = status.MPI_TAG;       // which answer (= row number + 1)
             c[anstype-1] = ans;
-            if (rowsent < nrows) {              // send new row to who we got result from
+            if (rowsent < nrows) {      // send new row to who we got result from
                 MPI_Send(&A[rowsent][0], ncols, MPI_DOUBLE, sender, rowsent+1, MPI_COMM_WORLD);
                 rowsent++;
             }
@@ -318,7 +330,7 @@ int main(int argc, char** argv)
             // work out Arow.b
             double ans=0.0;
             for (int i=0; i< ncols; i++)
-                ans+=Arow[i]*b[i];      // actual dot product of row of A dotted with b
+                ans+=Arow[i]*b[i];    // dot product of row of A dotted with b
 
             // Send answer of Arow.b back to boss and get another row to work on
             MPI_Send(&ans, 1, MPI_DOUBLE, 0, crow, MPI_COMM_WORLD);
@@ -369,26 +381,43 @@ This code is an example of **Dynamic Load Balancing** — if one node is bogged 
 This seems like a brilliant idea! What could go wrong? To analyze the performance we first need to decide on the hardware model we are going to do the analysis for.  MPI was originally designed for a distributed memory Beowulf cluster-style hardware where the individual CPU cores are distinct and connected via some communications network, such as an ethernet connection.  As such, let's analyze the expected performance on such a system:
 
 For a square $n \times n$ matrix $A$, the number of floating point operations (defined as one linear operation so multiplication plus add), or _flops_, is roughly
+
 $$\#\text{flops} = n_\text{rows} \times n_\text{cols} = n^2 \quad (\text{multiplication + add} = 1 \text{ flop})$$
+
 which leads to a compute time for a serial code of
+
 $$\text{compute time (serial)} = n^2 \, T_\text{flop}$$
+
 where $T_\text{flop}$ is the time required to compute 1 flop.
 
 If we do this on $p$ processors using the above algorithm we also need to account for the communication between processors.  First we count the number of communication calls needed:
+
 $$\#\text{doubles sent/received} \approx (n+1) \cdot n = n^2 + n$$
+
 (send $n$ rows of $A$, each of which consists of $n$ doubles, and receive 1 answer back for each case).  If we assume the communication depends only on the amount of information sent, then
+
 $$\text{communication time} \approx (n^2 + n) \, T_\text{comm}$$
+
 where $T_{\text{comm}}$ is the time required to send one double.  In the ideal case,
+
 $$\text{compute time spread over } p \text{ processors} \approx \frac{n^2 T_\text{flop}}{p}$$
+
 $$\text{total runtime on } p \text{ processors} \approx \frac{n^2}{p} T_\text{flop} + (n^2 + n) T_\text{comm}$$
+
 To quantify the gains (or losses) from parallelizing the code, a commonly used simple measure is the speedup, 
+
 $$S(p) = \text{speedup} \equiv \frac{\text{runtime on 1 processor}}{\text{runtime on } p \text{ processors}}$$
+
 One would like to see something like
+
 $$S(p)\approx a p$$
+
 for some constant $a$ so that the code runs faster when supplied with more processors.  The ideal case would have $a=1$ and this is referred to as _linear_ scaling.  It is possible in some circumstances to see $a>1$ and this is often referred to as "superlinear" scaling (although mathematically it is still linear).  This fortuitous case is typically an effect due to caching when breaking the problem down into smaller parts results in more (or all) of each part fitting in the processor cache.  It is also possible to get $S(p)<1$, or a _slowdown_ rather than a speedup.
 
 For our problem, we have
+
 $$S(p) \approx \left[\frac{n^2 T_\text{flop}}{\frac{n^2}{p} T_\text{flop} + (n^2+n) T_\text{comm}}\right] \approx \frac{1}{\frac{1}{p} + \frac{T_\text{comm}}{T_\text{flop}}}=\frac{p}{1+p\frac{T_\text{comm}}{T_\text{flop}}}$$
+
 Now, $T_\text{flop}$ is of order 1 clock cycle $\approx 0.5\,\text{ns}$ for a 2 GHz core. A Gigabit Ethernet connection takes $\approx 64\,\text{bits} \times 1\,\text{ns} = 64\,\text{ns}$ to transmit a double. So $T_\text{comm} > T_\text{flop}$.⇒ **The program will likely run _slower_ in parallel on a classic Beowulf cluster!** The second term in the denominaor $T_\text{comm}/T_\text{flop}>1$ dominates, dragging the speedup below 1 for any $p$.  
 
 However, most modern clusters consist of some combination of multicore processors, with memory shared by cores on each processor, and slower communication only occuring between processors.  This is obviously more complicated but one could imagine a similar analysis for a single multicore processor machine with shared memory where it might be that $T_\text{comm} < T_\text{flop}$.  In that case, one might observe speedup greater than 1 for small $p$ and  reaching the limit of $T_\text{flop}/T_\text{comm}$ for really large $p$ where adding more processors would not make much difference for how fast the code runs.
@@ -398,7 +427,9 @@ However, most modern clusters consist of some combination of multicore processor
 ## Example: Matrix-Matrix Multiplication
 
 Let's generalize the above code to do Matrix-Matrix multiplication:
+
 $$A \cdot B = C \quad (\text{all } n \times n \text{ matrices})$$
+
 The changes to the Worker part are:
 ```cpp
 // changes for Matrix-Matrix multiplication code
@@ -430,11 +461,17 @@ The changes to the Worker part are:
 
 ### Performance Analysis: Matrix-Matrix Multiplication
 We can easily generalize our previous analysis for this situation.  In this case, based on our previous analysis, $A$ times one column of $B$ requires roughly $n^2$ flops, so for $n$ columns we should have
+
 $$\#\text{flops for } A \cdot B = n^2 \times n = n^3$$
+
 $$\text{compute time using } p \text{ processors} \approx \frac{n^3 T_\text{flop}}{p}$$
+
 $$\#\text{doubles sent/received} = (n + n) \times n \approx 2n^2$$
+
 (send $n$ rows of $A$, each of which consists of $n$ doubles, and receive 1 answer back for each case with each answer now consisting of $n$ doubles).  Note that Bcast of $B$ is also $\mathcal{O}(n^2)$ operations.
+
 $$\text{total runtime on } p \text{ processors} \approx \frac{n^3}{p} T_\text{flop} + 3n^2 T_\text{comm}$$
+
 $$S(p) = \left[\frac{\frac{n^3}{p} T_\text{flop} + 3n^2 T_\text{comm}}{n^3 T_\text{flop}}\right]^{-1} = \left[\frac{1}{p} + \frac{3}{n} \cdot \frac{T_\text{comm}}{T_\text{flop}}\right]^{-1} \xrightarrow{n \to \infty} p$$
 
 So here $S(p) \to p$ as $n \to \infty$ (for fixed $p$) — **the program scales and gives an ideal speedup for large matrices!**  NB: $n$ may need to be very large in order to overcome the case where $T_\text{comm} > T_\text{flop}$.
@@ -452,7 +489,9 @@ endtime = MPI_Wtime();
 To evaluate parallel performance it is often worth timing the computational part separately from the communication part (e.g. by putting a timer around MPI calls).
 
 In addition to speedup, it is also interesting to consider **efficiency**:
+
 $$\text{efficiency} = \frac{\text{runtime on 1 processor}}{p \times \text{runtime on } p \text{ processors}}=\frac{S(p)}{p}$$
+
 Efficiency $= 1$ means "perfect" parallelism.
 
 ---
@@ -460,11 +499,16 @@ Efficiency $= 1$ means "perfect" parallelism.
 ## Other Considerations: Message Latency
 
 Typically the time to send a message $T_{\text{message}}$ includes a constant:
+
 $$T_\text{message} = t_s + k \cdot t_c$$
+
 where:
+
 - $t_s$ = constant time to send one message (setup / "latency" time)
 - $k$ = number of units of data in the message
 - $t_c$ = time to communicate one unit of data
+
+You should not thate
 
 - $t_s$ and $t_c$ vary enormously among different hardware/implementations.
 - Typically you cannot ignore $t_s$ (i.e. $t_s \gg t_c$), so you should **send data in the largest possible chunks**.
@@ -542,6 +586,7 @@ How would I know to look for something as weirdly named as `dgemm()`? The BLAS h
 For almost all BLAS, the **first letter** is one from the set `{S, D, C, Z}`, indicating single precision (`float`), double precision (`double`), complex, and double complex, respectively. Exception: `i#amax(n,x,incx)` where $\#$ is from the set `{S, D, C, Z}`.
 
 For BLAS2/BLAS3, the **second and third letters** give the type of matrix:
+
 - `GE` = general matrix
 - `GB` = general banded matrix
 - `GP` = general "packed" matrix
@@ -550,6 +595,7 @@ For BLAS2/BLAS3, the **second and third letters** give the type of matrix:
 - `TR` = triangular matrix
 
 For BLAS2/BLAS3, the **fourth and fifth letters** give the type of operation:
+
 - `MV` = matrix-vector product
 - `SV` = solve (for triangular matrices only)
 - `MM` = matrix-matrix product
@@ -572,8 +618,11 @@ When using the BLAS, beware that:
 With row-major order (C-style), the last array index changes most quickly and the first one changes most slowly when traversing the memory segment. With Fortran column-major order, the last index changes most slowly and the first index changes most quickly.
 
 For example, if a two-dimensional matrix $A$ of size $m \times n$ is stored densely in a one-dimensional array $B$:
+
 $$A[i][j] = B[i{*}n + j] \quad \text{in C} \quad (i = 0, \ldots, m-1; \; j = 0, \ldots, n-1)$$
+
 $$A(i,j) = B[(j-1){*}m + i] \quad \text{in Fortran} \quad (i = 1, \ldots, m; \; j = 1, \ldots, n)$$
+
 When calling LAPACK or BLAS routines from C, be aware that because Fortran is case-insensitive, routine names can be upper or lower case, with or without the trailing underscore. For example, the following are equivalent:
 - LAPACK: `dgetrf`, `DGETRF`, `dgetrf_`, and `DGETRF_`
 - BLAS: `dgemm`, `DGEMM`, `dgemm_`, and `DGEMM_`
@@ -599,6 +648,7 @@ Inside the braces, put all the BLAS (and C and Fortran) functions you will be ca
 Usually a header file is provided along with the BLAS that does the above declarations for you, and you just have to `#include` it.
 
 Additional notes on compilation:
+
 - Linking in the BLAS library requires using something like **`-lblas`** on the link line.
 - Since the BLAS are compiled using **`-dalign`**, you will need to do the same for your functions/routines in any language.
 - When calling the standard BLAS from C/C++, most machines require appending an underscore to the name of the BLAS routine. So a call is to `daxpy_()` instead of `daxpy()`. IBM machines do not follow this "underscore convention".
@@ -620,8 +670,8 @@ Below is an example showing 4 methods to compute $A \cdot B = C$ where $A$ is 2�
 // (C needs this linking explicitly)
 
 // dgemm_ is a symbol in the BLAS library files
-// Need to explicitly declare a prototype for BLAS functions and declare them as extern
-// Also note the '_' at the end of the name
+// Need to explicitly declare a prototype for BLAS functions and 
+// declare them as extern.  Also note the '_' at the end of the name
 extern int dgemm_(char*,char*,int*,int*,int*,double*,double*,
                   int*,double*, int*,double*, int*);
 
@@ -679,7 +729,7 @@ int main(void)
     alpha=1.0; beta=0.0;
     m=2; n=2; k=3;    // m=rows of op(A), n=cols of op(B), k=cols of op(A)
     lda=2; ldb=3; ldc=2;  // leading dimensions of A, B, C as declared
-                           // "leading" means fastest changing, which is actually the last in C
+                        // "leading" means fastest changing, the last in C
 
     dgemm_(&transa, &transb, &m, &n, &k, &alpha, &A3[0][0], &lda,
            &B3[0][0], &ldb, &beta, &C3[0][0], &ldc);
@@ -766,7 +816,7 @@ int main (void)
     char transa='T', transb='T';  // op(A) = A, similar for B
     double alpha=1.0, beta=0.0;
     int m=2, n=2, k=3;
-    int lda=3, ldb=2, ldc=2;  // leading dimensions, fastest changing index in C-style
+    int lda=3, ldb=2, ldc=2;  // leading dimensions, fastest changing index in C
 
     dgemm_(&transa, &transb, &m, &n, &k, &alpha, &A2[0][0], &lda,
            &B2[0][0], &ldb, &beta, &C2[0][0], &ldc);
@@ -793,7 +843,7 @@ int main (void)
     transa='N'; transb='N';
     alpha=1.0; beta=0.0;
     m=2; n=2; k=3;
-    lda=2; ldb=3; ldc=2;  // "leading" means fastest changing, actually the last in C
+    lda=2; ldb=3; ldc=2;  // "leading" means fastest changing, the last in C
 
     dgemm_(&transa, &transb, &m, &n, &k, &alpha, &A3[0][0], &lda,
            &B3[0][0], &ldb, &beta, &C3[0][0], &ldc);
@@ -852,14 +902,21 @@ LAPACK provides specialized routines that take advantage of special properties o
 
 - **General matrices** ($LU$ factorization with partial pivoting): $A = PLU$, where $P$ is a permutation matrix, $L$ is lower triangular with unit diagonal, and $U$ is upper triangular.
 - **Symmetric/Hermitian positive definite matrices** (Cholesky factorization):
+
 $$A = U^T U \quad \text{or} \quad A = L L^T \quad (\text{symmetric})$$
+
 $$A = U^H U \quad \text{or} \quad A = L L^H \quad (\text{Hermitian})$$
 - **Symmetric/Hermitian positive definite tridiagonal matrices** ($LDL^T$ factorization):
+
 $$A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})$$
+
 $$A = U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})$$
 - **Symmetric/Hermitian indefinite matrices** (symmetric indefinite factorization):
+
 $$A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})$$
+
 $$A \approx U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})$$
+
 where $U$ (or $L$) is a product of permutation and unit upper (lower) triangular matrices, and $D$ is symmetric and block diagonal with diagonal blocks of order 1 or 2.
 
 See [Linear Equations](https://netlib.org/lapack/lug/node26.html)  for more varieties of linear solvers and and [Linear Equations](https://netlib.org/lapack/lug/node38.html) for factorizations.
@@ -906,8 +963,8 @@ int main()
 #include <complex>
 #include <iostream>
 #define MKL_Complex16 std::complex<double>  // this allows much more portable code:
-                                            // you can use standard C++ complex type
-                                            // in code and MKL will still work
+                                        // you can use standard C++ complex type
+                                        // in code and MKL will still work
 #include "mkl.h"
 #define N 5
 

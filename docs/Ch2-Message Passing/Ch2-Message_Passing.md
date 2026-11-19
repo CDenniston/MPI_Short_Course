@@ -648,7 +648,7 @@ Note that this leads to an asymmetry: a Worker does its task and immediately sen
 
 `MPI_Isend` and `MPI_Irecv` are **non-blocking** variants: the calling processor submits the communication request and immediately proceeds to the next line of code without waiting for delivery confirmation. This allows computation and communication to overlap.
 
-The function signatures are the same as `MPI_Send`/`MPI_Recv` but with an extra `MPI_Request*` argument at the end:
+The function signatures are the same as `MPI_Send`/`MPI_Recv` but with an extra `MPI_Request` argument at the end:
 
 ```c
 MPI_Request req_send10 = MPI_REQUEST_NULL;
