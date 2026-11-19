@@ -1551,7 +1551,7 @@ Note that this leads to an asymmetry: a Worker does its task and immediately sen
 <hr />
 <h2 id="non-blocking-communication">Non-Blocking Communication</h2>
 <p><code>MPI_Isend</code> and <code>MPI_Irecv</code> are <strong>non-blocking</strong> variants: the calling processor submits the communication request and immediately proceeds to the next line of code without waiting for delivery confirmation. This allows computation and communication to overlap.</p>
-<p>The function signatures are the same as <code>MPI_Send</code>/<code>MPI_Recv</code> but with an extra <code>MPI_Request*</code> argument at the end:</p>
+<p>The function signatures are the same as <code>MPI_Send</code>/<code>MPI_Recv</code> but with an extra <code>MPI_Request</code> argument at the end:</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">MPI_Request</span><span class="w"> </span><span class="n">req_send10</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MPI_REQUEST_NULL</span><span class="p">;</span>
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">MPI_Request</span><span class="w"> </span><span class="n">req_recv10</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MPI_REQUEST_NULL</span><span class="p">;</span>
 </span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
