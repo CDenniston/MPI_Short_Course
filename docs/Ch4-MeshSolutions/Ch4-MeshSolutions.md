@@ -106,12 +106,13 @@ The relevant LAPACK routines are:
 The matrix $-A$ is stored in **band form** and only requires the upper triangular region. It looks like:
 
 ```
- x  x -1 -1 - - ...      (upper corner marked with x x is ignored, just fill with -1s to fill the band)
- 0  0 - -
- 0  0 - -
+ x    x   -1  -1  -1  -1 ...   (upper corner marked with x x is ignored, just fill with -1s to fill the band)
+ 0    0    0  ...
+ 0    0    0  ...
  :
- 0  0 - - -1  0 -1 -1 - - ...
- 4  4 - - - - 4  4  4 - - -
+ 0    0    0  ...
+ -1  -1  ...   -1  0  -1  -1 - - ...
+ 4    4  ...    4  4   4  ...
 ```
 
 where the last row is the main diagonal (all 4s from the $-4$'s in $A$), and the upper rows are the off-diagonal bands.
@@ -524,14 +525,15 @@ MPI provides built-in functions for Cartesian decomposition:
 
 > Makes a new communicator to which topology information has been attached. `MPI_Cart_create` creates a Cartesian decomposition of the processes.
 > 
-> -`comm_old`: input communicator (handle)
+> - `comm_old`: input communicator (handle)
 > - `ndims`: number of dimensions of Cartesian grid (integer)
 > - `dims`: integer array of size ndims specifying the number of processes in each dimension
 > - `periods`: logical array of size ndims specifying whether the grid is periodic (1 = true) or not (0 = false) in each dimension
 > - `reorder`: ranking may be reordered (1 = true) or not (0 = false) (logical)
 > - `comm_cart`: output communicator to which the new Cartesian topology has been attached.
 
-```c// e.g. creates 3×3 decomposition like above:
+e.g. to create the  3×3 decomposition like above:
+```c
 int dims[2] = {3,3};
 int isperiodic[2] = {0,0};
 MPI_Comm comm2d;
