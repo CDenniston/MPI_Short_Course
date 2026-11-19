@@ -1,7 +1,9 @@
 # Using MPI for Scientific Computing : SC 9505 Quarter Course
-    
-> Computers are like Old Testament gods; lots of rules and no mercy.
-> -- [Joseph Campbell](https://en.wikipedia.org/wiki/Joseph_Campbell) 
+
+You can view the deployed pages for this course at:
+
+[MPI for Scientific Computing course webpages](https://cdenniston.github.io/MPI_Short_Course/)
+
 
 ## Target audience
 
