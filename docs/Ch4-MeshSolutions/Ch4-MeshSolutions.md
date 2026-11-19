@@ -1192,7 +1192,10 @@ $$
 where $m$ is the iteration label and $\alpha$ is the vector coordinate index.  The idea will be to pick the scalar $\lambda_m$ to minimise $f$ along the line determined by some vector ${\bf d}^{(m)}$ (the search direction).
 
 $$
-f({\bf x}^{(m)} + \lambda {\bf d}^{(m)}) = \frac{1}{2}(x_\alpha + \lambda d_\alpha) A_{\alpha\beta}(x_\beta + \lambda d_\beta) - b_\alpha(x_\alpha + \lambda d_\alpha) + c \\ \qquad\qquad = f({\bf x}^{(m)}) + \lambda^2\!\left(\frac{1}{2} d_\alpha A_{\alpha\beta} d_\beta\right) + \lambda\, d_\alpha\bigl(A_{\alpha\beta} x_\beta - b_\alpha\bigr)
+\begin{align}
+f({\bf x}^{(m)} + \lambda {\bf d}^{(m)}) &= \frac{1}{2}(x_\alpha + \lambda d_\alpha) A_{\alpha\beta}(x_\beta + \lambda d_\beta) - b_\alpha(x_\alpha + \lambda d_\alpha) + c\\ 
+&= f({\bf x}^{(m)}) + \lambda^2\!\left(\frac{1}{2} d_\alpha A_{\alpha\beta} d_\beta\right) + \lambda\, d_\alpha\bigl(A_{\alpha\beta} x_\beta - b_\alpha\bigr)
+\end{align}
 $$
 
 where we have used the fact that $\mathcal{A}$ is symmetric so $d_\alpha A_{\alpha\beta} x_\beta = x_\alpha A_{\alpha\beta} d_\beta$.  Note that the first term is just a number and the second term is greater than zero due to the fact that $\mathcal{A}$ is positive definite so this defines an upward parabola if plotted as a function of $\lambda$.  We define the **residual** (the gradient of $f$ at ${\bf x}^{(m)}$) as 
@@ -1247,36 +1250,36 @@ $$
 \lambda_m = \frac{r_\alpha^{(m)} r_\alpha^{(m)}}{d_\alpha^{(m)} A_{\alpha\beta} d_\beta^{(m)}}, \qquad \alpha_m = \frac{r_\alpha^{(m+1)} r_\alpha^{(m+1)}}{r_\beta^{(m)} r_\beta^{(m)}}
 $$
 
-To save repeating work,  $\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}$ should be saved for the next step (where it will be used as $\delta^{(m)}$), and since ${\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u}$ (where $\bm{u} = \mathcal{A}\bm{d}^{(m)}$, the same matrix-vector product already computed for $\lambda_m$), we can avoid re-computing $\mathcal{A}{\bf d}^{(m+1)}-{\bf b}$ from scratch.
+To save repeating work,  $\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}$ should be saved for the next step (where it will be used as $\delta^{(m)}$), and since ${\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u}$ (where ${\bf u} = \mathcal{A}{\bf d}^{(m)}$, the same matrix-vector product already computed for $\lambda_m$), we can avoid re-computing $\mathcal{A}{\bf d}^{(m+1)}-{\bf b}$ from scratch.
 
 The full algorithm then becomes:
 
 ---
-$\bf{r}^{(0)} = \mathcal{A}\bf{x}^{(0)} - \bf{b}; \quad \bf{d}^{(0)} = -\bf{r}^{(0)}; \quad \delta^{(0)} = \bf{r}^{(0)T} \bf{r}^{(0)};$
+${\bf r}^{(0)} = \mathcal{A}{\bf x}^{(0)} - {\bf b}; \quad {\bf d}^{(0)} = -{\bf r}^{(0)}; \quad \delta^{(0)} = {\bf r}^{(0)T} {\bf r}^{(0)};$
 $\text{for } m = 0, 1, 2, \ldots$
- $\qquad \bf{u} = \mathcal{A}\bf{d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}$
- $\qquad \lambda_m = \frac{\delta^{(m)}}{\bf{d}^{(m)T} \bf{u}}; \quad \leftarrow \text{do locally then AllReduce}$
- $\qquad \bf{x}^{(m+1)} = \bf{x}^{(m)} + \lambda_m \bf{d}^{(m)}$;
- $\qquad \bf{r}^{(m+1)} = \bf{r}^{(m)} + \lambda_m \bf{u}$;
- $\qquad \delta^{(m+1)} = \bf{r}^{(m+1)T} \bf{r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}$
- $\qquad \text{if } \sqrt{\delta^{(m+1)}} < \text{tol}: \text{ output } \bf{x}^{(m+1)}, \text{ stop}$;
+ $\qquad {\bf u} = \mathcal{A}{\bf d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}$
+ $\qquad \lambda_m = \frac{\delta^{(m)}}{{\bf d}^{(m)T} {\bf u}}; \quad \leftarrow \text{do locally then AllReduce}$
+ $\qquad {\bf x}^{(m+1)} = {\bf x}^{(m)} + \lambda_m {\bf d}^{(m)}$;
+ $\qquad {\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u}$;
+ $\qquad \delta^{(m+1)} = {\bf r}^{(m+1)T} {\bf r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}$
+ $\qquad \text{if } \sqrt{\delta^{(m+1)}} < \text{tol}: \text{ output } {\bf x}^{(m+1)}, \text{ stop}$;
  $\qquad \alpha_m = \frac{\delta^{(m+1)}}{\delta^{(m)}}$;
- $\qquad \bf{d}^{(m+1)} = -\bf{r}^{(m+1)} + \alpha_m \bf{d}^{(m)}; \quad \leftarrow \text{local}$
+ $\qquad {\bf d}^{(m+1)} = -{\bf r}^{(m+1)} + \alpha_m {\bf d}^{(m)}; \quad \leftarrow \text{local}$
 
 ---
 
 ### How Many Iterations Are Needed?
 
-**Not many!** Suppose the initial guess is $\bf{x}^{(0)} = \mathbf{0}$, then:
+**Not many!** Suppose the initial guess is ${\bf x}^{(0)} = \mathbf{0}$, then:
 
 $$
-\bf{x}^{(m)} = \sum_{k=0}^{m} c_k \bf{d}^{(k)}
+{\bf x}^{(m)} = \sum_{k=0}^{m} c_k {\bf d}^{(k)}
 $$
 
-But all $\bf{d}^{(k)}$ are linearly dependent, by construction. If $\mathcal{A}$ is $n \times n$, then we can need at most $n$ iterations, and then should terminate. For well-conditioned problems, much fewer iterations are needed.
+But all ${\bf d}^{(k)}$ are linearly dependent, by construction. If $\mathcal{A}$ is $n \times n$, then we can need at most $n$ iterations, and then should terminate. For well-conditioned problems, much fewer iterations are needed.
 
 ### C Code: CG.c
-A serial code for the conjugate gradient algorithm in C is given here for solving Laplace's equation.  Note that in this case $\mathcal{A}$ is very sparse so you should not store it explicitly.  As $\mathcal{A}$ is only used in computing $\mathcal{A}\bf{d^{(m)}}$ we can do this multiplication explictly using the five nonzero elements in a row of $\mathcal{A}$ associated with the 5-point stencil discussed above.  Also, for this problem $\bf{x}$ is our solution vector $\bf{v}$ on the mesh, stored in row-major ordering.
+A serial code for the conjugate gradient algorithm in C is given here for solving Laplace's equation.  Note that in this case $\mathcal{A}$ is very sparse so you should not store it explicitly.  As $\mathcal{A}$ is only used in computing $\mathcal{A}{\bf d}^{(m)}$ we can do this multiplication explictly using the five nonzero elements in a row of $\mathcal{A}$ associated with the 5-point stencil discussed above.  Also, for this problem ${\bf x}$ is our solution vector ${\bf v}$ on the mesh, stored in row-major ordering.
 
 ```c
 /* Compile line: */
@@ -1432,6 +1435,6 @@ int main(int argc, char** argv)
 
 Parallelisation of this code is very similar to what we did before:
 
-1. The "matrix-vector" product for the case where $A$ is defined from the Poisson equation is almost identical to what we did for an "iteration" of the Jacobi algorithm.
+1. The "matrix-vector" product for the case where $\mathcal{A}$ is defined from the Poisson equation is almost identical to what we did for an "iteration" of the Jacobi algorithm.
 
 2. Most other computations are **local** except for a few dot products/norms which can easily be done locally and then collected together using an `MPI_Allreduce`.
