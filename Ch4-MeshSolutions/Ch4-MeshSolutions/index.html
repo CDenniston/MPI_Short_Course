@@ -913,8 +913,8 @@ A = \left(\begin{array}{cccccc|cccccc|cccccc}
 0 &amp; 1 &amp; -4 &amp; 1 &amp; \ddots &amp; \vdots &amp;             \vdots &amp; 0 &amp; 1  &amp; 0 &amp; &amp; &amp; &amp; &amp; &amp; &amp; &amp;\\
 \vdots &amp; \ddots  &amp; \ddots &amp; \ddots &amp; \ddots &amp; 0 &amp;    &amp; &amp; \ddots &amp; \ddots &amp; \ddots &amp; \vdots   &amp; &amp; &amp; &amp; &amp; &amp;\\
 \vdots &amp;   &amp;  \ddots      &amp; 1 &amp; -4 &amp; 1 &amp;            \vdots &amp; &amp; &amp; 0 &amp; 1 &amp; 0\\
-0 &amp; \dots  &amp;   \dots     &amp;  0 &amp; 1  &amp; -4 &amp;           \text{\O}  &amp; \dots &amp; &amp; \dots &amp; 0 &amp; 1\\\hline
-1  &amp; 0 &amp; \dots &amp; &amp; \dots &amp; \text{\O} &amp;                  -4 &amp; 1 &amp; 0 &amp; &amp; &amp;                  &amp; \ddots &amp; &amp; &amp; &amp; &amp;\\
+0 &amp; \dots  &amp;   \dots     &amp;  0 &amp; 1  &amp; -4 &amp;           \oslash  &amp; \dots &amp; &amp; \dots &amp; 0 &amp; 1\\\hline
+1  &amp; 0 &amp; \dots &amp; &amp; \dots &amp; \oslash &amp;                  -4 &amp; 1 &amp; 0 &amp; &amp; &amp;                  &amp; \ddots &amp; &amp; &amp; &amp; &amp;\\
 0  &amp; 1 &amp; 0 &amp; &amp; &amp; \vdots &amp;                       1 &amp; \ddots &amp; \ddots &amp; &amp; &amp;\\ 
 \vdots &amp; 0 &amp; 1  &amp; 0 &amp; &amp; &amp;                       0 &amp; \ddots &amp; \ddots &amp; \ddots &amp; &amp; \\
 &amp; &amp; \ddots &amp; \ddots &amp; \ddots &amp; \vdots &amp;    \\
@@ -928,7 +928,7 @@ A = \left(\begin{array}{cccccc|cccccc|cccccc}
 \\
 \end{array}\right)
 \]</div>
-<p>where the <span class="arithmatex">\(1\)</span>s on off-diagonals connect same-row neighbours, and the <span class="arithmatex">\(1\)</span>s at distance <span class="arithmatex">\(L-1\)</span> connect vertically adjacent rows. The \O entries in the block corners that interupt the 1s just off the main diagonal are where boundary terms were moved to the RHS (i.e. into <span class="arithmatex">\(F\)</span>) and hence these entries are zero.</p>
+<p>where the <span class="arithmatex">\(1\)</span>s on off-diagonals connect same-row neighbours, and the <span class="arithmatex">\(1\)</span>s at distance <span class="arithmatex">\(L-1\)</span> connect vertically adjacent rows. The <span class="arithmatex">\(\oslash\)</span>  entries in the block corners that interupt the 1s just off the main diagonal are where boundary terms were moved to the RHS (i.e. into <span class="arithmatex">\(F\)</span>) and hence these entries are zero.</p>
 <h3 id="direct-solution-with-lapack-cholesky-factorisation">Direct Solution with LAPACK: Cholesky Factorisation</h3>
 <p>The matrix <span class="arithmatex">\(A\)</span> is <strong>negative definite</strong>. In order to use LAPACK routines (which have specialised routines for positive definite matrices), we instead solve:</p>
 <div class="arithmatex">\[
