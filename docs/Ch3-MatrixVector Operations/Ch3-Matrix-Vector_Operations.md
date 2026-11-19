@@ -906,11 +906,13 @@ LAPACK provides specialized routines that take advantage of special properties o
 $$A = U^T U \quad \text{or} \quad A = L L^T \quad (\text{symmetric})$$
 
 $$A = U^H U \quad \text{or} \quad A = L L^H \quad (\text{Hermitian})$$
+
 - **Symmetric/Hermitian positive definite tridiagonal matrices** ($LDL^T$ factorization):
 
 $$A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})$$
 
 $$A = U D U^H \quad \text{and} \quad A = L D L^H \quad (\text{Hermitian})$$
+
 - **Symmetric/Hermitian indefinite matrices** (symmetric indefinite factorization):
 
 $$A = U D U^T \quad \text{and} \quad A = L D L^T \quad (\text{symmetric})$$

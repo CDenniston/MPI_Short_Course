@@ -5,9 +5,11 @@ Many scientific problems can be formulated numerically on a regular lattice, or 
 ## Finite Difference Schemes for the Poisson Equation
 
 We want to solve the **2D Poisson equation** on a rectangular domain with Dirichlet boundary conditions:
+
 $$
 \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = f, \qquad \text{B.C.: } u = \text{const on boundary}
 $$
+
 where $f(x,y)$ is a given function and the problem is to determine $u(x,y)$.
 
 ### Discretisation
@@ -17,18 +19,25 @@ Introduce a uniform mesh with spacing $h$ in both directions:
 ![2D Mesh](./mesh.svg)
 
 Use the standard **second-order centered finite difference approximation** to derivatives:
+
 $$
 \frac{\partial^2 u}{\partial x^2}=\frac{\delta_x^2 u}{h^2} + \mathcal{O}(h^2)= \frac{u(x_{\ell+1}, y_m) - 2u(x_\ell, y_m) + u(x_{\ell-1}, y_m)}{h^2} + \mathcal{O}(h^2)
 $$
+
 As the boundary condition provides the solution on boundary, we work on interior mesh points only and label $u(x_\ell, y_m) \equiv v_{\ell,m}$. This gives the discrete equation:
+
 $$
 \delta_x^2 u + \delta_y^2 u = h^2 f
 $$
+
 Assuming $h_x = h_y = h$, the equations we need to solve are: 
+
 $$
 v_{\ell+1,m} + v_{\ell-1,m} + v_{\ell,m+1} + v_{\ell,m-1} - 4v_{\ell,m} = h^2 f_{\ell,m}
 $$
+
 This is often referred to as a **5-point stencil**:
+
 ![5-point stencil](./stencil5pt.svg)
 
 The corresponding matrix $A$ is a banded matrix equation $Av = F$ with bandwidth $2L-1$ (or $2M-1$).
@@ -36,13 +45,16 @@ The corresponding matrix $A$ is a banded matrix equation $Av = F$ with bandwidth
 ### Structure of the Matrix System
 
 The solution vector $v$ and right-hand side $F$ are assembled by ordering the interior grid points, say row by row (i.e. row-major ordering):
+
 $$
 v = \begin{pmatrix} v_{1,1} \\ v_{1,2} \\ \vdots \\ v_{1,M-2} \\ v_{1,M-1} \\ v_{2,1} \\ v_{2,2} \\ v_{2,3} \\ \vdots \\ v_{2,M-1} \\ v_{3,1} \\ \vdots \\ v_{L-1,M-1} \end{pmatrix}, \qquad
 F = \begin{pmatrix} h^2 f_{1,1} - v_{0,1} - v_{1,0} \\ h^2 f_{1,2} - v_{0,2} \\ \vdots \\h^2 f_{1,M-2}-v_{0,M-2}\\ h^2 f_{1,M-1}-v_{0,M-1}-v_{1,M}\\ h^2 f_{2,1} - v_{2,0} \\ h^2 f_{2,2} \\ h^2 f_{2,3} \\ \vdots \\ h^2 f_{2,M-1} -v_{2,M} \\ h^2 f_{3,1} - v_{3,0} \\ \vdots \\ h^2 f_{L-1,M-1} -v_{L-1,M}-v_{L,M-1}\end{pmatrix}
 $$
+
 Note that while most entries in $F$ are of the form $h^2 f_{\ell,m}$, any sites adjacent to the boundary pick up values of $-v_{\ell\pm 1,m\pm 1}$ that are known (assuming Dirichlet B.C.s) as these are moved to the right-hand side of the equation (i.e. into $F$).  Correspondingly, the bands in $A$ closest to the diagonal that would couple interior points to boundary points have zero entries.
 
 The matrix $A$ is **block tridiagonal**:
+
 $$
 A = \left(\begin{array}{cccccc|cccccc|cccccc}
 -4 & 1 & 0 & \dots & \dots & 0 &                   1  & 0 & \dots & & \dots & 0     & 0 & \dots & & & &\\
@@ -65,18 +77,23 @@ A = \left(\begin{array}{cccccc|cccccc|cccccc}
 \\
 \end{array}\right)
 $$
+
 where the $1$s on off-diagonals connect same-row neighbours, and the $1$s at distance $L-1$ connect vertically adjacent rows. The red ${\red 0}$ entries in the block corners that interupt the 1s just off the main diagonal are where boundary terms were moved to the RHS (i.e. into $F$).
 
 ### Direct Solution with LAPACK: Cholesky Factorisation
 
 The matrix $A$ is **negative definite**. In order to use LAPACK routines (which have specialised routines for positive definite matrices), we instead solve:
+
 $$
 (-A)\, v = (-F)
 $$
+
 since $-A$ will be **positive definite**. Positive definite matrices are symmetric, so we only need to store the upper triangular part. We can factor $-A$ using **Cholesky factorisation**:
+
 $$
 -A = U^T U = L L^T
 $$
+
 where $U$, $L$ are upper/lower triangular matrices.  The factorisation can then be used to solve the system of equations. This is a special form of LU factorisation for positive definite matrices.
 
 **Note:** Most of the work is in the factorisation. Once the factorisation is done you can solve for multiple right-hand sides without much extra effort — just change $F$ and use the same factorisation each time (we can call `dpbtrs` each time for this).
@@ -87,6 +104,7 @@ The relevant LAPACK routines are:
 - `dpbtrs` — `d` for **double**, `p` for **positive definite**, `b` for **band**, and `trs` for **solve** using the (previously obtained) factorisation
 
 The matrix $-A$ is stored in **band form** and only requires the upper triangular region. It looks like:
+
 ```
  x  x -1 -1 - - ...      (upper corner marked with x x is ignored, just fill with -1s to fill the band)
  0  0 - -
@@ -209,9 +227,11 @@ As you will see in the homework, this direct solution becomes increasingly impra
 ## Jacobi Method
 
 Rather than a direct solution, we can try to solve the (large) system of equations iteratively.  One way to do this is to solve the 5-point stencil equation for $v_{\ell,m}$ and iterate:
+
 $$
 v_{\ell,m}^{k+1} = \frac{1}{4}\bigl(v_{\ell+1,m}^k + v_{\ell-1,m}^k + v_{\ell,m+1}^k + v_{\ell,m-1}^k\bigr)
 $$
+
 for the case were $f=0$.  This is called the Jacobi method and is equivalent to solving $\partial_t u = \nabla^2 u$ using forward-time central-space with $\Delta t = \frac{1}{4}h^2$ and then iterating to steady state.  Note that this is _not_ generally the method you would want to use to solve this problem, but it is easy to understand and implement.  As such, we can focus on the details of how to parallize a code to solve the problem using this method without getting bogged down on details of the method itself.  The parallization technique used is, however, very generalizable to a wide range of problems that can be solved on a regular mesh (or lattice). 
 
 We stop the interations when $|v_{\ell,m}^{k+1} - v_{\ell,m}^k| < \text{tol}$ for **all** sites (referred to as $L_\infty$ or infinity norm for the change in the solution matrix/vector).  We use the $L_\infty$ rather than something like the root mean square error, or $L_2$ norm of the change as the solution converges from the boundaries inward (the boundary values are fixed by the B.C.s).  As such, if you were to start your initial guess with a constant on the domain that is different from the boundary values, in the first sweep over the lattice only the sites adjacent from the boundary will change.  In fact, for an $N\times N$ system it will take $N/2$ iterations for a change near the boundary to propogate all the way to the centre.  As such, convergence is not that fast for this method (which is why if you are really interested in solving this problem you should actually parallize a more sophisticated method such as conjugate gradient which we will discuss towards the end of the chapter).  There are a few simple improvements one can make the the basic Jacobi method that do improve the convergence.
@@ -221,9 +241,11 @@ We stop the interations when $|v_{\ell,m}^{k+1} - v_{\ell,m}^k| < \text{tol}$ fo
 ## Gauss-Seidel Method
 
 If we go through the mesh in **lexicographic order** (left-to-right, bottom-to-top), then when we come to update $v_{\ell,m}$ in the Jacobi method, we will have already updated $v_{\ell-1,m}$ and $v_{\ell,m-1}$. If we use an **immediate replacement** (i.e. use the updated values as soon as they are available), convergence tends to be faster (by about a factor of 2) and we don't need to keep "old" and "new" values:
+
 $$
 v_{\ell,m}^{k+1} = \frac{1}{4}\bigl(v_{\ell+1,m}^k + v_{\ell-1,m}^{k+1} + v_{\ell,m+1}^k + v_{\ell,m-1}^{k+1}\bigr)
 $$
+
 This can also be parallized, but usually with rows near processor boundaries still using a Jacobi update (this will be clearer later).
 
 ---
@@ -231,18 +253,22 @@ This can also be parallized, but usually with rows near processor boundaries sti
 ## Successive Over-Relaxation (SOR)
 
 Another way to speed things up is to take a "bigger" step towards the solution:
+
 $$
 v_{\ell,m}^{k+1} = v_{\ell,m}^k + w\left[\frac{1}{4}\bigl(v_{\ell+1,m}^k + v_{\ell-1,m}^{k+1} + v_{\ell,m+1}^k + v_{\ell,m-1}^{k+1}\bigr) - v_{\ell,m}^k\right]
 $$
+
 **Note:** $w = 1 \Rightarrow$ SOR = Gauss-Seidel. Generally we will take $w > 1$ to converge faster.
 
 **How do we pick $w$ for fastest convergence?**
 
 - Typically $1 \leq w \leq 2$ works, so pick something in this range
 - It is known that the optimal value (in the sense of fastest convergence) for $w$ for Laplace-like problems generally follows a relation: 
+
 $$
 w^* \approx \frac{2}{1 + Ch}
 $$
+
 where $C$ is a constant.  To determine $C$ we can use a search algorithm for a small system (large $h$), to find a value of $w\in(1,2)$ for the small system that optimises the convergence (i.e. converges to set error bound in the smallest number of steps.)  Then use the formula and the $h$ to determine the corresponding $C$.  You then use that value for $C$ to determine a value of $w^*$ for the larger system (with smaller $h$).
 
 **NB:** It is better to **overestimate** $w$ than to underestimate.
@@ -465,7 +491,9 @@ int main(int argc, char** argv)
 The solution (using Mathematica's plotting functions) looks like:
 
 ![1D Grid Solution](./Solution_1DGrid.png)
+
 Note that the exact solution here is $u=1$ everywhere.  From the plots we see that
+
 - The solution converges progressively from the boundary inward
 - The error $\approx 0.001$ is considerably larger than the change in one iteration (our stopping criteria was a change in one iteration to less than/equal to  `Tol = 0.000001` ).
 
@@ -493,13 +521,16 @@ How do we do this?
 MPI provides built-in functions for Cartesian decomposition:
 
 **`MPI_Cart_create`** (`MPI_Comm` comm_old, `int` ndims, `int` \*dims, `int` \*periods, `int` reorder, `MPI_Comm` \*comm_cart)
+
 > Makes a new communicator to which topology information has been attached. `MPI_Cart_create` creates a Cartesian decomposition of the processes.
+> 
 > -`comm_old`: input communicator (handle)
 > - `ndims`: number of dimensions of Cartesian grid (integer)
 > - `dims`: integer array of size ndims specifying the number of processes in each dimension
 > - `periods`: logical array of size ndims specifying whether the grid is periodic (1 = true) or not (0 = false) in each dimension
 > - `reorder`: ranking may be reordered (1 = true) or not (0 = false) (logical)
 > - `comm_cart`: output communicator to which the new Cartesian topology has been attached.
+
 ```c// e.g. creates 3×3 decomposition like above:
 int dims[2] = {3,3};
 int isperiodic[2] = {0,0};
@@ -510,21 +541,28 @@ MPI_Cart_create(MPI_COMM_WORLD, 2, dims, isperiodic, 1, &comm2d);
 // reorder=1 to take advantage of any system topology,
 // our new communicator
 ```
+
 > **Important:**
+> 
 >1. `MPI_Comm_rank` should be called **after** the create command, as rank could change with reorder.
 >2. The new communicator `comm2d` should now replace `MPI_COMM_WORLD` in MPI commands.
 
 **`MPI_Cart_coords`** (`MPI_Comm` comm, `int` rank, `int` maxdims, `int` \*coords)
+
 > Determines process coords in Cartesian topology given rank in group. `MPI_Cart_coords` takes input as a rank in a communicator and returns the coordinates of the process with that rank. `MPI_Cart_coords` is the inverse to `MPI_Cart_rank`; it returns the coordinates of the process with rank `rank` in the Cartesian communicator comm. Note that both of these functions are local.
 
 **`MPI_Cart_rank`** (`MPI_Comm` comm, `int` \*coords, `int` \*rank)
+
 > Determines process rank in communicator given Cartesian location. `MPI_Cart_rank` returns the rank in the Cartesian communicator comm of the process with Cartesian coordinates. So coordinates is an array with order equal to the number of dimensions in the Cartesian topology associated with comm.
 
 **`MPI_Cart_get`** (`MPI_Comm` comm, `int` maxdims, `int` \*dims, `int` \*periods, `int` \*coords)
+
 > Retrieves Cartesian topology information associated with a communicator. `MPI_Cart_get` retrieves the coordinates of the calling process in communicator.
 
 **`MPI_Cart_shift`** (`MPI_Comm` comm, `int` direction, `int` disp, `int` \*rank_source, `int` \*rank_dest)
+
 > Returns the shifted source and destination ranks given a shift direction and amount. `MPI_Cart_shift` returns rank of source and destination processes in arguments rank_source and rank_dest respectively.
+
 ```c
 // e.g.
 MPI_Cart_shift(comm2d, 0, 1, &nbrleft, &nbrright);
@@ -532,6 +570,7 @@ MPI_Cart_shift(comm2d, 0, 1, &nbrleft, &nbrright);
 // processor to left of me (this is the output),
 // processor to right of me (also output of this routine)
 ```
+
 > This allows you to find out who the neighbouring processors are in the topology.
 
 ### Sending Column Data in 2D
@@ -539,6 +578,7 @@ MPI_Cart_shift(comm2d, 0, 1, &nbrleft, &nbrright);
 In the 1D decomposition, we sent boundary **rows** to neighbouring processors. In 2D we will need to send both rows (to upper/lower neighbour) and boundary **columns** to neighbours to right and left.
 
 Sending a row is easy: elements of a row are in consecutive memory locations. This is **not** true of a column.
+
 ```c
 // e.g. sending a row:
 MPI_Isend(&old[size-1][1], N-1, MPI_FLOAT, nid+1, 10, MPI_COMM_WORLD, &req_send10);
@@ -549,6 +589,7 @@ We resolve the problem of sending a column by creating a new **derived data type
 
 **`MPI_Type_vector`** (`int` count, `int` blocklength, `int` stride, `MPI_Datatype` oldtype, `MPI_Datatype` \*newtype)
 For inputs we have:
+
 - `count`: number of blocks (nonnegative integer)
 - `blocklength`: number of elements in each block (nonnegative integer)
 - `stride`: number of elements between start of each block (integer)
@@ -560,23 +601,30 @@ Once we create a new data type we must **commit** it:
 **`MPI_Type_commit`**(\&newtype) — Tell the system about our new type and optimize for communication.
 
 **Example:** Suppose we have data in a 2D array declared as `double dat[5][7]`. 
+
 ![DataArrayWithColumnMarked](./strideEg.svg)
+
 To send a column, say the one indicated in yellow (column index 4), we first define a new type "stridetype" via:
+
 ```c
 MPI_Type_vector(5, 1, 7, MPI_DOUBLE, &stridetype);
 // 5 blocks, 1 element each, stride=7 (row width), MPI_DOUBLE base type
 MPI_Type_commit(&stridetype);
 ```
+
 Now when you want to send the column, you could:
+
 ```c
 MPI_Isend(&dat[0][4], 1, stridetype, partnercs, tag, commie, &req);
 // This is just 1 of this type, and that type gets the whole column
 // Note: dat is reinterpreted as of type stridetype
 ```
+
 **Note the implications of being allowed to do this: there is NO checking you are not overstepping the array bounds.**  Errors from going out of bounds of the array can vary from a program crash to just getting results that are wrong. You are responsible for the memory management here and you need to be _very_ careful with verifying that things are actually working as intended.
 
 ### C Code: PoissonJacobi2DMPI.c
 Note that in this example, $N\times N$ is the size of the interior grid, which is slightly different from what we did before.
+
 ```c
 // Solve Poisson's equations using the Jacobi method, with MPI parallelization
 // dividing the grid into a 2D array of processors
@@ -870,10 +918,12 @@ int main(int argc, char** argv)
 ```
 
 The results can be read in and plotted (here using Mathematica). Note: the data must be transposed when plotting because this program expects opposite ordering of rows/columns.
+
 ![Solution from 2D grid of processors](./Solution_2DGrid.png)
 
 
 **3×3 grid note on ordering:**
+
 ```
 10  21  22
 10  11  12
@@ -884,21 +934,29 @@ The results can be read in and plotted (here using Mathematica). Note: the data 
 ## Output: Writing to a Single Global File
 
 Our output routines are still fairly inadequate. Rather than output each local grid to a separate file, it would be much better to get the complete global grid into a single output file.  There are a couple of issues with doing this:
-a) We don't actually want the entire local grid, just its interior (i.e. excluding ghost/halo/boundary layers)
-b) The local grids may be of unequal size
+
+- We don't actually want the entire local grid, just its interior (i.e. excluding ghost/halo/boundary layers)
+-  The local grids may be of unequal size
+
 It usually turns out to be easier to adjust the lattice spacing ($\Delta x$ or $h$) to ensure all local grids are the same size than to have to deal with different sizes, so we will assume they are all the same.
 
 You actually have two very distinct **masks** to consider:
+
 1. The mask for the local data, excluding the halo layers
 2. The mask for the global data, as it should be once collated into the file
 
 The former corresponds to the **local grid on a single processor** (the interior cells in dark, the ghost layer in light).
+
 ![local mask](./LocalMask.png)
+
 The start of the interior data is at index `[1,1]`,  which if interpreted as a location in physical space is in the lower left.  Here, the data you want to output is in dark blue, and the ghost layer that should not be written is in ligher blue.  The latter corresponds to how the **global mesh is assembled from a 2D grid of processors** (each colour corresponds to the local data from a different process). For example for a $2\times 2$ processor grid:
+
 ![GlobalMask](./GlobalMask.png)
+
 Here, each colour represents local data coming from a different process, as organized onto a 2D Cartesion grid.
 
 To understand what you need to create, you have to think backwards:
+
 1. Your final call to the I/O routine will be:
    ```c
    MPI_File_write_all(fh, &A[0][0], 1, interior, MPI_STATUS_IGNORE);
@@ -908,6 +966,7 @@ To understand what you need to create, you have to think backwards:
 
 ### `MPI_Type_create_subarray`
 This routine creates a datatype for a subarray of a regular, multidimensional array.
+
 ```c
 int MPI_Type_create_subarray(int ndims,
                               const int array_of_sizes[],
@@ -917,14 +976,18 @@ int MPI_Type_create_subarray(int ndims,
                               MPI_Datatype oldtype,
                               MPI_Datatype *newtype)
 ```
+
 **Input Parameters:**
+
 - `ndims` — number of array dimensions (positive integer)
 - `array_of_sizes` — number of elements of type oldtype in each dimension of the full array (array of positive integers)
 - `array_of_subsizes` — number of elements of type oldtype in each dimension of the subarray (array of positive integers)
 - `array_of_starts` — starting coordinates of the subarray in each dimension (array of nonnegative integers)
 - `order` — array storage order flag (state)
 - `oldtype` — array element datatype (handle)
+  
 **Output Parameters:**
+
 - `newtype` — new datatype (handle)
 
 **Weaknesses of `MPI_Type_create_subarray`:**
@@ -938,6 +1001,7 @@ int MPI_Type_create_subarray(int ndims,
 
 
 For our Jacobi solver using a 2D array of processors, the **local subarray type** is defined by:
+
 ```c
 /* Create derived datatype for local interior grid (output grid) */
 MPI_Datatype grid;
@@ -949,9 +1013,11 @@ MPI_Type_create_subarray(2, arrsize, gridsize,
                           start, MPI_ORDER_FORTRAN, MPI_DOUBLE, &grid);
 MPI_Type_commit(&grid);
 ```
+
 **Note:** We picked `MPI_ORDER_FORTRAN` rather than `MPI_ORDER_C`. This is because we pick our indices as `A[y-index][x-index]` which is consistent with `A[row-index][column-index]` for a matrix (except that row-index=0 is at the top and y-index=0 is at the bottom). However, when interpreted as spatial indices, C-order is assumed to be `A[x][y]`, so our order is actually the Fortran equivalent.
 
 For our global array we also need a subarray type describing how the local grids fit into the global grid:
+
 ```c
 /* Create derived type for file view, how local interior fits into global system */
 MPI_Datatype view;
@@ -966,23 +1032,28 @@ MPI_Type_commit(&view);
 ```
 
 We will use this type for the "file view", applied simply with:
+
 ```c
 MPI_File_set_view(fh, 0, MPI_DOUBLE, view, "native", MPI_INFO_NULL);
 ```
+
 and the magic is done.
 
 ### MPIIO Overview
 
 **MPIIO Advantages:**
+
 - Improved output speed in large parallel environments
 - Output to a single file for any number of processors (easily)
 
 **MPIIO Disadvantages:**
+
 - Syntax is not exactly like either C or FORTRAN IO (although similar in concept)
 - Can be slower on desktop machines
 - Produces C type binary output
 
 **MPIIO Concepts:**
+
 - In most senses MPIIO is the same as conventional binary IO
 - There are commands to open and close files, read and write data and move file pointers
 - There are things called file views which describe the layout of data across processors
@@ -994,11 +1065,13 @@ and the magic is done.
 int MPI_File_open(MPI_Comm Comm, char *filename, int amode, MPI_Info info, MPI_File *mpi_fh)
 ```
 > **Description:** Opens a file using MPIIO and returns a file handle mpi_fh.
+> 
 > - This is a **collective** operation. All processes must have the same `amode` and the `filename` must reference the same file (does not have to be the same filename)
 > - Choosing whether opening the file for reading or writing is via constants passed as part of `amode` as normal
 > - `info` is used to pass additional parameter, which will generally vary from system to system. You create MPI Info objects using the MPI Info commands. Most generally, you can use `MPI_INFO_NULL` to open the file generically.
 > 
 > **MPI File open modes:**
+> 
 > - `MPI_MODE_RDONLY` — Open for reading
 > - `MPI_MODE_RDWR` — Open for reading and writing
 > - `MPI_MODE_WRONLY` — Open for writing
@@ -1018,9 +1091,11 @@ int MPI_File_close(MPI_File *mpi_fh)
 int MPI_File_write_all(MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)
 ```
 > **Description:** Writes to the file pointed to by the handle mpi_fh using the individual file pointer.
+> 
 > - This is a **collective** operation and all the processors in the MPI_Comm given to MPI_File_open must call MPI_File_write_all or the code will lock (i.e. this is a blocking operation).
 
 **What are file views?**
+
 - If you wish to have more control over where a given processor will write its data then you have to use file views
 - File views use MPI types to describe the section of the global data that the current processor has, and its location in the final file on disk
 - Makes it easier to write multidimensional arrays into a single file
@@ -1028,6 +1103,7 @@ int MPI_File_write_all(MPI_File mpi_fh, void *buf, int count, MPI_Datatype datat
 int MPI_File_set_view(MPI_File mpi_fh, MPI_Offset offset, MPI_Datatype etype, MPI_Datatype filetype, MPI_Datatype datarep, MPI_Info info)
 ```
 > **Description:** Sets the file view on file handle mpi_fh.
+> 
 > - `offset` is the offset from the start of the file at which to apply the file view
 > - `datarep` is a string describing the data representation, usually `"native"`
 > - `info` contains additional information, will usually be `MPI_INFO_NULL`
@@ -1037,6 +1113,7 @@ int MPI_File_set_view(MPI_File mpi_fh, MPI_Offset offset, MPI_Datatype etype, MP
 ### Final Output Routine
 
 So our final output routine will be:
+
 ```c
 void output_onefile(double **new, int xsize, int ysize, struct mpi_vars mpi)
 {
@@ -1087,49 +1164,64 @@ The Jacobi method is a nice illustration of how to parallize a problem defined o
 ### Mathematical Background
 
 Suppose $\mathcal{A}$ is positive definite. Consider the scalar quadratic function with vector arguments:
+
 $$
 f(\bm{x}) = \frac{1}{2} \bm{x}^T \mathcal{A} \bm{x} - \bm{b}^T \bm{x} + \bm{c} = \frac{1}{2} x_\alpha A_{\alpha\beta} x_\beta - b_\alpha x_\alpha + c
 $$
+
 where tensor notation with summation convention assumed is used after the 2nd equality sign.  Here $x_\alpha$ is a component of $\bm{x}$, and $A_{\alpha\beta}$ is a matrix element of the matrix $\mathcal{A}$.  Taking the derivative with respect to $x_\gamma$ gives:
+
 $$
 \frac{\partial f}{x_\gamma} = \frac{1}{2} \delta_{\gamma\alpha} A_{\alpha\beta} x_\beta + \frac{1}{2} x_\alpha A_{\alpha\beta} \delta_{\beta\gamma} - b_\gamma \delta_{\gamma\gamma}
 = A_{\gamma\beta} x_\beta - b_\gamma
 = (Ax - b)_\gamma
 $$
+
 so that $\nabla f = Ax - b$.  Minimizing $f$ is equivalent to solving $\partial f/\partial x_\gamma = 0$ for all $\gamma$ and is therefore equivalent to solving $Ax = b.$  (The fact that there is a minimum is guaranteed by the fact that $\mathcal{A}$ is positive definite.)
 
 ### Line Search
 
 We try to find approximate ways to minimise $f$ via an iteration scheme:
+
 $$
 x_\alpha^{(m+1)} = x_\alpha^{(m)} + \lambda_m d_\alpha^{(m)}
 $$
+
 where $m$ is the iteration label and $\alpha$ is the vector coordinate index.  The idea will be to pick the scalar $\lambda_m$ to minimise $f$ along the line determined by some vector $\bm{d}^{(m)}$ (the search direction).
+
 $$
 f(\bm{x}^{(m)} + \lambda \bm{d}^{(m)}) = \frac{1}{2}(x_\alpha + \lambda d_\alpha) A_{\alpha\beta}(x_\beta + \lambda d_\beta) - b_\alpha(x_\alpha + \lambda d_\alpha) + c \\ \qquad\qquad = f(\bm{x}^{(m)}) + \lambda^2\!\left(\frac{1}{2} d_\alpha A_{\alpha\beta} d_\beta\right) + \lambda\, d_\alpha\bigl(A_{\alpha\beta} x_\beta - b_\alpha\bigr)
 $$
+
 where we have used the fact that $\mathcal{A}$ is symmetric so $d_\alpha A_{\alpha\beta} x_\beta = x_\alpha A_{\alpha\beta} d_\beta$.  Note that the first term is just a number and the second term is greater than zero due to the fact that $\mathcal{A}$ is positive definite so this defines an upward parabola if plotted as a function of $\lambda$.  We define the **residual** (the gradient of $f$ at $\bm{x}^{(m)}$) as 
+
 $$\bm{r}^{(m)} = \mathcal{A}\bm{x}^{(m)} - \bm{b}.$$
 
 Minimizing $f$ along our search direction is then at $\partial f / \partial \lambda = 0$:
+
 $$
 \lambda\, d_\alpha A_{\alpha\beta} d_\beta + d_\alpha r_\alpha^{(m)} = 0
 \quad \Rightarrow \quad
 \lambda_{min} = -\frac{d_\alpha^{(m)} r_\alpha^{(m)}}{d_\alpha^{(m)} A_{\alpha\beta} d_\beta^{(m)}}
 $$
+
 to get to the minimum along our line.
 
 ### Choosing the Search Direction
 
 What direction should we search in? It makes sense to take $\bm{d}^{(0)}$ along the gradient $\nabla f({\bm x}^{(0)}) = -\bm{r}^{(0)}$, i.e. in the downhill direction. Subsequent searches are along:
+
 $$
 \bm{d}^{(m+1)} = -\bm{r}^{(m+1)} + \alpha_m \bm{d}^{(m)}
 $$
+
 where $-\bm{r}^{(m+1)}$ is the gradient at the current minimum and $\alpha_m \bm{d}^{(m)}$ removes directions we have just searched.
 **How?** Choose $\bm{d}^{(m+1)}$ to be **$\mathcal{A}$-conjugate** to $\bm{d}^{(m)}$, i.e. so that
+
 $$
 d_\alpha^{(m+1)} A_{\alpha\beta} d_\beta^{(m)} = 0.
 $$
+
 You can think of this as choosing $\bm{d}^{(m+1)}$ to be orthogonal to $\bm{d}^{(m)}$ in a space where $\mathcal{A}$ is a metric.
 Substituting:
 
@@ -1148,9 +1240,11 @@ i) $d_\alpha^{(m)} r_\alpha^{(m+1)} = 0$  — i.e. previous search direction and
 ii) $r_\alpha^{(m)} r_\alpha^{(\ell)} = 0$ for $m \neq \ell$  — i.e. all residuals are orthogonal (we are eliminating residuals along a new specific direction at every step)
 
 iii) With i) and ii), it is possible to show:
+
 $$
 \lambda_m = \frac{r_\alpha^{(m)} r_\alpha^{(m)}}{d_\alpha^{(m)} A_{\alpha\beta} d_\beta^{(m)}}, \qquad \alpha_m = \frac{r_\alpha^{(m+1)} r_\alpha^{(m+1)}}{r_\beta^{(m)} r_\beta^{(m)}}
 $$
+
 To save repeating work,  $\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}$ should be saved for the next step (where it will be used as $\delta^{(m)}$), and since $\bf{r}^{(m+1)} = \bm{r}^{(m)} + \lambda_m \bm{u}$ (where $\bm{u} = \mathcal{A}\bm{d}^{(m)}$, the same matrix-vector product already computed for $\lambda_m$), we can avoid re-computing $\mathcal{A}\bm{d}^{(m+1)}-\bm{b}$ from scratch.
 
 The full algorithm then becomes:
@@ -1172,13 +1266,16 @@ $\text{for } m = 0, 1, 2, \ldots$
 ### How Many Iterations Are Needed?
 
 **Not many!** Suppose the initial guess is $\bm{x}^{(0)} = \mathbf{0}$, then:
+
 $$
 \bm{x}^{(m)} = \sum_{k=0}^{m} c_k \bm{d}^{(k)}
 $$
+
 But all $\bm{d}^{(k)}$ are linearly dependent, by construction. If $\mathcal{A}$ is $n \times n$, then we can need at most $n$ iterations, and then should terminate. For well-conditioned problems, much fewer iterations are needed.
 
 ### C Code: CG.c
 A serial code for the conjugate gradient algorithm in C is given here for solving Laplace's equation.  Note that in this case $\mathcal{A}$ is very sparse so you should not store it explicitly.  As $\mathcal{A}$ is only used in computing $\mathcal{A}\bm{d^{(m)}}$ we can do this multiplication explictly using the five nonzero elements in a row of $\mathcal{A}$ associated with the 5-point stencil discussed above.  Also, for this problem $\bm{x}$ is our solution vector $\bm{v}$ on the mesh, stored in row-major ordering.
+
 ```c
 /* Compile line: */
 /*   gcc -O3 CG.c -lm   */
