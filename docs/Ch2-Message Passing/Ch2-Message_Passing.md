@@ -12,9 +12,13 @@ Two main paradigms for sharing data between MPI processes:
 ### Example: Computing ln 2
 
 Consider the formula for computing $\ln 2$ from a series:
+
 $$\ln 2 = \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n} = 1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \cdots$$
+
 We want to compute this by dividing the terms to be computed amongst the processors.  Obviously we can't go to $\infty$ so we will terminate the sum at $N$ terms.  If there are `NProcs` processors with IDs $0, 1, \ldots, \text{NProcs}-1$, then processor `nid` handles the terms where $i = \text{nid}, \text{nid}+\text{NProcs}, \text{nid}+2\cdot\text{NProcs}, \ldots$ .  The sum above starts at 1 rather than 0 so it makes sense to first shift to zero-based indexing, so the $n$-th term is $(-1)^n/(n+1)$).  Mathematically we can rewrite the sum as:
+
 $$\ln 2 = \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n} = \lim_{N\rightarrow\infty}  \sum_{n=0}^{N} \frac{(-1)^{n}}{n+1}=\sum_{n_{id}=0}^{N_{Procs}-1}\left(\sum_{i=n_{id},N_{Procs}}^N \frac{(-1)^{i}}{i+1}\right)$$
+
 where in the inner sum, the $N_{Procs}$ is the increment for $i$.  Each processor works on one inner loop and then at the end we will need to collect and sum the results from each processor.  For example with `NProcs = 2`:
 
 | $i$ | $(-1)^i/(i+1)$ | processor |
@@ -66,14 +70,15 @@ float compute_lnsum(const MPI_stuff& the_mpi, const int N)
     float sum = 0, Gsum;
     /* processor MyID handles terms i = MyID, MyID+NProcs, MyID+2*NProcs, ... */
     for (int i = the_mpi.MyID; i < N; i += the_mpi.NProcs) {
-        /* for even NProcs: even-ID procs handle even i (positive), odd-ID handle odd i (negative) */
+        /* for even NProcs: even-ID procs handle even i (positive), 
+                            odd-ID handle odd i (negative) */
         if (the_mpi.MyID % 2)
             sum -= (float)1 / (i + 1);
         else
             sum += (float)1 / (i + 1);
     }
 
-    /* Now we need to collect and sum the results from each processor using MPI_Reduce */
+    /* Now collect and sum the results from each processor using MPI_Reduce */
     MPI_Reduce(&sum, &Gsum, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
     
     return Gsum; //the answer
@@ -84,7 +89,7 @@ int main(int argc, char** argv)
     MPI_stuff the_mpi(argc, argv);
 
     if (the_mpi.NProcs % 2 != 0) {
-        std::cout << "Program only works for an even number of processors" << std::endl;
+        std::cout << "Program requires an even number of processors" << std::endl;
         return 0;
     }
     
@@ -130,10 +135,10 @@ MPI_Bcast(&N,               1,       MPI_INT,        0,       MPI_COMM_WORLD);
 **`MPI_Reduce`** — combine values from all processes onto root:
 
 ```c
-MPI_Reduce(&sum,      &Gsum,    1,     MPI_FLOAT,  MPI_SUM,       0,       MPI_COMM_WORLD);
-//          ↑            ↑      ↑         ↑          ↑           ↑              ↑
-//      send_buffer recv_buf  buffer  data type  operation   receiving     communicator
-//                             size                         processor ID
+MPI_Reduce(&sum,      &Gsum,    1,  MPI_FLOAT, MPI_SUM,      0,      MPI_COMM_WORLD);
+//          ↑            ↑      ↑      ↑          ↑         ↑              ↑
+//     send_buffer recv_buf  buffer   data    operation  receiving    communicator
+//                            size    type              processor ID
 ```
 Here the Reduce operation performs a sum on all the values received from the different processors (values from `sum`) and puts the resulting sum in `Gsum`.
 
@@ -152,6 +157,7 @@ A declration like
 creates a C-style array (also in C++) where each element is laid out contiguously in memory.  We can illustrate for an array of length `n` as:
 
 ![1D C array memory layout: elements a_0, a_1, … a_{n-1} in adjacent cells.](array-layout.svg)
+
 Note that the allowed entries are $0,...,n-1$, i.e. they always start at zero.  The size (in memory) of each box is `sizeof(double)` = 64 bits for an array of `double` .  In order to send an array from one process to anothe we need to know where it starts in memory (it's address) and its size.  An important identity in C: the array name **is** the address of its first element.  For example:
 ```cpp
 #include <iostream>
@@ -173,13 +179,16 @@ will produce an output something like
 `The array has address: 0042FD5C 
 Element 0 has address: 0042FD5C
 `
+
 Note that both give the address of the first element.
 
 In C, dynamic allocation of arrays typically uses `malloc` or `calloc`. The second is preferable as it also initializes the elements (to zero).  e.g.
+
 ```c
 float *a;
-a = (float*) calloc(n, sizeof(float));   /* allocate n floats, zero-initialised */
+a = (float*) calloc(n, sizeof(float));  /* allocate n floats, zero-initialised */
 ```
+
 As with statically declared arrays, this creates an array of size `n` (an integer) doubles.  
 
 This means you can pass `&array[k]` to `MPI_Send`/`MPI_Recv` to start the transfer at any element — a convenient way to send a sub-section of an array. Data sizes to keep in mind:
@@ -191,12 +200,14 @@ This means you can pass `&array[k]` to `MPI_Send`/`MPI_Recv` to start the transf
 
 ### MPI Data Types
 To ensure compatible sizes across a potentially heterogeneous environment, MPI introduces its own fundamental data types that you should use in MPI functions.
+
 | MPI type | C type |
 |----------|--------|
 | `MPI_INT` | `int` |
 | `MPI_FLOAT` | `float` |
 | `MPI_DOUBLE` | `double` |
 | `MPI_CHAR` | `char` |
+
 
 ### Using `std::vector` (C++)
 
@@ -236,7 +247,9 @@ Let's look at how we would comput the dot product of two vectors of length $n$:
 $\displaystyle\vec{a} \cdot \vec{b} = \sum_{i=1}^{n} a_i b_i=\sum_{i=0}^{n-1}$`a[i]b[i]`
 
 Let's assume we have `NProcs` processors and that `n` is exactly divisible by  `NProcs`.  We can then break the task into parts of 
+
 $$size=\frac{n}{N_{procs}}$$
+
 Anticipating a SIMD scheme, we rewrite the sum as:
 
 $\displaystyle\vec{a} \cdot \vec{b} = \sum_{i=0}^{n-1}$ `a[i]b[i]`$\displaystyle=\sum_{i=0}^{size-1}$`a[i]b[i]` $\displaystyle+ \sum_{i=size}^{2 size-1}$`a[i]b[i]`$\displaystyle+ ... +\sum_{i=(N_{procs}-1)size}^{n-1}$`a[i]b[i]`
@@ -256,9 +269,9 @@ To summarize, we distribute the arrays across `NProcs` processors using a SIMD-s
 ### C++ Implementation: Dot Product
 
 ```cpp
-#include <iostream>     /* regular I/O */
-#include <fstream>      /* file stream header for functions interacting with files */
-#include <vector>       /* needed for std::vector */
+#include <iostream>  /* regular I/O */
+#include <fstream>   /* file stream header for functions interacting with files */
+#include <vector>    /* needed for std::vector */
 #include "mpi.h"
 
 /* MPI_stuff class should come here— same as above */
@@ -283,15 +296,15 @@ void ReadArrays(std::ifstream& fin, std::vector<float>& a,
     if (fin.is_open()) {
         for (int i = 0; i < n; i++)
             fin >> a[i] >> b[i];
-    } else {                                    /* fp null means no file to read from */
+    } else {                             /* fp null means no file to read from */
         std::cout << "Input File not found\n";
         MPI_Abort(MPI_COMM_WORLD, -2);
     }
 }
 
-// Function to compute dot product of two vectors owned and fully stored on Boss node
-// but subdivded amongst avaialble processors which individually compute the dot product
-// of their subsections.
+// Function to compute dot product of two vectors owned and fully stored on Boss
+// node but subdivded amongst avaialble processors which individually compute the 
+// dot product of their subsections.
 float DotProduct(std::vector<float>& a, std::vector<float>& b,
                  int size, MPI_stuff& mpi)
 {
@@ -328,15 +341,15 @@ int main(int argc, char** argv)
     std::ifstream fin;
     int n = 0;
 
-    if (the_mpi.MyID == 0) {
-        fin.open("DotData.txt");          /* only Boss reads from file */
-        n = GetNumberElements(fin);       /* (multiple processes cannot access file simultaneously) */
+    if (the_mpi.MyID == 0) { /* only Boss reads from file as multiple processes */
+        fin.open("DotData.txt");           /* cannot access file simultaneously */
+        n = GetNumberElements(fin); 
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);   /* send n to everyone */
 
-    if (n % the_mpi.NProcs) {            /* is n divisible by NProcs? */
+    if (n % the_mpi.NProcs) {           /* is n divisible by NProcs? */
         std::cout << "Number of processes is not a multiple of n.\n";
-        MPI_Abort(MPI_COMM_WORLD, -2);   /* kills program gracefully on all nodes */
+        MPI_Abort(MPI_COMM_WORLD, -2);  /* kill program gracefully on all nodes */
     }
 
     int size = n / the_mpi.NProcs;
@@ -347,7 +360,7 @@ int main(int argc, char** argv)
         b.reserve(n);  b.resize(n);
         ReadArrays(fin, a, b, n);        /* node 0 reads from file */
     } else {
-        a.reserve(size);  a.resize(size);  /* workers only need smaller array for their chunk */
+        a.reserve(size);  a.resize(size); /* workers only need smaller array chunk */
         b.reserve(size);  b.resize(size);
     }
 
@@ -439,7 +452,7 @@ The `op` argument accepted by `MPI_Reduce`, `MPI_Allreduce`, `MPI_Reduce_scatter
 | `MPI_MAXLOC` | max value and location |
 | `MPI_MINLOC` | min value and location |
 
-*(Source: OpenMPI docs — https://www.open-mpi.org/doc/v3.0/man3/MPI_Reduce.3.php)*
+*Source: [OpenMPI docs](https://www.open-mpi.org/doc/v3.0/man3/MPI_Reduce.3.php)*
 
 ---
 
@@ -449,9 +462,9 @@ Before going on, let's discuss the status variable in the `MPI_Recv` call.  `MPI
 
 ```c
 MPI_Status status;
-status.MPI_SOURCE   /* id of the processor that sent the message */
-status.MPI_TAG      /* the message tag */
-status.MPI_ERROR    /* error status (often not modified; same as function return value) */
+status.MPI_SOURCE  /* id of the processor that sent the message */
+status.MPI_TAG     /* the message tag */
+status.MPI_ERROR   /* error status (often unmodified; same as function return value) */
 /* other fields possible but implementation-dependent */
 ```
 
@@ -476,6 +489,7 @@ for (int task=1; task <= 10; task++) {
     ...
 }
 ```
+
 | task | task/nprocs | node |
 |------|-------------|------|
 | 1 | 0 | 1 |
@@ -488,6 +502,7 @@ for (int task=1; task <= 10; task++) {
 | 8 | 2 | 0 |
 | 9 | 2 | 1 |
 | 10 | 2 | 2 |
+
 
 ### Code (C with `mpi_vars` struct)
 
@@ -568,6 +583,7 @@ Processor 0 will compute 20
 ```
 
 **Comments:**
+
 1. Tasks are not completed in order (and the order may change on each run).
 2. There is no synchronization between loops: some processors are working on the second loop while other processors are still working on the first loop. 
 3. Node 2 is slow, as expected, because of the `waste_your_time()` call.
@@ -623,7 +639,7 @@ MPI_Send(&task, 1, MPI_INT, 0, 10+node, MPI_COMM_WORLD);  /* tag = 10+node */
 ...
 MPI_Recv(&taskx, 1, MPI_INT, MPI_ANY_SOURCE, 10+node, MPI_COMM_WORLD, &status);
 ```
-Note that this leads to an asymmetry: a Worker does its task and immediately sends; the Boss must wait for a Worker's send before it can proceed. If one Worker is slow, the Boss waits. This leads to a form of implicit synchronisation imposed by blocking sends.  Note that this also blocks the other workers as they are also waiting for an acknowledgment from their Send's which won't be sent until the corresponding `MPI_Recv` by the Boxx.
+Note that this leads to an asymmetry: a Worker does its task and immediately sends; the Boss must wait for a Worker's send before it can proceed. If one Worker is slow, the Boss waits. This leads to a form of implicit synchronisation imposed by blocking sends.  Note that this also blocks the other workers as they are also waiting for an acknowledgment from their Send's which won't be sent until the corresponding `MPI_Recv` by the Boss.
 > **Note:** This will slow things down significantly — a processor that finishes early must now wait for node 0 to receive the previous task before it can proceed. Effectively, tasks are executed sequentially in time, just on different processors.  This effectively eliminates the benefit of parallelism as tasks must now be done sequentially, just on different processors.
 
 ---
