@@ -887,11 +887,11 @@
 <li><strong>All-to-one (reduce):</strong> each node contributes data that is combined on one node → <code>MPI_Reduce</code></li>
 </ul>
 <h3 id="example-computing-ln-2">Example: Computing ln 2</h3>
-<p>Consider the formula for computing <span class="arithmatex">\(\ln 2\)</span> from a series:
-<span class="arithmatex">\(<span class="arithmatex">\(\ln 2 = \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n} = 1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \cdots\)</span>\)</span>
-We want to compute this by dividing the terms to be computed amongst the processors.  Obviously we can't go to <span class="arithmatex">\(\infty\)</span> so we will terminate the sum at <span class="arithmatex">\(N\)</span> terms.  If there are <code>NProcs</code> processors with IDs <span class="arithmatex">\(0, 1, \ldots, \text{NProcs}-1\)</span>, then processor <code>nid</code> handles the terms where <span class="arithmatex">\(i = \text{nid}, \text{nid}+\text{NProcs}, \text{nid}+2\cdot\text{NProcs}, \ldots\)</span> .  The sum above starts at 1 rather than 0 so it makes sense to first shift to zero-based indexing, so the <span class="arithmatex">\(n\)</span>-th term is <span class="arithmatex">\((-1)^n/(n+1)\)</span>).  Mathematically we can rewrite the sum as:
-<span class="arithmatex">\(<span class="arithmatex">\(\ln 2 = \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n} = \lim_{N\rightarrow\infty}  \sum_{n=0}^{N} \frac{(-1)^{n}}{n+1}=\sum_{n_{id}=0}^{N_{Procs}-1}\left(\sum_{i=n_{id},N_{Procs}}^N \frac{(-1)^{i}}{i+1}\right)\)</span>\)</span>
-where in the inner sum, the <span class="arithmatex">\(N_{Procs}\)</span> is the increment for <span class="arithmatex">\(i\)</span>.  Each processor works on one inner loop and then at the end we will need to collect and sum the results from each processor.  For example with <code>NProcs = 2</code>:</p>
+<p>Consider the formula for computing <span class="arithmatex">\(\ln 2\)</span> from a series:</p>
+<div class="arithmatex">\[\ln 2 = \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n} = 1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \cdots\]</div>
+<p>We want to compute this by dividing the terms to be computed amongst the processors.  Obviously we can't go to <span class="arithmatex">\(\infty\)</span> so we will terminate the sum at <span class="arithmatex">\(N\)</span> terms.  If there are <code>NProcs</code> processors with IDs <span class="arithmatex">\(0, 1, \ldots, \text{NProcs}-1\)</span>, then processor <code>nid</code> handles the terms where <span class="arithmatex">\(i = \text{nid}, \text{nid}+\text{NProcs}, \text{nid}+2\cdot\text{NProcs}, \ldots\)</span> .  The sum above starts at 1 rather than 0 so it makes sense to first shift to zero-based indexing, so the <span class="arithmatex">\(n\)</span>-th term is <span class="arithmatex">\((-1)^n/(n+1)\)</span>).  Mathematically we can rewrite the sum as:</p>
+<div class="arithmatex">\[\ln 2 = \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n} = \lim_{N\rightarrow\infty}  \sum_{n=0}^{N} \frac{(-1)^{n}}{n+1}=\sum_{n_{id}=0}^{N_{Procs}-1}\left(\sum_{i=n_{id},N_{Procs}}^N \frac{(-1)^{i}}{i+1}\right)\]</div>
+<p>where in the inner sum, the <span class="arithmatex">\(N_{Procs}\)</span> is the increment for <span class="arithmatex">\(i\)</span>.  Each processor works on one inner loop and then at the end we will need to collect and sum the results from each processor.  For example with <code>NProcs = 2</code>:</p>
 <table>
 <thead>
 <tr>
@@ -963,44 +963,45 @@ where in the inner sum, the <span class="arithmatex">\(N_{Procs}\)</span> is the
 </span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="cm">    float sum = 0, Gsum;</span>
 </span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="cm">    /* processor MyID handles terms i = MyID, MyID+NProcs, MyID+2*NProcs, ... */</span>
 </span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">the_mpi</span><span class="p">.</span><span class="n">MyID</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">the_mpi</span><span class="p">.</span><span class="n">NProcs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">        </span><span class="cm">/* for even NProcs: even-ID procs handle even i (positive), odd-ID handle odd i (negative) */</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">the_mpi</span><span class="p">.</span><span class="n">MyID</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">            </span><span class="n">sum</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">        </span><span class="k">else</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">            </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">    </span><span class="cm">/* Now we need to collect and sum the results from each processor using MPI_Reduce */</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">    </span><span class="n">MPI_Reduce</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sum</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">Gsum</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_FLOAT</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_SUM</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Gsum</span><span class="p">;</span><span class="w"> </span><span class="c1">//the answer</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="p">}</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="w"> </span><span class="n">argv</span><span class="p">)</span>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="p">{</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w">    </span><span class="n">MPI_stuff</span><span class="w"> </span><span class="nf">the_mpi</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">);</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">the_mpi</span><span class="p">.</span><span class="n">NProcs</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Program only works for an even number of processors&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>
-</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">;</span>
-</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">the_mpi</span><span class="p">.</span><span class="n">MyID</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">          </span><span class="cm">/* Boss asks the user for N */</span>
-</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Please enter the number of terms N -&gt; &quot;</span><span class="p">;</span>
-</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">N</span><span class="p">;</span>
-</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>
-</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="w">    </span><span class="n">MPI_Bcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span><span class="w">   </span><span class="cm">/* send N to everyone */</span>
-</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>
-</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">Gsum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_lnsum</span><span class="p">(</span><span class="n">the_mpi</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">);</span>
-</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>
-</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="w">    </span><span class="cm">/* Boss outputs the result</span>
-</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="cm">    if (the_mpi.MyID == 0)</span>
-</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="cm">        std::cout &lt;&lt; &quot;An estimate of ln(2) is &quot; &lt;&lt; Gsum &lt;&lt; std::endl;</span>
-</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>
-</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="cm">    return 0;</span>
-</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="cm">}</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">        </span><span class="cm">/* for even NProcs: even-ID procs handle even i (positive), </span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="cm">                            odd-ID handle odd i (negative) */</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">the_mpi</span><span class="p">.</span><span class="n">MyID</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">            </span><span class="n">sum</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">        </span><span class="k">else</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">            </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">    </span><span class="cm">/* Now collect and sum the results from each processor using MPI_Reduce */</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w">    </span><span class="n">MPI_Reduce</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sum</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">Gsum</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_FLOAT</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_SUM</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Gsum</span><span class="p">;</span><span class="w"> </span><span class="c1">//the answer</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="p">}</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="w"> </span><span class="n">argv</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="p">{</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">    </span><span class="n">MPI_stuff</span><span class="w"> </span><span class="nf">the_mpi</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">);</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">the_mpi</span><span class="p">.</span><span class="n">NProcs</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Program requires an even number of processors&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">;</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">the_mpi</span><span class="p">.</span><span class="n">MyID</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">          </span><span class="cm">/* Boss asks the user for N */</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Please enter the number of terms N -&gt; &quot;</span><span class="p">;</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">N</span><span class="p">;</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="w">    </span><span class="n">MPI_Bcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span><span class="w">   </span><span class="cm">/* send N to everyone */</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">Gsum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_lnsum</span><span class="p">(</span><span class="n">the_mpi</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">);</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="w">    </span><span class="cm">/* Boss outputs the result</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="cm">    if (the_mpi.MyID == 0)</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="cm">        std::cout &lt;&lt; &quot;An estimate of ln(2) is &quot; &lt;&lt; Gsum &lt;&lt; std::endl;</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="cm">    return 0;</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="cm">}</span>
 </span></code></pre></div>
 <h3 id="flowchart">Flowchart</h3>
 <p><img alt="Boss-Worker flowchart for the ln 2 computation: Boss broadcasts N, all nodes compute partial sums, Workers reduce results to Boss." src="../ln2-flowchart.svg" /></p>
@@ -1016,10 +1017,10 @@ where in the inner sum, the <span class="arithmatex">\(N_{Procs}\)</span> is the
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1">//                                                            (everyone here)</span>
 </span></code></pre></div>
 <p><strong><code>MPI_Reduce</code></strong> — combine values from all processes onto root:</p>
-<p><div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">MPI_Reduce</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sum</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">Gsum</span><span class="p">,</span><span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w">     </span><span class="n">MPI_FLOAT</span><span class="p">,</span><span class="w">  </span><span class="n">MPI_SUM</span><span class="p">,</span><span class="w">       </span><span class="mi">0</span><span class="p">,</span><span class="w">       </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">//          ↑            ↑      ↑         ↑          ↑           ↑              ↑</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">//      send_buffer recv_buf  buffer  data type  operation   receiving     communicator</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">//                             size                         processor ID</span>
+<p><div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">MPI_Reduce</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sum</span><span class="p">,</span><span class="w">      </span><span class="o">&amp;</span><span class="n">Gsum</span><span class="p">,</span><span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="n">MPI_FLOAT</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_SUM</span><span class="p">,</span><span class="w">      </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">//          ↑            ↑      ↑      ↑          ↑         ↑              ↑</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">//     send_buffer recv_buf  buffer   data    operation  receiving    communicator</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">//                            size    type              processor ID</span>
 </span></code></pre></div>
 Here the Reduce operation performs a sum on all the values received from the different processors (values from <code>sum</code>) and puts the resulting sum in <code>Gsum</code>.</p>
 <p><strong>Note:</strong> <code>N</code> does not have to be a multiple of <code>NProcs</code>. When it is not, some processors will simply have slightly less work — the <code>for</code> loop terminates naturally when <code>i ≥ N</code>. No zero-padding is required. Passing large contiguous blocks of data (rather than individual elements) is much more efficient for MPI communication.</p>
@@ -1030,8 +1031,8 @@ Here the Reduce operation performs a sum on all the values received from the dif
 <p>A declration like
 <code>double a[100];</code>
 creates a C-style array (also in C++) where each element is laid out contiguously in memory.  We can illustrate for an array of length <code>n</code> as:</p>
-<p><img alt="1D C array memory layout: elements a_0, a_1, … a_{n-1} in adjacent cells." src="../array-layout.svg" />
-Note that the allowed entries are <span class="arithmatex">\(0,...,n-1\)</span>, i.e. they always start at zero.  The size (in memory) of each box is <code>sizeof(double)</code> = 64 bits for an array of <code>double</code> .  In order to send an array from one process to anothe we need to know where it starts in memory (it's address) and its size.  An important identity in C: the array name <strong>is</strong> the address of its first element.  For example:
+<p><img alt="1D C array memory layout: elements a_0, a_1, … a_{n-1} in adjacent cells." src="../array-layout.svg" /></p>
+<p>Note that the allowed entries are <span class="arithmatex">\(0,...,n-1\)</span>, i.e. they always start at zero.  The size (in memory) of each box is <code>sizeof(double)</code> = 64 bits for an array of <code>double</code> .  In order to send an array from one process to anothe we need to know where it starts in memory (it's address) and its size.  An important identity in C: the array name <strong>is</strong> the address of its first element.  For example:
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
@@ -1048,13 +1049,13 @@ Note that the allowed entries are <span class="arithmatex">\(0,...,n-1\)</span>,
 </span></code></pre></div>
 will produce an output something like</p>
 <p><code>The array has address: 0042FD5C 
-Element 0 has address: 0042FD5C</code>
-Note that both give the address of the first element.</p>
-<p>In C, dynamic allocation of arrays typically uses <code>malloc</code> or <code>calloc</code>. The second is preferable as it also initializes the elements (to zero).  e.g.
+Element 0 has address: 0042FD5C</code></p>
+<p>Note that both give the address of the first element.</p>
+<p>In C, dynamic allocation of arrays typically uses <code>malloc</code> or <code>calloc</code>. The second is preferable as it also initializes the elements (to zero).  e.g.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">;</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">calloc</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span><span class="w">   </span><span class="cm">/* allocate n floats, zero-initialised */</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">calloc</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span><span class="w">  </span><span class="cm">/* allocate n floats, zero-initialised */</span>
 </span></code></pre></div>
-As with statically declared arrays, this creates an array of size <code>n</code> (an integer) doubles.  </p>
+<p>As with statically declared arrays, this creates an array of size <code>n</code> (an integer) doubles.  </p>
 <p>This means you can pass <code>&amp;array[k]</code> to <code>MPI_Send</code>/<code>MPI_Recv</code> to start the transfer at any element — a convenient way to send a sub-section of an array. Data sizes to keep in mind:</p>
 <ul>
 <li><code>sizeof(float)</code>  = 32 bits</li>
@@ -1064,13 +1065,33 @@ As with statically declared arrays, this creates an array of size <code>n</code>
 <p><strong>Warning:</strong> C arrays do <strong>not</strong> perform bounds checking. Accessing <code>a[-1]</code> or <code>a[n]</code> causes undefined behaviour with no error raised.</p>
 </blockquote>
 <h3 id="mpi-data-types">MPI Data Types</h3>
-<p>To ensure compatible sizes across a potentially heterogeneous environment, MPI introduces its own fundamental data types that you should use in MPI functions.
-| MPI type | C type |
-|----------|--------|
-| <code>MPI_INT</code> | <code>int</code> |
-| <code>MPI_FLOAT</code> | <code>float</code> |
-| <code>MPI_DOUBLE</code> | <code>double</code> |
-| <code>MPI_CHAR</code> | <code>char</code> |</p>
+<p>To ensure compatible sizes across a potentially heterogeneous environment, MPI introduces its own fundamental data types that you should use in MPI functions.</p>
+<table>
+<thead>
+<tr>
+<th>MPI type</th>
+<th>C type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MPI_INT</code></td>
+<td><code>int</code></td>
+</tr>
+<tr>
+<td><code>MPI_FLOAT</code></td>
+<td><code>float</code></td>
+</tr>
+<tr>
+<td><code>MPI_DOUBLE</code></td>
+<td><code>double</code></td>
+</tr>
+<tr>
+<td><code>MPI_CHAR</code></td>
+<td><code>char</code></td>
+</tr>
+</tbody>
+</table>
 <h3 id="using-stdvector-c">Using <code>std::vector</code> (C++)</h3>
 <p>In C++ we can create dynamically allocated arrays using <code>new[]</code> and <code>delete[]</code>, but this is no longer recommended (it will be made obsolete in future versions of C++). The preferred replacement is <code>std::vector</code>.</p>
 <p><code>std::vector</code> manages memory automatically and is safer than raw C arrays. It has two separate size concepts:</p>
@@ -1096,9 +1117,9 @@ These create an array with similarites (and differences) to what we did in C.  I
 <h2 id="one-to-one-communication-dot-product">One-to-One Communication: Dot Product</h2>
 <p>Let's look at how we would comput the dot product of two vectors of length <span class="arithmatex">\(n\)</span>: </p>
 <p><span class="arithmatex">\(\displaystyle\vec{a} \cdot \vec{b} = \sum_{i=1}^{n} a_i b_i=\sum_{i=0}^{n-1}\)</span><code>a[i]b[i]</code></p>
-<p>Let's assume we have <code>NProcs</code> processors and that <code>n</code> is exactly divisible by  <code>NProcs</code>.  We can then break the task into parts of 
-<span class="arithmatex">\(<span class="arithmatex">\(size=\frac{n}{N_{procs}}\)</span>\)</span>
-Anticipating a SIMD scheme, we rewrite the sum as:</p>
+<p>Let's assume we have <code>NProcs</code> processors and that <code>n</code> is exactly divisible by  <code>NProcs</code>.  We can then break the task into parts of </p>
+<div class="arithmatex">\[size=\frac{n}{N_{procs}}\]</div>
+<p>Anticipating a SIMD scheme, we rewrite the sum as:</p>
 <p><span class="arithmatex">\(\displaystyle\vec{a} \cdot \vec{b} = \sum_{i=0}^{n-1}\)</span> <code>a[i]b[i]</code><span class="arithmatex">\(\displaystyle=\sum_{i=0}^{size-1}\)</span><code>a[i]b[i]</code> <span class="arithmatex">\(\displaystyle+ \sum_{i=size}^{2 size-1}\)</span><code>a[i]b[i]</code><span class="arithmatex">\(\displaystyle+ ... +\sum_{i=(N_{procs}-1)size}^{n-1}\)</span><code>a[i]b[i]</code></p>
 <p>and processor <code>j</code> works on a contiguous block of <code>size = n/NProcs</code> elements starting at index <code>j × size</code>:</p>
 <div class="arithmatex">\[\text{processor } j \text{ handles } a[j \cdot \text{size}] \ldots a[(j+1)\cdot\text{size} - 1]\]</div>
@@ -1107,9 +1128,9 @@ Anticipating a SIMD scheme, we rewrite the sum as:</p>
 <p><img alt="Boss-Worker flowchart for the dot product: Boss sends array chunks to Workers, all compute local dot products, results are reduced to Boss." src="../dotproduct-flowchart.svg" /></p>
 <hr />
 <h3 id="c-implementation-dot-product">C++ Implementation: Dot Product</h3>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span><span class="c1">     /* regular I/O */</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span><span class="c1">      /* file stream header for functions interacting with files */</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span><span class="c1">       /* needed for std::vector */</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span><span class="c1">  /* regular I/O */</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span><span class="c1">   /* file stream header for functions interacting with files */</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span><span class="c1">    /* needed for std::vector */</span>
 </span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mpi.h&quot;</span>
 </span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="cm">/* MPI_stuff class should come here— same as above */</span>
@@ -1134,15 +1155,15 @@ Anticipating a SIMD scheme, we rewrite the sum as:</p>
 </span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">fin</span><span class="p">.</span><span class="n">is_open</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
 </span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="w">            </span><span class="n">fin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">                                    </span><span class="cm">/* fp null means no file to read from */</span>
+</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">                             </span><span class="cm">/* fp null means no file to read from */</span>
 </span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Input File not found</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 </span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="w">        </span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="mi">-2</span><span class="p">);</span>
 </span><span id="__span-7-31"><a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-7-32"><a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="p">}</span>
 </span><span id="__span-7-33"><a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a>
-</span><span id="__span-7-34"><a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="c1">// Function to compute dot product of two vectors owned and fully stored on Boss node</span>
-</span><span id="__span-7-35"><a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="c1">// but subdivded amongst avaialble processors which individually compute the dot product</span>
-</span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="c1">// of their subsections.</span>
+</span><span id="__span-7-34"><a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="c1">// Function to compute dot product of two vectors owned and fully stored on Boss</span>
+</span><span id="__span-7-35"><a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="c1">// node but subdivded amongst avaialble processors which individually compute the </span>
+</span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="c1">// dot product of their subsections.</span>
 </span><span id="__span-7-37"><a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="kt">float</span><span class="w"> </span><span class="nf">DotProduct</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">b</span><span class="p">,</span>
 </span><span id="__span-7-38"><a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a><span class="w">                 </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_stuff</span><span class="o">&amp;</span><span class="w"> </span><span class="n">mpi</span><span class="p">)</span>
 </span><span id="__span-7-39"><a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a><span class="p">{</span>
@@ -1179,15 +1200,15 @@ Anticipating a SIMD scheme, we rewrite the sum as:</p>
 </span><span id="__span-7-70"><a id="__codelineno-7-70" name="__codelineno-7-70" href="#__codelineno-7-70"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="n">fin</span><span class="p">;</span>
 </span><span id="__span-7-71"><a id="__codelineno-7-71" name="__codelineno-7-71" href="#__codelineno-7-71"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 </span><span id="__span-7-72"><a id="__codelineno-7-72" name="__codelineno-7-72" href="#__codelineno-7-72"></a>
-</span><span id="__span-7-73"><a id="__codelineno-7-73" name="__codelineno-7-73" href="#__codelineno-7-73"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">the_mpi</span><span class="p">.</span><span class="n">MyID</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-7-74"><a id="__codelineno-7-74" name="__codelineno-7-74" href="#__codelineno-7-74"></a><span class="w">        </span><span class="n">fin</span><span class="p">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;DotData.txt&quot;</span><span class="p">);</span><span class="w">          </span><span class="cm">/* only Boss reads from file */</span>
-</span><span id="__span-7-75"><a id="__codelineno-7-75" name="__codelineno-7-75" href="#__codelineno-7-75"></a><span class="w">        </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNumberElements</span><span class="p">(</span><span class="n">fin</span><span class="p">);</span><span class="w">       </span><span class="cm">/* (multiple processes cannot access file simultaneously) */</span>
+</span><span id="__span-7-73"><a id="__codelineno-7-73" name="__codelineno-7-73" href="#__codelineno-7-73"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">the_mpi</span><span class="p">.</span><span class="n">MyID</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* only Boss reads from file as multiple processes */</span>
+</span><span id="__span-7-74"><a id="__codelineno-7-74" name="__codelineno-7-74" href="#__codelineno-7-74"></a><span class="w">        </span><span class="n">fin</span><span class="p">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;DotData.txt&quot;</span><span class="p">);</span><span class="w">           </span><span class="cm">/* cannot access file simultaneously */</span>
+</span><span id="__span-7-75"><a id="__codelineno-7-75" name="__codelineno-7-75" href="#__codelineno-7-75"></a><span class="w">        </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetNumberElements</span><span class="p">(</span><span class="n">fin</span><span class="p">);</span><span class="w"> </span>
 </span><span id="__span-7-76"><a id="__codelineno-7-76" name="__codelineno-7-76" href="#__codelineno-7-76"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-7-77"><a id="__codelineno-7-77" name="__codelineno-7-77" href="#__codelineno-7-77"></a><span class="w">    </span><span class="n">MPI_Bcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">);</span><span class="w">   </span><span class="cm">/* send n to everyone */</span>
 </span><span id="__span-7-78"><a id="__codelineno-7-78" name="__codelineno-7-78" href="#__codelineno-7-78"></a>
-</span><span id="__span-7-79"><a id="__codelineno-7-79" name="__codelineno-7-79" href="#__codelineno-7-79"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">the_mpi</span><span class="p">.</span><span class="n">NProcs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">            </span><span class="cm">/* is n divisible by NProcs? */</span>
+</span><span id="__span-7-79"><a id="__codelineno-7-79" name="__codelineno-7-79" href="#__codelineno-7-79"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">the_mpi</span><span class="p">.</span><span class="n">NProcs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">           </span><span class="cm">/* is n divisible by NProcs? */</span>
 </span><span id="__span-7-80"><a id="__codelineno-7-80" name="__codelineno-7-80" href="#__codelineno-7-80"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Number of processes is not a multiple of n.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-7-81"><a id="__codelineno-7-81" name="__codelineno-7-81" href="#__codelineno-7-81"></a><span class="w">        </span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="mi">-2</span><span class="p">);</span><span class="w">   </span><span class="cm">/* kills program gracefully on all nodes */</span>
+</span><span id="__span-7-81"><a id="__codelineno-7-81" name="__codelineno-7-81" href="#__codelineno-7-81"></a><span class="w">        </span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="mi">-2</span><span class="p">);</span><span class="w">  </span><span class="cm">/* kill program gracefully on all nodes */</span>
 </span><span id="__span-7-82"><a id="__codelineno-7-82" name="__codelineno-7-82" href="#__codelineno-7-82"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-7-83"><a id="__codelineno-7-83" name="__codelineno-7-83" href="#__codelineno-7-83"></a>
 </span><span id="__span-7-84"><a id="__codelineno-7-84" name="__codelineno-7-84" href="#__codelineno-7-84"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">the_mpi</span><span class="p">.</span><span class="n">NProcs</span><span class="p">;</span>
@@ -1198,7 +1219,7 @@ Anticipating a SIMD scheme, we rewrite the sum as:</p>
 </span><span id="__span-7-89"><a id="__codelineno-7-89" name="__codelineno-7-89" href="#__codelineno-7-89"></a><span class="w">        </span><span class="n">b</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">n</span><span class="p">);</span><span class="w">  </span><span class="n">b</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
 </span><span id="__span-7-90"><a id="__codelineno-7-90" name="__codelineno-7-90" href="#__codelineno-7-90"></a><span class="w">        </span><span class="n">ReadArrays</span><span class="p">(</span><span class="n">fin</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">);</span><span class="w">        </span><span class="cm">/* node 0 reads from file */</span>
 </span><span id="__span-7-91"><a id="__codelineno-7-91" name="__codelineno-7-91" href="#__codelineno-7-91"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-7-92"><a id="__codelineno-7-92" name="__codelineno-7-92" href="#__codelineno-7-92"></a><span class="w">        </span><span class="n">a</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">size</span><span class="p">);</span><span class="w">  </span><span class="n">a</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">);</span><span class="w">  </span><span class="cm">/* workers only need smaller array for their chunk */</span>
+</span><span id="__span-7-92"><a id="__codelineno-7-92" name="__codelineno-7-92" href="#__codelineno-7-92"></a><span class="w">        </span><span class="n">a</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">size</span><span class="p">);</span><span class="w">  </span><span class="n">a</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">);</span><span class="w"> </span><span class="cm">/* workers only need smaller array chunk */</span>
 </span><span id="__span-7-93"><a id="__codelineno-7-93" name="__codelineno-7-93" href="#__codelineno-7-93"></a><span class="w">        </span><span class="n">b</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">size</span><span class="p">);</span><span class="w">  </span><span class="n">b</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
 </span><span id="__span-7-94"><a id="__codelineno-7-94" name="__codelineno-7-94" href="#__codelineno-7-94"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-7-95"><a id="__codelineno-7-95" name="__codelineno-7-95" href="#__codelineno-7-95"></a>
@@ -1321,14 +1342,14 @@ Anticipating a SIMD scheme, we rewrite the sum as:</p>
 </tr>
 </tbody>
 </table>
-<p><em>(Source: OpenMPI docs — https://www.open-mpi.org/doc/v3.0/man3/MPI_Reduce.3.php)</em></p>
+<p><em>Source: <a href="https://www.open-mpi.org/doc/v3.0/man3/MPI_Reduce.3.php">OpenMPI docs</a></em></p>
 <hr />
 <h2 id="mpi_status"><code>MPI_Status</code></h2>
 <p>Before going on, let's discuss the status variable in the <code>MPI_Recv</code> call.  <code>MPI_Status</code> is a data structure type with fields:</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">MPI_Status</span><span class="w"> </span><span class="n">status</span><span class="p">;</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">status</span><span class="p">.</span><span class="n">MPI_SOURCE</span><span class="w">   </span><span class="cm">/* id of the processor that sent the message */</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">status</span><span class="p">.</span><span class="n">MPI_TAG</span><span class="w">      </span><span class="cm">/* the message tag */</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">status</span><span class="p">.</span><span class="n">MPI_ERROR</span><span class="w">    </span><span class="cm">/* error status (often not modified; same as function return value) */</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">status</span><span class="p">.</span><span class="n">MPI_SOURCE</span><span class="w">  </span><span class="cm">/* id of the processor that sent the message */</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">status</span><span class="p">.</span><span class="n">MPI_TAG</span><span class="w">     </span><span class="cm">/* the message tag */</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">status</span><span class="p">.</span><span class="n">MPI_ERROR</span><span class="w">   </span><span class="cm">/* error status (often unmodified; same as function return value) */</span>
 </span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="cm">/* other fields possible but implementation-dependent */</span>
 </span></code></pre></div>
 <p><code>status.MPI_SOURCE</code> is particularly useful when receiving with <code>MPI_ANY_SOURCE</code> — it tells you which processor the message actually came from.</p>
@@ -1337,7 +1358,7 @@ Anticipating a SIMD scheme, we rewrite the sum as:</p>
 <p><code>MPI_Send</code> is a <strong>blocking</strong> routine: the sending processor waits for a "received" confirmation before proceeding to the next line of code. Similarly, <code>MPI_Recv</code> causes the receiving processor to block until the message arrives. </p>
 <h2 id="example-task-distribution">Example: Task Distribution</h2>
 <p>Suppose we have 10 tasks numbered 1 to 10 to distribute across <code>nprocs = 4</code> processors with <span class="arithmatex">\(\mathit{nid} \in \{0, 1, 2, 3\}\)</span>.</p>
-<p><div class="language-c highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">node</span><span class="p">,</span><span class="w"> </span><span class="n">nprocs</span><span class="p">;</span>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">node</span><span class="p">,</span><span class="w"> </span><span class="n">nprocs</span><span class="p">;</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w"> </span><span class="p">...</span>
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
 </span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">task</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="n">task</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -1345,18 +1366,67 @@ Anticipating a SIMD scheme, we rewrite the sum as:</p>
 </span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="p">...</span>
 </span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="p">}</span>
 </span></code></pre></div>
-| task | task/nprocs | node |
-|------|-------------|------|
-| 1 | 0 | 1 |
-| 2 | 0 | 2 |
-| 3 | 0 | 3 |
-| 4 | 1 | 0 |
-| 5 | 1 | 1 |
-| 6 | 1 | 2 |
-| 7 | 1 | 3 |
-| 8 | 2 | 0 |
-| 9 | 2 | 1 |
-| 10 | 2 | 2 |</p>
+<table>
+<thead>
+<tr>
+<th>task</th>
+<th>task/nprocs</th>
+<th>node</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>7</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>8</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>9</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>10</td>
+<td>2</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
 <h3 id="code-c-with-mpi_vars-struct">Code (C with <code>mpi_vars</code> struct)</h3>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mpi.h&quot;</span>
@@ -1429,12 +1499,14 @@ Anticipating a SIMD scheme, we rewrite the sum as:</p>
 </span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a>Processor 2 will compute 18
 </span><span id="__span-14-20"><a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a>Processor 0 will compute 20
 </span></code></pre></div>
-<p><strong>Comments:</strong>
-1. Tasks are not completed in order (and the order may change on each run).
-2. There is no synchronization between loops: some processors are working on the second loop while other processors are still working on the first loop. 
-3. Node 2 is slow, as expected, because of the <code>waste_your_time()</code> call.
-4. Node 0 is slower because it is busy receiving results from other processors and outputting.
-5. Nodes 1 and 3 finish all their tasks before nodes 0 and 2 finish even their first — they complete both loops before nodes 0 and 2 get through the first.</p>
+<p><strong>Comments:</strong></p>
+<ol>
+<li>Tasks are not completed in order (and the order may change on each run).</li>
+<li>There is no synchronization between loops: some processors are working on the second loop while other processors are still working on the first loop. </li>
+<li>Node 2 is slow, as expected, because of the <code>waste_your_time()</code> call.</li>
+<li>Node 0 is slower because it is busy receiving results from other processors and outputting.</li>
+<li>Nodes 1 and 3 finish all their tasks before nodes 0 and 2 finish even their first — they complete both loops before nodes 0 and 2 get through the first.</li>
+</ol>
 <h3 id="flowchart-1st-loop">Flowchart (1st Loop)</h3>
 <p>To better understand the code, let's look at a flowchart of the first loop:</p>
 <p><img alt="Flowchart for the first task-distribution loop: two columns for nid=0 (Boss) and nid≠0 (Workers), showing the blocking MPI_Send/Recv pattern." src="../task-flowchart.svg" /></p>
@@ -1472,7 +1544,7 @@ This function blocks the calling process from proceeding until <strong>all</stro
 </span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="p">...</span>
 </span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">MPI_Recv</span><span class="p">(</span><span class="o">&amp;</span><span class="n">taskx</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_INT</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_ANY_SOURCE</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="o">+</span><span class="n">node</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">status</span><span class="p">);</span>
 </span></code></pre></div>
-Note that this leads to an asymmetry: a Worker does its task and immediately sends; the Boss must wait for a Worker's send before it can proceed. If one Worker is slow, the Boss waits. This leads to a form of implicit synchronisation imposed by blocking sends.  Note that this also blocks the other workers as they are also waiting for an acknowledgment from their Send's which won't be sent until the corresponding <code>MPI_Recv</code> by the Boxx.</p>
+Note that this leads to an asymmetry: a Worker does its task and immediately sends; the Boss must wait for a Worker's send before it can proceed. If one Worker is slow, the Boss waits. This leads to a form of implicit synchronisation imposed by blocking sends.  Note that this also blocks the other workers as they are also waiting for an acknowledgment from their Send's which won't be sent until the corresponding <code>MPI_Recv</code> by the Boss.</p>
 <blockquote>
 <p><strong>Note:</strong> This will slow things down significantly — a processor that finishes early must now wait for node 0 to receive the previous task before it can proceed. Effectively, tasks are executed sequentially in time, just on different processors.  This effectively eliminates the benefit of parallelism as tasks must now be done sequentially, just on different processors.</p>
 </blockquote>
