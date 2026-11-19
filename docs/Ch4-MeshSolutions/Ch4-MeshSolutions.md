@@ -1255,16 +1255,21 @@ To save repeating work,  $\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}$ sh
 The full algorithm then becomes:
 
 ---
-${\bf r}^{(0)} = \mathcal{A}{\bf x}^{(0)} - {\bf b}; \quad {\bf d}^{(0)} = -{\bf r}^{(0)}; \quad \delta^{(0)} = {\bf r}^{(0)T} {\bf r}^{(0)};$
-$\text{for } m = 0, 1, 2, \ldots$
- $\qquad {\bf u} = \mathcal{A}{\bf d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}$
- $\qquad \lambda_m = \frac{\delta^{(m)}}{{\bf d}^{(m)T} {\bf u}}; \quad \leftarrow \text{do locally then AllReduce}$
- $\qquad {\bf x}^{(m+1)} = {\bf x}^{(m)} + \lambda_m {\bf d}^{(m)}$;
- $\qquad {\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u}$;
- $\qquad \delta^{(m+1)} = {\bf r}^{(m+1)T} {\bf r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}$
- $\qquad \text{if } \sqrt{\delta^{(m+1)}} < \text{tol}: \text{ output } {\bf x}^{(m+1)}, \text{ stop}$;
- $\qquad \alpha_m = \frac{\delta^{(m+1)}}{\delta^{(m)}}$;
- $\qquad {\bf d}^{(m+1)} = -{\bf r}^{(m+1)} + \alpha_m {\bf d}^{(m)}; \quad \leftarrow \text{local}$
+
+$$
+\begin{align}
+&{\bf r}^{(0)} = \mathcal{A}{\bf x}^{(0)} - {\bf b}; \quad {\bf d}^{(0)} = -{\bf r}^{(0)}; \quad \delta^{(0)} = {\bf r}^{(0)T} {\bf r}^{(0)};\\
+&\text{for } m = 0, 1, 2, \ldots\\
+&\qquad {\bf u} = \mathcal{A}{\bf d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}\\
+&\qquad \lambda_m = \frac{\delta^{(m)}}{{\bf d}^{(m)T} {\bf u}}; \quad \leftarrow \text{do locally then AllReduce}\\
+&\qquad {\bf x}^{(m+1)} = {\bf x}^{(m)} + \lambda_m {\bf d}^{(m)};\\
+&\qquad {\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u};\\
+&\qquad \delta^{(m+1)} = {\bf r}^{(m+1)T} {\bf r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}\\
+&\qquad \text{if } \sqrt{\delta^{(m+1)}} < \text{tol}: \text{ output } {\bf x}^{(m+1)}, \text{ stop};\\
+&\qquad \alpha_m = \frac{\delta^{(m+1)}}{\delta^{(m)}};\\
+&\qquad {\bf d}^{(m+1)} = -{\bf r}^{(m+1)} + \alpha_m {\bf d}^{(m)}; \quad \leftarrow \text{local}
+\end{align}
+$$
 
 ---
 
