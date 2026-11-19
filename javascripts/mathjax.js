@@ -11,6 +11,14 @@ window.MathJax = {
   }
 };
 
+
+document$.subscribe(() => { 
+  MathJax.startup.output.clearCache()
+  MathJax.typesetClear()
+  MathJax.texReset()
+  MathJax.typesetPromise()
+});
+
 //Load specific LaTeX packages
 document.addEventListener("MathJax.typesetReady", function() {
     MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
@@ -23,10 +31,3 @@ document.addEventListener("MathJax.typesetReady", function() {
     // Re-typeset after packages load
     MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 });
-
-document$.subscribe(() => { 
-  MathJax.startup.output.clearCache()
-  MathJax.typesetClear()
-  MathJax.texReset()
-  MathJax.typesetPromise()
-})
