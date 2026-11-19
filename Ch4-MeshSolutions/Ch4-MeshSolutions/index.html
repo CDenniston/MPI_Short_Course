@@ -1912,7 +1912,10 @@ x_\alpha^{(m+1)} = x_\alpha^{(m)} + \lambda_m d_\alpha^{(m)}
 \]</div>
 <p>where <span class="arithmatex">\(m\)</span> is the iteration label and <span class="arithmatex">\(\alpha\)</span> is the vector coordinate index.  The idea will be to pick the scalar <span class="arithmatex">\(\lambda_m\)</span> to minimise <span class="arithmatex">\(f\)</span> along the line determined by some vector <span class="arithmatex">\({\bf d}^{(m)}\)</span> (the search direction).</p>
 <div class="arithmatex">\[
-f({\bf x}^{(m)} + \lambda {\bf d}^{(m)}) = \frac{1}{2}(x_\alpha + \lambda d_\alpha) A_{\alpha\beta}(x_\beta + \lambda d_\beta) - b_\alpha(x_\alpha + \lambda d_\alpha) + c \\ \qquad\qquad = f({\bf x}^{(m)}) + \lambda^2\!\left(\frac{1}{2} d_\alpha A_{\alpha\beta} d_\beta\right) + \lambda\, d_\alpha\bigl(A_{\alpha\beta} x_\beta - b_\alpha\bigr)
+\begin{align}
+f({\bf x}^{(m)} + \lambda {\bf d}^{(m)}) &amp;= \frac{1}{2}(x_\alpha + \lambda d_\alpha) A_{\alpha\beta}(x_\beta + \lambda d_\beta) - b_\alpha(x_\alpha + \lambda d_\alpha) + c\\ 
+&amp;= f({\bf x}^{(m)}) + \lambda^2\!\left(\frac{1}{2} d_\alpha A_{\alpha\beta} d_\beta\right) + \lambda\, d_\alpha\bigl(A_{\alpha\beta} x_\beta - b_\alpha\bigr)
+\end{align}
 \]</div>
 <p>where we have used the fact that <span class="arithmatex">\(\mathcal{A}\)</span> is symmetric so <span class="arithmatex">\(d_\alpha A_{\alpha\beta} x_\beta = x_\alpha A_{\alpha\beta} d_\beta\)</span>.  Note that the first term is just a number and the second term is greater than zero due to the fact that <span class="arithmatex">\(\mathcal{A}\)</span> is positive definite so this defines an upward parabola if plotted as a function of <span class="arithmatex">\(\lambda\)</span>.  We define the <strong>residual</strong> (the gradient of <span class="arithmatex">\(f\)</span> at <span class="arithmatex">\({\bf x}^{(m)}\)</span>) as </p>
 <div class="arithmatex">\[{\bf r}^{(m)} = \mathcal{A}{\bf x}^{(m)} - {\bf b}.\]</div>
@@ -1948,28 +1951,28 @@ Substituting:</p>
 <div class="arithmatex">\[
 \lambda_m = \frac{r_\alpha^{(m)} r_\alpha^{(m)}}{d_\alpha^{(m)} A_{\alpha\beta} d_\beta^{(m)}}, \qquad \alpha_m = \frac{r_\alpha^{(m+1)} r_\alpha^{(m+1)}}{r_\beta^{(m)} r_\beta^{(m)}}
 \]</div>
-<p>To save repeating work,  <span class="arithmatex">\(\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}\)</span> should be saved for the next step (where it will be used as <span class="arithmatex">\(\delta^{(m)}\)</span>), and since <span class="arithmatex">\({\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u}\)</span> (where <span class="arithmatex">\(\bm{u} = \mathcal{A}\bm{d}^{(m)}\)</span>, the same matrix-vector product already computed for <span class="arithmatex">\(\lambda_m\)</span>), we can avoid re-computing <span class="arithmatex">\(\mathcal{A}{\bf d}^{(m+1)}-{\bf b}\)</span> from scratch.</p>
+<p>To save repeating work,  <span class="arithmatex">\(\delta^{(m+1)} = r_\alpha^{(m+1)} r_\alpha^{(m+1)}\)</span> should be saved for the next step (where it will be used as <span class="arithmatex">\(\delta^{(m)}\)</span>), and since <span class="arithmatex">\({\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u}\)</span> (where <span class="arithmatex">\({\bf u} = \mathcal{A}{\bf d}^{(m)}\)</span>, the same matrix-vector product already computed for <span class="arithmatex">\(\lambda_m\)</span>), we can avoid re-computing <span class="arithmatex">\(\mathcal{A}{\bf d}^{(m+1)}-{\bf b}\)</span> from scratch.</p>
 <p>The full algorithm then becomes:</p>
 <hr />
-<p><span class="arithmatex">\(\bf{r}^{(0)} = \mathcal{A}\bf{x}^{(0)} - \bf{b}; \quad \bf{d}^{(0)} = -\bf{r}^{(0)}; \quad \delta^{(0)} = \bf{r}^{(0)T} \bf{r}^{(0)};\)</span>
+<p><span class="arithmatex">\({\bf r}^{(0)} = \mathcal{A}{\bf x}^{(0)} - {\bf b}; \quad {\bf d}^{(0)} = -{\bf r}^{(0)}; \quad \delta^{(0)} = {\bf r}^{(0)T} {\bf r}^{(0)};\)</span>
 <span class="arithmatex">\(\text{for } m = 0, 1, 2, \ldots\)</span>
- <span class="arithmatex">\(\qquad \bf{u} = \mathcal{A}\bf{d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}\)</span>
- <span class="arithmatex">\(\qquad \lambda_m = \frac{\delta^{(m)}}{\bf{d}^{(m)T} \bf{u}}; \quad \leftarrow \text{do locally then AllReduce}\)</span>
- <span class="arithmatex">\(\qquad \bf{x}^{(m+1)} = \bf{x}^{(m)} + \lambda_m \bf{d}^{(m)}\)</span>;
- <span class="arithmatex">\(\qquad \bf{r}^{(m+1)} = \bf{r}^{(m)} + \lambda_m \bf{u}\)</span>;
- <span class="arithmatex">\(\qquad \delta^{(m+1)} = \bf{r}^{(m+1)T} \bf{r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}\)</span>
- <span class="arithmatex">\(\qquad \text{if } \sqrt{\delta^{(m+1)}} &lt; \text{tol}: \text{ output } \bf{x}^{(m+1)}, \text{ stop}\)</span>;
+ <span class="arithmatex">\(\qquad {\bf u} = \mathcal{A}{\bf d}^{(m)}; \quad \leftarrow \text{matrix-vector product (the main parallelisable kernel)}\)</span>
+ <span class="arithmatex">\(\qquad \lambda_m = \frac{\delta^{(m)}}{{\bf d}^{(m)T} {\bf u}}; \quad \leftarrow \text{do locally then AllReduce}\)</span>
+ <span class="arithmatex">\(\qquad {\bf x}^{(m+1)} = {\bf x}^{(m)} + \lambda_m {\bf d}^{(m)}\)</span>;
+ <span class="arithmatex">\(\qquad {\bf r}^{(m+1)} = {\bf r}^{(m)} + \lambda_m {\bf u}\)</span>;
+ <span class="arithmatex">\(\qquad \delta^{(m+1)} = {\bf r}^{(m+1)T} {\bf r}^{(m+1)}; \quad \leftarrow \text{do locally then AllReduce}\)</span>
+ <span class="arithmatex">\(\qquad \text{if } \sqrt{\delta^{(m+1)}} &lt; \text{tol}: \text{ output } {\bf x}^{(m+1)}, \text{ stop}\)</span>;
  <span class="arithmatex">\(\qquad \alpha_m = \frac{\delta^{(m+1)}}{\delta^{(m)}}\)</span>;
- <span class="arithmatex">\(\qquad \bf{d}^{(m+1)} = -\bf{r}^{(m+1)} + \alpha_m \bf{d}^{(m)}; \quad \leftarrow \text{local}\)</span></p>
+ <span class="arithmatex">\(\qquad {\bf d}^{(m+1)} = -{\bf r}^{(m+1)} + \alpha_m {\bf d}^{(m)}; \quad \leftarrow \text{local}\)</span></p>
 <hr />
 <h3 id="how-many-iterations-are-needed">How Many Iterations Are Needed?</h3>
-<p><strong>Not many!</strong> Suppose the initial guess is <span class="arithmatex">\(\bf{x}^{(0)} = \mathbf{0}\)</span>, then:</p>
+<p><strong>Not many!</strong> Suppose the initial guess is <span class="arithmatex">\({\bf x}^{(0)} = \mathbf{0}\)</span>, then:</p>
 <div class="arithmatex">\[
-\bf{x}^{(m)} = \sum_{k=0}^{m} c_k \bf{d}^{(k)}
+{\bf x}^{(m)} = \sum_{k=0}^{m} c_k {\bf d}^{(k)}
 \]</div>
-<p>But all <span class="arithmatex">\(\bf{d}^{(k)}\)</span> are linearly dependent, by construction. If <span class="arithmatex">\(\mathcal{A}\)</span> is <span class="arithmatex">\(n \times n\)</span>, then we can need at most <span class="arithmatex">\(n\)</span> iterations, and then should terminate. For well-conditioned problems, much fewer iterations are needed.</p>
+<p>But all <span class="arithmatex">\({\bf d}^{(k)}\)</span> are linearly dependent, by construction. If <span class="arithmatex">\(\mathcal{A}\)</span> is <span class="arithmatex">\(n \times n\)</span>, then we can need at most <span class="arithmatex">\(n\)</span> iterations, and then should terminate. For well-conditioned problems, much fewer iterations are needed.</p>
 <h3 id="c-code-cgc">C Code: CG.c</h3>
-<p>A serial code for the conjugate gradient algorithm in C is given here for solving Laplace's equation.  Note that in this case <span class="arithmatex">\(\mathcal{A}\)</span> is very sparse so you should not store it explicitly.  As <span class="arithmatex">\(\mathcal{A}\)</span> is only used in computing <span class="arithmatex">\(\mathcal{A}\bf{d^{(m)}}\)</span> we can do this multiplication explictly using the five nonzero elements in a row of <span class="arithmatex">\(\mathcal{A}\)</span> associated with the 5-point stencil discussed above.  Also, for this problem <span class="arithmatex">\(\bf{x}\)</span> is our solution vector <span class="arithmatex">\(\bf{v}\)</span> on the mesh, stored in row-major ordering.</p>
+<p>A serial code for the conjugate gradient algorithm in C is given here for solving Laplace's equation.  Note that in this case <span class="arithmatex">\(\mathcal{A}\)</span> is very sparse so you should not store it explicitly.  As <span class="arithmatex">\(\mathcal{A}\)</span> is only used in computing <span class="arithmatex">\(\mathcal{A}{\bf d}^{(m)}\)</span> we can do this multiplication explictly using the five nonzero elements in a row of <span class="arithmatex">\(\mathcal{A}\)</span> associated with the 5-point stencil discussed above.  Also, for this problem <span class="arithmatex">\({\bf x}\)</span> is our solution vector <span class="arithmatex">\({\bf v}\)</span> on the mesh, stored in row-major ordering.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="cm">/* Compile line: */</span>
 </span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="cm">/*   gcc -O3 CG.c -lm   */</span>
 </span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
@@ -2122,7 +2125,7 @@ Substituting:</p>
 <p>Parallelisation of this code is very similar to what we did before:</p>
 <ol>
 <li>
-<p>The "matrix-vector" product for the case where <span class="arithmatex">\(A\)</span> is defined from the Poisson equation is almost identical to what we did for an "iteration" of the Jacobi algorithm.</p>
+<p>The "matrix-vector" product for the case where <span class="arithmatex">\(\mathcal{A}\)</span> is defined from the Poisson equation is almost identical to what we did for an "iteration" of the Jacobi algorithm.</p>
 </li>
 <li>
 <p>Most other computations are <strong>local</strong> except for a few dot products/norms which can easily be done locally and then collected together using an <code>MPI_Allreduce</code>.</p>
