@@ -134,6 +134,7 @@ $$
 ## MPI
 
 The MPI Library consists of more than 100 functions.  Of these, 6 functions are really important:
+
 1. Initialize MPI
 2. Find # of processes (specified when program submitted)
 3. Find out which process I am

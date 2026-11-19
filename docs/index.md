@@ -1,10 +1,7 @@
 # Using MPI for Scientific Computing : SC 9505 Quarter Course
     
-```{epigraph}
-Computers are like Old Testament gods; lots of rules and no mercy.
-
--- [Joseph Campbell](https://en.wikipedia.org/wiki/Joseph_Campbell) 
-```
+> Computers are like Old Testament gods; lots of rules and no mercy.
+> -- [Joseph Campbell](https://en.wikipedia.org/wiki/Joseph_Campbell) 
 
 ## Target audience
 
@@ -44,10 +41,8 @@ This is a hands-on course and requires programming. This means that you *must* h
 - The examples and tasks have been tested on Linux and Windows. 
 - Due to no access to Apple-based systems, none of the examples have been tested on them.
 
-```{important}
-Some tasks can be CPU (or even GPU) intensive. To avoid overheating, thermal shutdown or, in the worst case, damage to your computer, always ensure that the ventilation openings are not covered. This is of utmost importance and the responsibility is solely yours.
 
-```
+> Some tasks can be CPU (or even GPU) intensive. To avoid overheating, thermal shutdown or, in the worst case, damage to your computer, always ensure that the ventilation openings are not covered. This is of utmost importance and the responsibility is solely yours.
 
 
 ## Software
