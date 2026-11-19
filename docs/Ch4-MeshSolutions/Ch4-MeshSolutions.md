@@ -62,8 +62,8 @@ A = \left(\begin{array}{cccccc|cccccc|cccccc}
 0 & 1 & -4 & 1 & \ddots & \vdots &             \vdots & 0 & 1  & 0 & & & & & & & &\\
 \vdots & \ddots  & \ddots & \ddots & \ddots & 0 &    & & \ddots & \ddots & \ddots & \vdots   & & & & & &\\
 \vdots &   &  \ddots      & 1 & -4 & 1 &            \vdots & & & 0 & 1 & 0\\
-0 & \dots  &   \dots     &  0 & 1  & -4 &           {\mathcolor{red}{0}}  & \dots & & \dots & 0 & 1\\\hline
-1  & 0 & \dots & & \dots & {\mathcolor{red}{0}} &                  -4 & 1 & 0 & & &                  & \ddots & & & & &\\
+0 & \dots  &   \dots     &  0 & 1  & -4 &           \text{\O}  & \dots & & \dots & 0 & 1\\\hline
+1  & 0 & \dots & & \dots & \text{\O} &                  -4 & 1 & 0 & & &                  & \ddots & & & & &\\
 0  & 1 & 0 & & & \vdots &                       1 & \ddots & \ddots & & &\\ 
 \vdots & 0 & 1  & 0 & & &                       0 & \ddots & \ddots & \ddots & & \\
 & & \ddots & \ddots & \ddots & \vdots &    \\
@@ -78,7 +78,7 @@ A = \left(\begin{array}{cccccc|cccccc|cccccc}
 \end{array}\right)
 $$
 
-where the $1$s on off-diagonals connect same-row neighbours, and the $1$s at distance $L-1$ connect vertically adjacent rows. The red ${\red 0}$ entries in the block corners that interupt the 1s just off the main diagonal are where boundary terms were moved to the RHS (i.e. into $F$).
+where the $1$s on off-diagonals connect same-row neighbours, and the $1$s at distance $L-1$ connect vertically adjacent rows. The \O entries in the block corners that interupt the 1s just off the main diagonal are where boundary terms were moved to the RHS (i.e. into $F$) and hence these entries are zero.
 
 ### Direct Solution with LAPACK: Cholesky Factorisation
 
